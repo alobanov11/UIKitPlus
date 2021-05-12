@@ -354,6 +354,7 @@ open class BaseApp: UIApplication, UIApplicationDelegate {
             UNUserNotificationCenter.current().requestAuthorization(options: options.unOption) { granted,_ in
                 guard granted else {
                     BaseApp.shared.refreshPushStates()
+                    BaseApp.openSettings()
                     return
                 }
                 DispatchQueue.main.async(execute: UIApplication.shared.registerForRemoteNotifications)

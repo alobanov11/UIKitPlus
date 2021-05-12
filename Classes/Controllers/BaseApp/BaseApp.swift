@@ -131,6 +131,7 @@ open class BaseApp: UIApplication, UIApplicationDelegate {
     }
     
     public func applicationWillEnterForeground(_ application: UIApplication) {
+        refreshPushStates()
         lifecycle?._willEnterForeground?()
     }
     

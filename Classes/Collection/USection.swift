@@ -43,7 +43,7 @@ public protocol USupplementableBuilder {
     func build(_ view: View)
 }
 
-extension USupplementable where Self: USupplementableBuilder {
+public extension USupplementable where Self: USupplementableBuilder {
     var viewClass: Supplementable.Type {
         View.self
     }
@@ -72,7 +72,7 @@ public protocol UItemableBuilder {
     func build(_ cell: Cell)
 }
 
-extension UItemable where Self: UItemableBuilder {
+public extension UItemable where Self: UItemableBuilder {
     var cellClass: Cellable.Type {
         Cell.self
     }

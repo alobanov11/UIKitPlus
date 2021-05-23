@@ -123,6 +123,7 @@ extension UCollection {
     func process(_ item: USectionBodyItemable) {
         switch item.sectionBodyItem {
         case let .forEach(fr):
+            fr.allItems().forEach { self.process($0) }
             fr.subscribeToChanges { [weak self] in self?.reloadData() }
         default:
             break

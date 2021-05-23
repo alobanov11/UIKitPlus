@@ -54,7 +54,7 @@ open class UCollection: UView {
 
     public init (
         _ layout: UICollectionViewLayout = UCollectionView.defaultLayout,
-        @CollectionBuilder<USection> block: () -> [USectionItemable]
+        @CollectionBuilder<USectionItemable> block: () -> [USectionItemable]
     ) {
         self.layout = layout
         self.items = block()

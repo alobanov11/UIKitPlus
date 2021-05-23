@@ -87,11 +87,13 @@ public extension UItemable where Self: UItemableBuilder {
 // MARK: - USection
 
 public struct USection {
+    let identifier: AnyHashable
     let body: [USectionBodyItemable]
 }
 
 extension USection {
-    public init(@CollectionBuilder<USectionBodyItemable> block: () -> [USectionBodyItemable]) {
+    public init<T: Hashable>(_ identifier: T, @CollectionBuilder<USectionBodyItemable> block: () -> [USectionBodyItemable]) {
+        self.identifier = identifier
         self.body = block()
     }
 

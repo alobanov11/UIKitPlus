@@ -2,12 +2,18 @@
 import UIKit
 
 open class UCollection: UView {
-    struct Section: Hashable {
+    struct Section: Identable {
+        static var idKey: KeyPath<Self, AnyHashable> {
+            \.identifier
+        }
+
+        let identifier: AnyHashable
         let header: USupplementable?
         let items: [UItemable]
         let footer: USupplementable?
 
         init(_ section: USection) {
+            self.identifier = section.identifier
             self.header = section.header
             self.items = section.items
             self.footer = section.footer
@@ -77,7 +83,7 @@ open class UCollection: UView {
         @CollectionBuilder<USectionBodyItemable> block: () -> [USectionBodyItemable]
     ) {
         self.layout = layout
-        self.items = [USection(body: block())]
+        self.items = [USection(identifier: 0, body: block())]
         super.init(frame: .zero)
         self.items.forEach { self.process($0) }
         self.reloadData()

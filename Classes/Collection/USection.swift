@@ -44,6 +44,10 @@ public protocol USupplementableBuilder {
 }
 
 extension USupplementable where Self: USupplementableBuilder {
+    var viewClass: Supplementable.Type {
+        View.self
+    }
+
     func generate(collectionView: UICollectionView, kind: String, for indexPath: IndexPath) -> UICollectionReusableView {
         let view = collectionView.dequeueReusableSupplementaryView(View.self, ofKind: kind, for: indexPath)
         self.build(view)
@@ -69,6 +73,10 @@ public protocol UItemableBuilder {
 }
 
 extension UItemable where Self: UItemableBuilder {
+    var cellClass: Cellable.Type {
+        Cell.self
+    }
+
     func generate(collectionView: UICollectionView, for indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(with: Cell.self, for: indexPath)
         self.build(cell)

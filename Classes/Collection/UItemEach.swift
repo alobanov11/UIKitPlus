@@ -19,6 +19,11 @@ public final class UItemEach<Item: Hashable> {
         self.items = State(wrappedValue: items)
         self.block = block
     }
+
+    public init (_ items: State<[Item]>, block: @escaping BuildHandler) {
+        self.items = items
+        self.block = block
+    }
 }
 
 extension UItemEach: AnyItemEach {

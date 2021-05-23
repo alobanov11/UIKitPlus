@@ -167,14 +167,14 @@ extension UCollection {
                 switch $0 {
                 case let .section(changes):
                     self.collectionView.deleteSections(changes.removals)
-                    self.collectionView.insertSections(changes.removals)
+                    self.collectionView.insertSections(changes.inserts)
                     changes.moves.forEach {
                         self.collectionView.moveSection($0.source, toSection: $0.destination)
                     }
                 case let .items(changes, section):
                     self.collectionView.deleteItems(at: changes.removals.map { IndexPath(item: $0, section: section) })
-                    self.collectionView.insertItems(at: changes.removals.map { IndexPath(item: $0, section: section) })
-                    self.collectionView.reloadItems(at: changes.removals.map { IndexPath(item: $0, section: section) })
+                    self.collectionView.insertItems(at: changes.inserts.map { IndexPath(item: $0, section: section) })
+                    self.collectionView.reloadItems(at: changes.mutations.map { IndexPath(item: $0, section: section) })
                     changes.moves.forEach {
                         self.collectionView.moveItem(at: .init(item: $0.source, section: section), to: .init(item: $0.destination, section: section))
                     }

@@ -1,12 +1,9 @@
 #if !os(macOS)
 import UIKit
+import FlexibleDiff
 
 open class UCollection: UView {
-    struct Section: Identable {
-        static var idKey: KeyPath<Self, AnyHashable> {
-            \.identifier
-        }
-
+    struct Section: Hashable {
         let identifier: AnyHashable
         let header: USupplementable?
         let items: [UItemable]
@@ -32,21 +29,9 @@ open class UCollection: UView {
         }
     }
 
-    enum Changeset {
-        case section(SectionChanges)
-        case items(ItemChanges)
-    }
-
-    struct SectionChanges {
-        let deletions: Set<Int>
-        let insertions: Set<Int>
-    }
-
-    struct ItemChanges {
-        let deletions: Set<Int>
-        let insertions: Set<Int>
-        let modifications: Set<Int>
-        let section: Int
+    enum ChangesetData {
+        case section(Changeset)
+        case items(Changeset, Int)
     }
 
     lazy var collectionView = UCollectionView(layout)
@@ -164,24 +149,16 @@ extension UCollection {
             return
         }
 
-        var changesets: [Changeset] = []
-        let sectionsDiff = self.sections.difference(newSections)
+        var changesets: [ChangesetData] = []
+        let sectionsChangeset = Changeset(previous: self.sections, current: newSections, identifier: { $0.identifier })
 
-        changesets.append(.section(.init(
-            deletions: Set(sectionsDiff.removed.compactMap { $0.index }),
-            insertions: Set(sectionsDiff.inserted.compactMap { $0.index })
-        )))
+        changesets.append(.section(sectionsChangeset))
 
-        sectionsDiff.modified.compactMap { $0.index }.forEach { section in
+        sectionsChangeset.mutations.forEach { section in
             let oldItems = self.sections[section].items.map { $0.identifier }
             let newItems = newSections[section].items.map { $0.identifier }
-            let itemsDiff = oldItems.difference(newItems)
-            changesets.append(.items(.init(
-                deletions: Set(itemsDiff.removed.compactMap { $0.index }),
-                insertions: Set(itemsDiff.inserted.compactMap { $0.index }),
-                modifications: Set(itemsDiff.modified.compactMap { $0.index }),
-                section: section
-            )))
+            let itemsChangeset = Changeset(previous: oldItems, current: newItems)
+            changesets.append(.items(itemsChangeset, section))
         }
 
         self.collectionView.performBatchUpdates({
@@ -189,12 +166,18 @@ extension UCollection {
             changesets.forEach {
                 switch $0 {
                 case let .section(changes):
-                    self.collectionView.deleteSections(IndexSet(changes.deletions))
-                    self.collectionView.insertSections(IndexSet(changes.deletions))
-                case let .items(changes):
-                    self.collectionView.deleteItems(at: changes.deletions.map { IndexPath(item: $0, section: changes.section)})
-                    self.collectionView.insertItems(at: changes.insertions.map { IndexPath(item: $0, section: changes.section) })
-                    self.collectionView.reloadItems(at: changes.modifications.map { IndexPath(item: $0, section: changes.section) })
+                    self.collectionView.deleteSections(changes.removals)
+                    self.collectionView.insertSections(changes.removals)
+                    changes.moves.forEach {
+                        self.collectionView.moveSection($0.source, toSection: $0.destination)
+                    }
+                case let .items(changes, section):
+                    self.collectionView.deleteItems(at: changes.removals.map { IndexPath(item: $0, section: section) })
+                    self.collectionView.insertItems(at: changes.removals.map { IndexPath(item: $0, section: section) })
+                    self.collectionView.reloadItems(at: changes.removals.map { IndexPath(item: $0, section: section) })
+                    changes.moves.forEach {
+                        self.collectionView.moveItem(at: .init(item: $0.source, section: section), to: .init(item: $0.destination, section: section))
+                    }
                 }
             }
         }, completion: { _ in

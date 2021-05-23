@@ -12,9 +12,11 @@ let package = Package(
         // 🏰 Declarative UIKit wrapper inspired by SwiftUI
         .library(name: "UIKitPlus", targets: ["UIKitPlus"]),
         ],
-    dependencies: [],
+    dependencies: [
+        .package(url: "https://github.com/RACCommunity/FlexibleDiff.git", .exact("0.0.9")),
+    ],
     targets: [
-        .target(name: "UIKitPlus", dependencies: [], path: "Classes"),
+        .target(name: "UIKitPlus", dependencies: ["FlexibleDiff"], path: "Classes"),
 //        .testTarget(name: "UIKitPlusTests", dependencies: ["UIKitPlus"]),
         ]
 )

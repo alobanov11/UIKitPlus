@@ -2,6 +2,30 @@
 import UIKit
 
 open class UCollection: UView {
+    struct Section: Hashable {
+        let header: USupplementable?
+        let items: [UItemable]
+        let footer: USupplementable?
+
+        init(_ section: USection) {
+            self.header = section.header
+            self.items = section.items
+            self.footer = section.footer
+        }
+
+        public static func == (lhs: Section, rhs: Section) -> Bool {
+            lhs.header?.identifier == rhs.header?.identifier
+                && lhs.items.map { $0.identifier } == rhs.items.map { $0.identifier }
+                && lhs.footer?.identifier == rhs.footer?.identifier
+        }
+
+        public func hash(into hasher: inout Hasher) {
+            self.header?.identifier.hash(into: &hasher)
+            self.items.map { $0.identifier }.hash(into: &hasher)
+            self.footer?.identifier.hash(into: &hasher)
+        }
+    }
+
     enum Changeset {
         case section(SectionChanges)
         case items(ItemChanges)
@@ -26,7 +50,7 @@ open class UCollection: UView {
         .delegate(self)
         .background(backgroundColor ?? .clear)
 
-    var sections: [USection] = [] {
+    var sections: [Section] = [] {
         didSet { self.updateRegistration() }
     }
 
@@ -122,7 +146,10 @@ extension UCollection {
 
         self.isChanging = true
 
-        let newSections = self.items.map { self.unwrapSections($0) }.flatMap { $0 }
+        let newSections = self.items
+            .map { self.unwrapSections($0) }
+            .flatMap { $0 }
+            .map { Section($0) }
 
         if self.sections.isEmpty {
             self.sections = newSections

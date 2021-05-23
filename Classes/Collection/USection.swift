@@ -120,20 +120,6 @@ extension USection {
     }
 }
 
-extension USection: Hashable {
-    public static func == (lhs: USection, rhs: USection) -> Bool {
-        lhs.header?.identifier == rhs.header?.identifier
-            && lhs.items.map { $0.identifier } == rhs.items.map { $0.identifier }
-            && lhs.footer?.identifier == rhs.footer?.identifier
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        self.header?.identifier.hash(into: &hasher)
-        self.items.map { $0.identifier }.hash(into: &hasher)
-        self.footer?.identifier.hash(into: &hasher)
-    }
-}
-
 extension USection: USectionItemable {
     public var sectionItem: USectionItem { .single(self) }
 }

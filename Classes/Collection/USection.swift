@@ -6,11 +6,16 @@ import UIKit
 
 public enum USectionItem {
     case single(USection)
-    case forEach(AnySectionEach)
+    case map(AnySectionMap)
+    case multiple([USectionItemable])
 }
 
 public protocol USectionItemable {
     var sectionItem: USectionItem { get }
+}
+
+extension Array: USectionItemable where Element: USectionItemable {
+    public var sectionItem: USectionItem { .multiple(self) }
 }
 
 // MARK: - USectionBodyItem
@@ -18,12 +23,18 @@ public protocol USectionItemable {
 public enum USectionBodyItem {
     case supplementary(USupplementable)
     case item(UItemable)
-    case forEach(AnyItemEach)
+    case map(AnyItemMap)
+    case multiple([USectionBodyItemable])
 }
 
 public protocol USectionBodyItemable {
     var identifier: AnyHashable { get }
     var sectionBodyItem: USectionBodyItem { get }
+}
+
+extension Array: USectionBodyItemable where Element: USectionBodyItemable {
+    public var identifier: AnyHashable { self.map { $0.identifier } }
+    public var sectionBodyItem: USectionBodyItem { .multiple(self) }
 }
 
 // MARK: - USupplementable
@@ -47,7 +58,7 @@ public extension USupplementable where Self: USupplementableBuilder {
     var viewClass: Supplementable.Type {
         View.self
     }
-
+    
     func generate(collectionView: UICollectionView, kind: String, for indexPath: IndexPath) -> UICollectionReusableView {
         let view = collectionView.dequeueReusableSupplementaryView(View.self, ofKind: kind, for: indexPath)
         self.build(view)
@@ -76,7 +87,7 @@ public extension UItemable where Self: UItemableBuilder {
     var cellClass: Cellable.Type {
         Cell.self
     }
-
+    
     func generate(collectionView: UICollectionView, for indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(with: Cell.self, for: indexPath)
         self.build(cell)
@@ -96,27 +107,28 @@ extension USection {
         self.identifier = identifier
         self.body = block()
     }
-
+    
     var header: USupplementable? {
         guard case let .supplementary(item) = self.body.first?.sectionBodyItem else { return nil }
         return item
     }
-
+    
     var footer: USupplementable? {
         guard case let .supplementary(item) = self.body.last?.sectionBodyItem else { return nil }
         return item
     }
-
+    
     var items: [UItemable] {
         self.body
             .map { self.unwrapItems($0) }
             .flatMap { $0 }
     }
-
+    
     private func unwrapItems(_ item: USectionBodyItemable) -> [UItemable] {
         switch item.sectionBodyItem {
         case let .item(item): return [item]
-        case let .forEach(fr): return fr.allItems().map { self.unwrapItems($0) }.flatMap { $0 }
+        case let .map(mp): return mp.allItems().map { self.unwrapItems($0) }.flatMap { $0 }
+        case let .multiple(items): return items.map { self.unwrapItems($0) }.flatMap { $0 }
         default: return []
         }
     }

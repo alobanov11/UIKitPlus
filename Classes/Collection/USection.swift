@@ -14,10 +14,6 @@ public protocol USectionItemable {
     var sectionItem: USectionItem { get }
 }
 
-extension Array: USectionItemable where Element: USectionItemable {
-    public var sectionItem: USectionItem { .multiple(self) }
-}
-
 // MARK: - USectionBodyItem
 
 public enum USectionBodyItem {
@@ -30,11 +26,6 @@ public enum USectionBodyItem {
 public protocol USectionBodyItemable {
     var identifier: AnyHashable { get }
     var sectionBodyItem: USectionBodyItem { get }
-}
-
-extension Array: USectionBodyItemable where Element: USectionBodyItemable {
-    public var identifier: AnyHashable { self.map { $0.identifier } }
-    public var sectionBodyItem: USectionBodyItem { .multiple(self) }
 }
 
 // MARK: - USupplementable

@@ -5,13 +5,12 @@
 public protocol AnyItemMap {
     var count: Int { get }
     func allItems() -> [USectionBodyItemable]
-    func item(at index: Int) -> USectionBodyItemable?
     func subscribeToChanges(_ handler: @escaping () -> Void)
 }
 
 public final class UItemMap<Item: Hashable> {
-    public typealias BuildHandler = (Int, Item) -> USectionBodyItemable
-    public typealias BuildSimpleHandler = () -> USectionBodyItemable
+    public typealias BuildHandler = (Int, Item) -> [USectionBodyItemable]
+    public typealias BuildSimpleHandler = () -> [USectionBodyItemable]
 
     let items: State<[Item]>
     let block: BuildHandler
@@ -46,7 +45,7 @@ public final class UItemMap<Item: Hashable> {
 
     public init<T: Hashable>(
         _ first: State<T>,
-        @CollectionBuilder<USectionItemable> block: @escaping (T) -> USectionBodyItemable
+        @CollectionBuilder<USectionItemable> block: @escaping (T) -> [USectionBodyItemable]
     ) where Item == Int {
         let states: [AnyState] = [first]
         self.items = states.map { [0] }
@@ -58,7 +57,7 @@ public final class UItemMap<Item: Hashable> {
     public init<T: Hashable, V: Hashable>(
         _ first: State<T>,
         _ second: State<V>,
-        @CollectionBuilder<USectionItemable> block: @escaping (T, V) -> USectionBodyItemable
+        @CollectionBuilder<USectionItemable> block: @escaping (T, V) -> [USectionBodyItemable]
     ) where Item == Int {
         let states: [AnyState] = [first, second]
         self.items = states.map { [0] }
@@ -71,7 +70,7 @@ public final class UItemMap<Item: Hashable> {
         _ first: State<T>,
         _ second: State<V>,
         _ third: State<A>,
-        @CollectionBuilder<USectionItemable> block: @escaping (T, V, A) -> USectionBodyItemable
+        @CollectionBuilder<USectionItemable> block: @escaping (T, V, A) -> [USectionBodyItemable]
     ) where Item == Int {
         let states: [AnyState] = [first, second, third]
         self.items = states.map { [0] }
@@ -88,13 +87,8 @@ extension UItemMap: AnyItemMap {
     
     public func allItems() -> [USectionBodyItemable] {
         self.items.wrappedValue.enumerated().map {
-            self.block($0.offset, $0.element)
+            MultipleSectionBodyItem(self.block($0.offset, $0.element))
         }
-    }
-    
-    public func item(at index: Int) -> USectionBodyItemable? {
-        guard index < self.items.wrappedValue.count else { return nil }
-        return self.block(index, self.items.wrappedValue[index])
     }
     
     public func subscribeToChanges(_ handler: @escaping () -> Void) {

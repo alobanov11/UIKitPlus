@@ -14,6 +14,15 @@ public protocol USectionItemable {
     var sectionItem: USectionItem { get }
 }
 
+public struct MultipleSectionItem: USectionItemable {
+    public var sectionItem: USectionItem { .multiple(self.items) }
+    public let items: [USectionItemable]
+
+    init(_ items: [USectionItemable]) {
+        self.items = items
+    }
+}
+
 // MARK: - USectionBodyItem
 
 public enum USectionBodyItem {
@@ -26,6 +35,16 @@ public enum USectionBodyItem {
 public protocol USectionBodyItemable {
     var identifier: AnyHashable { get }
     var sectionBodyItem: USectionBodyItem { get }
+}
+
+public struct MultipleSectionBodyItem: USectionBodyItemable {
+    public var identifier: AnyHashable { self.items.map { $0.identifier } }
+    public var sectionBodyItem: USectionBodyItem { .multiple(self.items) }
+    public let items: [USectionBodyItemable]
+
+    init(_ items: [USectionBodyItemable]) {
+        self.items = items
+    }
 }
 
 // MARK: - USupplementable

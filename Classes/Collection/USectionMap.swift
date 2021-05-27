@@ -5,13 +5,12 @@
 public protocol AnySectionMap {
     var count: Int { get }
     func allItems() -> [USectionItemable]
-    func item(at index: Int) -> USectionItemable?
     func subscribeToChanges(_ handler: @escaping () -> Void)
 }
 
 public final class USectionMap<Item: Hashable> {
-    public typealias BuildHandler = (Int, Item) -> USectionItemable
-    public typealias BuildSimpleHandler = () -> USectionItemable
+    public typealias BuildHandler = (Int, Item) -> [USectionItemable]
+    public typealias BuildSimpleHandler = () -> [USectionItemable]
     
     let items: State<[Item]>
     let block: BuildHandler
@@ -46,7 +45,7 @@ public final class USectionMap<Item: Hashable> {
     
     public init<T: Hashable>(
         _ first: State<T>,
-        @CollectionBuilder<USectionItemable> block: @escaping (T) -> USectionItemable
+        @CollectionBuilder<USectionItemable> block: @escaping (T) -> [USectionItemable]
     ) where Item == Int {
         let states: [AnyState] = [first]
         self.items = states.map { [0] }
@@ -58,7 +57,7 @@ public final class USectionMap<Item: Hashable> {
     public init<T: Hashable, V: Hashable>(
         _ first: State<T>,
         _ second: State<V>,
-        @CollectionBuilder<USectionItemable> block: @escaping (T, V) -> USectionItemable
+        @CollectionBuilder<USectionItemable> block: @escaping (T, V) -> [USectionItemable]
     ) where Item == Int {
         let states: [AnyState] = [first, second]
         self.items = states.map { [0] }
@@ -71,7 +70,7 @@ public final class USectionMap<Item: Hashable> {
         _ first: State<T>,
         _ second: State<V>,
         _ third: State<A>,
-        @CollectionBuilder<USectionItemable> block: @escaping (T, V, A) -> USectionItemable
+        @CollectionBuilder<USectionItemable> block: @escaping (T, V, A) -> [USectionItemable]
     ) where Item == Int {
         let states: [AnyState] = [first, second, third]
         self.items = states.map { [0] }
@@ -88,13 +87,8 @@ extension USectionMap: AnySectionMap {
     
     public func allItems() -> [USectionItemable] {
         self.items.wrappedValue.enumerated().map {
-            self.block($0.offset, $0.element)
+            MultipleSectionItem(self.block($0.offset, $0.element))
         }
-    }
-    
-    public func item(at index: Int) -> USectionItemable? {
-        guard index < self.items.wrappedValue.count else { return nil }
-        return self.block(index, self.items.wrappedValue[index])
     }
     
     public func subscribeToChanges(_ handler: @escaping () -> Void) {

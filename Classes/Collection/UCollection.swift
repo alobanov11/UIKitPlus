@@ -147,6 +147,7 @@ extension UCollection {
             .map { self.unwrapSections($0) }
             .flatMap { $0 }
             .map { Section($0) }
+            .filter { $0.items.isEmpty == false }
         
         if self.sections.isEmpty {
             self.sections = newSections

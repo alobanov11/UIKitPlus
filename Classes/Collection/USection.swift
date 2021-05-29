@@ -23,6 +23,10 @@ public struct MultipleSectionItem: USectionItemable {
     }
 }
 
+extension Array: USectionItemable where Element == USection {
+    public var sectionItem: USectionItem { .multiple(self) }
+}
+
 // MARK: - USectionBodyItem
 
 public enum USectionBodyItem {

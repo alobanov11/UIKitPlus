@@ -93,7 +93,7 @@ extension UItemMap: AnyItemMap {
     
     public func subscribeToChanges(_ handler: @escaping () -> Void) {
         self.items.removeAllListeners()
-        self.items.listen { $0 != $1 ? handler() : () }
+        self.items.listen { handler() }
     }
 }
 

@@ -90,21 +90,21 @@ open class UCollection: UView {
     
     var _willDisplay: ((IndexPath) -> Void)?
     
-    public func willDisplay(_ handler: @escaping (IndexPath) -> Void) -> Self {
+    public func onWillDisplay(_ handler: @escaping (IndexPath) -> Void) -> Self {
         self._willDisplay = handler
         return self
     }
     
     var _didSelectItemAt: ((IndexPath) -> Void)?
     
-    public func didSelectItemAt(_ handler: @escaping (IndexPath) -> Void) -> Self {
+    public func onDidSelectItemAt(_ handler: @escaping (IndexPath) -> Void) -> Self {
         self._didSelectItemAt = handler
         return self
     }
     
     var _shouldHighlightItemAt: ((IndexPath) -> Bool)?
     
-    public func shouldHighlightItemAt(_ handler: @escaping (IndexPath) -> Bool) -> Self {
+    public func onShouldHighlightItemAt(_ handler: @escaping (IndexPath) -> Bool) -> Self {
         self._shouldHighlightItemAt = handler
         return self
     }
@@ -248,10 +248,12 @@ extension UCollection: UICollectionViewDelegateFlowLayout {
 extension UCollection: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         self._willDisplay?(indexPath)
+        (self.sections[indexPath.section].items[indexPath.item] as? UItemableDelegate)?.willDisplay()
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self._didSelectItemAt?(indexPath)
+        (self.sections[indexPath.section].items[indexPath.item] as? UItemableDelegate)?.didSelect()
     }
     
     public func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {

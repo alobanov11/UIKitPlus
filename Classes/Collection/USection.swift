@@ -72,7 +72,7 @@ public extension USupplementable where Self: USupplementableBuilder {
     var viewClass: Supplementable.Type {
         View.self
     }
-    
+
     func generate(collectionView: UICollectionView, kind: String, for indexPath: IndexPath) -> UICollectionReusableView {
         let view = collectionView.dequeueReusableSupplementaryView(View.self, ofKind: kind, for: indexPath)
         self.build(view)
@@ -107,6 +107,16 @@ public extension UItemable where Self: UItemableBuilder {
         self.build(cell)
         return cell
     }
+}
+
+protocol UItemableDelegate {
+    func willDisplay()
+    func didSelect()
+}
+
+extension UItemableDelegate {
+    func willDisplay() {}
+    func didSelect() {}
 }
 
 // MARK: - USection

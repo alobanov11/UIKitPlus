@@ -109,12 +109,12 @@ public extension UItemable where Self: UItemableBuilder {
     }
 }
 
-protocol UItemableDelegate {
+public protocol UItemableDelegate {
     func willDisplay()
     func didSelect()
 }
 
-extension UItemableDelegate {
+public extension UItemableDelegate {
     func willDisplay() {}
     func didSelect() {}
 }

@@ -3,4 +3,9 @@ extension DeclarativeProtocol {
         itself = self
         return self
     }
+
+    public func configure(_ closure: (Self) -> Void) -> Self {
+        closure(self)
+        return self
+    }
 }

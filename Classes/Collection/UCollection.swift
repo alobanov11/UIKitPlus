@@ -111,9 +111,8 @@ open class UCollection: UView {
 
     // MARK: - Helpers
 
-    public func scrollToItem(_ indexPath: IndexPath, at position: UICollectionView.ScrollPosition, animated: Bool = true) -> Self {
+    public func scrollToItem(_ indexPath: IndexPath, at position: UICollectionView.ScrollPosition, animated: Bool = true) {
         self.collectionView.scrollToItem(at: indexPath, at: position, animated: animated)
-        return self
     }
 }
 

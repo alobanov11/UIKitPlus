@@ -12,6 +12,7 @@ public enum CollectionBuilder<Element> {
     public static func buildBlock(_ children: Component...) -> Component { children.flatMap { $0 } }
     public static func buildOptional(_ children: Component?) -> Component { children ?? [] }
     public static func buildBlock(_ component: Component) -> Component { component }
+    public static func buildIf(_ expression: Expression?) -> Component { expression.map { [$0] } ?? [] }
     public static func buildEither(first child: Component) -> Component { child }
     public static func buildEither(second child: Component) -> Component { child }
 }

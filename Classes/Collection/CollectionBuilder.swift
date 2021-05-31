@@ -11,7 +11,7 @@ public enum CollectionBuilder<Element> {
     public static func buildBlock(_ component: Component) -> Component { component }
 
     public static func buildExpression(_ expression: Expression) -> Component { [expression] }
-    public static func buildExpression(_ component: Component) -> Component { component }
+    public static func buildExpression(_ expression: Expression?) -> Component { expression.map { [$0] } ?? [] }
 
     public static func buildEither(first component: Component) -> Component { component }
     public static func buildEither(second component: Component) -> Component { component }

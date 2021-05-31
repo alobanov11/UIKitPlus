@@ -108,6 +108,13 @@ open class UCollection: UView {
         self._shouldHighlightItemAt = handler
         return self
     }
+
+    // MARK: - Helpers
+
+    public func scrollToItem(_ indexPath: IndexPath, at position: UICollectionView.ScrollPosition, animated: Bool = true) -> Self {
+        self.collectionView.scrollToItem(at: indexPath, at: position, animated: animated)
+        return self
+    }
 }
 
 extension UCollection {

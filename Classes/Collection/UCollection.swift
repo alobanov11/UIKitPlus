@@ -101,6 +101,13 @@ open class UCollection: UView {
         self._didSelectItemAt = handler
         return self
     }
+
+    var _didDeselectItemAt: ((IndexPath) -> Void)?
+
+    public func onDidDeselectItemAt(_ handler: @escaping (IndexPath) -> Void) -> Self {
+        self._didDeselectItemAt = handler
+        return self
+    }
     
     var _shouldHighlightItemAt: ((IndexPath) -> Bool)?
     
@@ -260,6 +267,11 @@ extension UCollection: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self._didSelectItemAt?(indexPath)
         (self.sections[indexPath.section].items[indexPath.item] as? UItemableDelegate)?.didSelect()
+    }
+
+    public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        self._didDeselectItemAt?(indexPath)
+        (self.sections[indexPath.section].items[indexPath.item] as? UItemableDelegate)?.didDeselect()
     }
     
     public func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {

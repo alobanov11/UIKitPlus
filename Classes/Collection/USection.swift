@@ -112,11 +112,13 @@ public extension UItemable where Self: UItemableBuilder {
 public protocol UItemableDelegate {
     func willDisplay()
     func didSelect()
+    func didDeselect()
 }
 
 public extension UItemableDelegate {
     func willDisplay() {}
     func didSelect() {}
+    func didDeselect() {}
 }
 
 // MARK: - USection

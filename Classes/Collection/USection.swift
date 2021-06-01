@@ -113,12 +113,16 @@ public protocol UItemableDelegate {
     func willDisplay()
     func didSelect()
     func didDeselect()
+    func didHighlight()
+    func didUnhighlight()
 }
 
 public extension UItemableDelegate {
     func willDisplay() {}
     func didSelect() {}
     func didDeselect() {}
+    func didHighlight() {}
+    func didUnhighlight() {}
 }
 
 // MARK: - USection

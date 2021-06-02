@@ -1,6 +1,13 @@
 #if !os(macOS)
 import UIKit
 
+public enum CollectionState: Equatable {
+    case idle
+    case data
+    case loading
+    case error
+}
+
 open class UCollection: UView {
     struct Section: Hashable {
         let identifier: AnyHashable
@@ -52,6 +59,7 @@ open class UCollection: UView {
     
     let layout: UICollectionViewLayout
     let items: [USectionItemable]
+    let state: State<CollectionState>
     
     public init (
         _ layout: UICollectionViewLayout = UCollectionView.defaultLayout,
@@ -59,6 +67,7 @@ open class UCollection: UView {
     ) {
         self.layout = layout
         self.items = block()
+        self.state = .init(wrappedValue: .idle)
         super.init(frame: .zero)
         self.items.forEach { self.process($0) }
         self.reloadData()
@@ -70,8 +79,79 @@ open class UCollection: UView {
     ) {
         self.layout = layout
         self.items = [USection(identifier: 0, body: block())]
+        self.state = .init(wrappedValue: .idle)
         super.init(frame: .zero)
         self.items.forEach { self.process($0) }
+        self.reloadData()
+    }
+
+    public init (
+        _ layout: UICollectionViewLayout = UCollectionView.defaultLayout,
+        _ state: State<CollectionState>,
+        @CollectionBuilder<USectionItemable> data: () -> [USectionItemable],
+        @CollectionBuilder<USectionItemable> loading: () -> [USectionItemable],
+        @CollectionBuilder<USectionItemable> error: () -> [USectionItemable]
+    ) {
+        self.layout = layout
+
+        let dataBlock = MultipleSectionItem(data())
+        let loadingBlock = MultipleSectionItem(loading())
+        let errorBlock = MultipleSectionItem(error())
+
+        self.items = [
+            USectionMap(state) {
+                if $0 == .error {
+                    errorBlock
+                }
+                else if $0 == .loading {
+                    loadingBlock
+                }
+                else {
+                    dataBlock
+                }
+            }
+        ]
+
+        self.state = state
+        super.init(frame: .zero)
+        self.process(dataBlock)
+        self.process(loadingBlock)
+        self.process(errorBlock)
+        self.reloadData()
+    }
+
+    public init (
+        _ layout: UICollectionViewLayout = UCollectionView.defaultLayout,
+        _ state: State<CollectionState>,
+        @CollectionBuilder<USectionBodyItemable> data: () -> [USectionBodyItemable],
+        @CollectionBuilder<USectionBodyItemable> loading: () -> [USectionBodyItemable],
+        @CollectionBuilder<USectionBodyItemable> error: () -> [USectionBodyItemable]
+    ) {
+        self.layout = layout
+
+        let dataBlock = MultipleSectionBodyItem(data())
+        let loadingBlock = MultipleSectionBodyItem(loading())
+        let errorBlock = MultipleSectionBodyItem(error())
+
+        self.items = [
+            USectionMap(state) {
+                if $0 == .error {
+                    USection(0, block: { dataBlock })
+                }
+                else if $0 == .loading {
+                    USection(1, block: { loadingBlock })
+                }
+                else {
+                    USection(2, block: { errorBlock })
+                }
+            }
+        ]
+
+        self.state = state
+        super.init(frame: .zero)
+        self.process(dataBlock)
+        self.process(loadingBlock)
+        self.process(errorBlock)
         self.reloadData()
     }
     

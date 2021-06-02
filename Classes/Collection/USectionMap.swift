@@ -43,7 +43,7 @@ public final class USectionMap<Item: Hashable> {
 
     // ...
     
-    public init<T: Hashable>(
+    public init<T>(
         _ first: State<T>,
         @CollectionBuilder<USectionItemable> block: @escaping (T) -> [USectionItemable]
     ) where Item == Int {
@@ -54,7 +54,7 @@ public final class USectionMap<Item: Hashable> {
         }
     }
 
-    public init<T: Hashable, V: Hashable>(
+    public init<T, V>(
         _ first: State<T>,
         _ second: State<V>,
         @CollectionBuilder<USectionItemable> block: @escaping (T, V) -> [USectionItemable]
@@ -66,7 +66,7 @@ public final class USectionMap<Item: Hashable> {
         }
     }
 
-    public init<T: Hashable, V: Hashable, A: Hashable>(
+    public init<T, V, A>(
         _ first: State<T>,
         _ second: State<V>,
         _ third: State<A>,

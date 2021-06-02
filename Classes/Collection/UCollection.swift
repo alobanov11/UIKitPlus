@@ -52,15 +52,13 @@ open class UCollection: UView {
     
     let layout: UICollectionViewLayout
     let items: [USectionItemable]
-    let state: State<CollectionState>
-    
+
     public init (
         _ layout: UICollectionViewLayout = UCollectionView.defaultLayout,
         @CollectionBuilder<USectionItemable> block: () -> [USectionItemable]
     ) {
         self.layout = layout
         self.items = block()
-        self.state = .init(wrappedValue: .idle)
         super.init(frame: .zero)
         self.items.forEach { self.process($0) }
         self.reloadData()
@@ -72,7 +70,6 @@ open class UCollection: UView {
     ) {
         self.layout = layout
         self.items = [USection(identifier: 0, body: block())]
-        self.state = .init(wrappedValue: .idle)
         super.init(frame: .zero)
         self.items.forEach { self.process($0) }
         self.reloadData()

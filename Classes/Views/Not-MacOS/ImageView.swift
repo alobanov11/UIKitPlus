@@ -29,6 +29,13 @@ open class UImage: UIImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
     var __centerY: State<CGFloat> { _centerY }
     
     var _imageLoader: ImageLoader = .defaultRelease
+    var _onDidSetImage: ((UImage) -> Void)?
+
+    open override var image: UIImage? {
+        didSet {
+            self._onDidSetImage?(self)
+        }
+    }
     
     public init (named: String) {
         super.init(frame: .zero)
@@ -162,6 +169,12 @@ open class UImage: UIImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
         image = defaultImage
         _imageLoader = loader
         _imageLoader.load(url, imageView: self, defaultImage: defaultImage)
+        return self
+    }
+
+    @discardableResult
+    public func onDidSetImage(_ closure: @escaping (UImage) -> Void) -> Self {
+        self._onDidSetImage = closure
         return self
     }
 }

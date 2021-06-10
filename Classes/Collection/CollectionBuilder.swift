@@ -18,4 +18,7 @@ public enum CollectionBuilder<Element> {
 
     public static func buildEither(first expression: Expression) -> Component { [expression] }
     public static func buildEither(second expression: Expression) -> Component { [expression] }
+
+    public static func buildOptional(_ component: Component?) -> Component { component ?? [] }
+    public static func buildOptional(_ expression: Expression?) -> Component { expression.map { [$0] } ?? [] }
 }

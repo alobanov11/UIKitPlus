@@ -135,6 +135,12 @@ open class UCollection: UView {
     public func scrollToItem(_ indexPath: IndexPath, at position: UICollectionView.ScrollPosition, animated: Bool = true) {
         self.collectionView.scrollToItem(at: indexPath, at: position, animated: animated)
     }
+
+    @discardableResult
+    public func itCollection(_ collection: inout UICollectionView?) -> Self {
+        collection = self.collectionView
+        return self
+    }
 }
 
 extension UCollection {

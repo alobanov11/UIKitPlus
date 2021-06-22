@@ -141,6 +141,12 @@ open class UCollection: UView {
         collection = self.collectionView
         return self
     }
+
+    @discardableResult
+    public func scrolling(_ enabled: Bool) -> Self {
+        self.collectionView.isScrollEnabled = enabled
+        return self
+    }
 }
 
 extension UCollection {

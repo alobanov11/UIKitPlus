@@ -2,6 +2,20 @@
 import UIKit
 
 open class UCollection: UView {
+    public enum CollectionType {
+        case defaut
+        case layout(UICollectionViewLayout)
+        case custom(UICollectionView)
+
+        var collectionView: UICollectionView {
+            switch self {
+            case .defaut: return UCollectionView(UCollectionView.defaultLayout)
+            case let .layout(layout): return UCollectionView(layout)
+            case let .custom(collectionView): return collectionView
+            }
+        }
+    }
+
     struct Section: Hashable {
         let identifier: AnyHashable
         let header: USupplementable?
@@ -35,12 +49,14 @@ open class UCollection: UView {
         case items(Changeset, Int)
     }
     
-    lazy var collectionView = UCollectionView(layout)
-        .register(UCollectionDynamicCell.self)
-        .edgesToSuperview()
-        .dataSource(self)
-        .delegate(self)
-        .background(backgroundColor ?? .clear)
+    lazy var collectionView: UICollectionView = {
+        let collectionView = self.collectionType.collectionView
+        collectionView.register(UCollectionDynamicCell.self)
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.backgroundColor = .clear
+        return collectionView
+    }()
     
     var sections: [Section] = [] {
         didSet { self.updateRegistration() }
@@ -50,14 +66,14 @@ open class UCollection: UView {
     var changesPool = 0
     var isChanging = false
     
-    let layout: UICollectionViewLayout
+    let collectionType: CollectionType
     let items: [USectionItemable]
 
     public init (
-        _ layout: UICollectionViewLayout = UCollectionView.defaultLayout,
+        _ collectionType: CollectionType = .defaut,
         @CollectionBuilder<USectionItemable> block: () -> [USectionItemable]
     ) {
-        self.layout = layout
+        self.collectionType = collectionType
         self.items = block()
         super.init(frame: .zero)
         self.items.forEach { self.process($0) }
@@ -65,10 +81,10 @@ open class UCollection: UView {
     }
     
     public init (
-        _ layout: UICollectionViewLayout = UCollectionView.defaultLayout,
+        _ collectionType: CollectionType = .defaut,
         @CollectionBuilder<USectionBodyItemable> block: () -> [USectionBodyItemable]
     ) {
-        self.layout = layout
+        self.collectionType = collectionType
         self.items = [USection(identifier: 0, body: block())]
         super.init(frame: .zero)
         self.items.forEach { self.process($0) }
@@ -82,7 +98,8 @@ open class UCollection: UView {
     override public func buildView() {
         super.buildView()
         body {
-            collectionView
+            UWrapperView(collectionView)
+                .edgesToSuperview()
         }
     }
     
@@ -348,7 +365,11 @@ extension UCollection {
     
     @discardableResult
     public func refreshControl(_ refreshControl: UIRefreshControl) -> Self {
-        self.collectionView.refreshControl(refreshControl)
+        if #available(iOS 10.0, *) {
+            self.collectionView.refreshControl = refreshControl
+        } else {
+            self.collectionView.addSubview(refreshControl)
+        }
         return self
     }
     

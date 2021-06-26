@@ -1,8 +1,16 @@
 #if !os(macOS)
 import UIKit
 
+public enum UcollectionState<T> {
+    case idle
+    case loading
+    case data(T)
+    case empty
+    case error(Error)
+}
+
 open class UCollection: UView {
-    public enum CollectionType {
+    public enum Configuration {
         case defaut
         case layout(UICollectionViewLayout)
         case custom(UICollectionView)
@@ -50,7 +58,7 @@ open class UCollection: UView {
     }
     
     lazy var collectionView: UICollectionView = {
-        let collectionView = self.collectionType.collectionView
+        let collectionView = self.configuration.collectionView
         collectionView.register(UCollectionDynamicCell.self)
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -66,14 +74,14 @@ open class UCollection: UView {
     var changesPool = 0
     var isChanging = false
     
-    let collectionType: CollectionType
+    let configuration: Configuration
     let items: [USectionItemable]
 
     public init (
-        _ collectionType: CollectionType = .defaut,
+        _ configuration: Configuration = .defaut,
         @CollectionBuilder<USectionItemable> block: () -> [USectionItemable]
     ) {
-        self.collectionType = collectionType
+        self.configuration = configuration
         self.items = block()
         super.init(frame: .zero)
         self.items.forEach { self.process($0) }
@@ -81,10 +89,10 @@ open class UCollection: UView {
     }
     
     public init (
-        _ collectionType: CollectionType = .defaut,
+        _ configuration: Configuration = .defaut,
         @CollectionBuilder<USectionBodyItemable> block: () -> [USectionBodyItemable]
     ) {
-        self.collectionType = collectionType
+        self.configuration = configuration
         self.items = [USection(identifier: 0, body: block())]
         super.init(frame: .zero)
         self.items.forEach { self.process($0) }

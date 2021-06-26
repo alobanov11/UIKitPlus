@@ -1,12 +1,23 @@
 #if !os(macOS)
 import UIKit
 
-public enum UCollectionState<T> {
+public enum UCollectionState<T>: Equatable {
     case idle
     case loading
     case data(T)
     case empty
     case error(Error)
+
+    public static func == (lhs: UCollectionState<T>, rhs: UCollectionState<T>) -> Bool {
+        switch (lhs, rhs) {
+        case (.idle, .idle): return true
+        case (.loading, .loading): return true
+        case (.data, .data): return true
+        case (.empty, .empty): return true
+        case (.error, .error): return true
+        default: return false
+        }
+    }
 }
 
 open class UCollection: UView {

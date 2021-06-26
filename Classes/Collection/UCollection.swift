@@ -8,6 +8,16 @@ public enum UCollectionState<T>: Equatable {
     case empty
     case error(Error)
 
+    public var isError: Bool {
+        guard case .error = self else { return false }
+        return true
+    }
+
+    public var isData: Bool {
+        guard case .data = self else { return false }
+        return true
+    }
+
     public static func == (lhs: UCollectionState<T>, rhs: UCollectionState<T>) -> Bool {
         switch (lhs, rhs) {
         case (.idle, .idle): return true

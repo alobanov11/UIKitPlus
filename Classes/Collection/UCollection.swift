@@ -1,7 +1,7 @@
 #if !os(macOS)
 import UIKit
 
-public enum UcollectionState<T> {
+public enum UCollectionState<T> {
     case idle
     case loading
     case data(T)

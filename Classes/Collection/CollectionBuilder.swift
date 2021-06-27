@@ -2,8 +2,7 @@
 //  Created by Антон Лобанов on 23.05.2021.
 //
 
-@resultBuilder
-public enum CollectionBuilder<Element> {
+@_functionBuilder public enum CollectionBuilder<Element> {
     public typealias Expression = Element
     public typealias Component = [Element]
 

@@ -98,6 +98,34 @@ open class UCollection: UView {
     let configuration: Configuration
     let items: [USectionItemable]
 
+    public init<T>(
+        _ configuration: Configuration = .defaut,
+        _ state: State<UCollectionState<T>>,
+        @CollectionBuilder<USectionItemable> block: @escaping (UCollectionState<T>) -> [USectionItemable]
+    ) {
+        self.configuration = configuration
+        self.items = [USectionMap(state, block: block)]
+        super.init(frame: .zero)
+        self.items.forEach { self.process($0) }
+        self.reloadData()
+    }
+
+    public init<T>(
+        _ configuration: Configuration = .defaut,
+        _ state: State<UCollectionState<T>>,
+        @CollectionBuilder<USectionBodyItemable> block: @escaping (UCollectionState<T>) -> [USectionBodyItemable]
+    ) {
+        self.configuration = configuration
+        self.items = [
+            USectionMap(state) {
+                USection(identifier: 0, body: block($0))
+            },
+        ]
+        super.init(frame: .zero)
+        self.items.forEach { self.process($0) }
+        self.reloadData()
+    }
+
     public init (
         _ configuration: Configuration = .defaut,
         @CollectionBuilder<USectionItemable> block: () -> [USectionItemable]

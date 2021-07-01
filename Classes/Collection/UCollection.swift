@@ -435,6 +435,12 @@ extension UCollection {
         self.collectionView.alwaysBounceVertical = value
         return self
     }
+
+    @discardableResult
+    public func alwaysBounceHorizontal(_ value: Bool = true) -> Self {
+        self.collectionView.alwaysBounceHorizontal = value
+        return self
+    }
     
     // MARK: Indicators
     

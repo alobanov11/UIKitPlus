@@ -206,8 +206,28 @@ open class UCollection: UView {
 
     // MARK: - Helpers
 
-    public func scrollToItem(_ indexPath: IndexPath, at position: UICollectionView.ScrollPosition, animated: Bool = true) {
-        self.collectionView.scrollToItem(at: indexPath, at: position, animated: animated)
+    public func scrollToItem(_ indexPath: IndexPath, at position: UICollectionView.ScrollPosition, offset: CGPoint = .zero, animated: Bool = true) {
+        guard offset != .zero else {
+            self.collectionView.scrollToItem(at: indexPath, at: position, animated: animated)
+            return
+        }
+
+        let attributes = self.collectionView.layoutAttributesForItem(at: indexPath)
+
+        guard let frame = attributes?.frame.offsetBy(dx: offset.x, dy: offset.y) else {
+            self.collectionView.scrollToItem(at: indexPath, at: position, animated: animated)
+            return
+        }
+
+        switch position {
+        case .bottom: self.collectionView.setContentOffset(.init(x: frame.minX, y: frame.maxY), animated: animated)
+        case .top: self.collectionView.setContentOffset(.init(x: frame.minX, y: frame.minY), animated: animated)
+        case .left: self.collectionView.setContentOffset(.init(x: frame.minX, y: frame.minY), animated: animated)
+        case .right: self.collectionView.setContentOffset(.init(x: frame.maxX, y: frame.minY), animated: animated)
+        case .centeredHorizontally: self.collectionView.setContentOffset(.init(x: frame.midX, y: frame.minY), animated: animated)
+        case .centeredVertically: self.collectionView.setContentOffset(.init(x: frame.minX, y: frame.midY), animated: animated)
+        default: self.collectionView.scrollToItem(at: indexPath, at: position, animated: animated)
+        }
     }
 
     @discardableResult

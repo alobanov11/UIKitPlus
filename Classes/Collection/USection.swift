@@ -167,3 +167,21 @@ extension USection {
 extension USection: USectionItemable {
     public var sectionItem: USectionItem { .single(self) }
 }
+
+// MARK: - Empty
+
+public struct EmptySection: USectionItemable {
+    public var sectionItem: USectionItem { .single(self.section) }
+    private let section = USection(UUID().uuidString, block: {})
+
+    public init() {}
+}
+
+public struct EmptyItem: USectionBodyItemable {
+    public let identifier: AnyHashable = UUID().uuidString
+    public var sectionBodyItem: USectionBodyItem { .multiple([]) }
+
+    public init() {}
+}
+
+

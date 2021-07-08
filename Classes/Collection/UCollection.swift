@@ -1,15 +1,22 @@
 #if !os(macOS)
 import UIKit
 
+public struct UCollectionStub: OptionSet {
+    public let rawValue: Int
+
+    public init(rawValue: Int) {
+        self.rawValue = rawValue
+    }
+}
+
 public enum UCollectionState<T>: Equatable {
-    case idle
     case loading
     case data(T)
     case empty
-    case error(Error)
+    case stub(UCollectionStub)
 
-    public var isError: Bool {
-        guard case .error = self else { return false }
+    public var isStub: Bool {
+        guard case .stub = self else { return false }
         return true
     }
 
@@ -20,11 +27,10 @@ public enum UCollectionState<T>: Equatable {
 
     public static func == (lhs: UCollectionState<T>, rhs: UCollectionState<T>) -> Bool {
         switch (lhs, rhs) {
-        case (.idle, .idle): return true
         case (.loading, .loading): return true
         case (.data, .data): return true
         case (.empty, .empty): return true
-        case (.error, .error): return true
+        case (.stub, .stub): return true
         default: return false
         }
     }

@@ -440,6 +440,13 @@ extension UCollection: UIScrollViewDelegate {
 }
 
 extension UCollection {
+    @available(iOS 11.0, *)
+    @discardableResult
+    public func contentInsetAdjustmentBehavior(_ value: UIScrollView.ContentInsetAdjustmentBehavior) -> Self {
+        self.collectionView.contentInsetAdjustmentBehavior = value
+        return self
+    }
+
     @discardableResult
     public func keyboardDismissMode(_ mode: UIScrollView.KeyboardDismissMode) -> Self {
         self.collectionView.keyboardDismissMode = mode

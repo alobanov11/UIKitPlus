@@ -92,6 +92,15 @@ open class UCollection: UView {
         collectionView.backgroundColor = .clear
         return collectionView
     }()
+
+    var collectionViewOriginalSize: CGSize {
+        let size = self.collectionView.frame.size
+        let contentInset = self.collectionView.contentInset
+        return CGSize(
+            width: size.width - (contentInset.left + contentInset.right),
+            height: size.height - (contentInset.top + contentInset.bottom)
+        )
+    }
     
     var sections: [Section] = [] {
         didSet { self.updateRegistration() }
@@ -372,15 +381,18 @@ extension UCollection: UICollectionViewDataSource {
 
 extension UCollection: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        self.sections[indexPath.section].items[indexPath.item].size(by: collectionView.frame.size)
+        guard self.collectionViewOriginalSize.width > 0, self.collectionViewOriginalSize.height > 0 else { return .zero }
+        return self.sections[indexPath.section].items[indexPath.item].size(by: self.collectionViewOriginalSize)
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        self.sections[section].header?.size(by: collectionView.frame.size) ?? .zero
+        guard self.collectionViewOriginalSize.width > 0, self.collectionViewOriginalSize.height > 0 else { return .zero }
+        return self.sections[section].header?.size(by: self.collectionViewOriginalSize) ?? .zero
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        self.sections[section].footer?.size(by: collectionView.frame.size) ?? .zero
+        guard self.collectionViewOriginalSize.width > 0, self.collectionViewOriginalSize.height > 0 else { return .zero }
+        return self.sections[section].footer?.size(by: self.collectionViewOriginalSize) ?? .zero
     }
 }
 

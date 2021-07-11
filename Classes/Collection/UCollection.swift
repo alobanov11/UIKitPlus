@@ -96,9 +96,10 @@ open class UCollection: UView {
     var collectionViewOriginalSize: CGSize {
         let size = self.collectionView.frame.size
         let contentInset = self.collectionView.contentInset
+        let safeInset = self.collectionView.safeInsets
         return CGSize(
-            width: size.width - (contentInset.left + contentInset.right),
-            height: size.height - (contentInset.top + contentInset.bottom)
+            width: size.width - (contentInset.left + contentInset.right) - (safeInset.left + safeInset.right),
+            height: size.height - (contentInset.top + contentInset.bottom) - (safeInset.top + safeInset.bottom)
         )
     }
     

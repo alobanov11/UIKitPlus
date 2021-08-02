@@ -110,6 +110,7 @@ open class UCollection: UView {
     var scrollPosition: State<CGPoint>?
     var changesPool = 0
     var isChanging = false
+    var isInitialized = false
     
     let configuration: Configuration
     let items: [USectionItemable]
@@ -123,7 +124,6 @@ open class UCollection: UView {
         self.items = [USectionMap(state, block: block)]
         super.init(frame: .zero)
         self.items.forEach { self.process($0) }
-        self.reloadData()
     }
 
     public init<T>(
@@ -139,7 +139,6 @@ open class UCollection: UView {
         ]
         super.init(frame: .zero)
         self.items.forEach { self.process($0) }
-        self.reloadData()
     }
 
     public init (
@@ -150,7 +149,6 @@ open class UCollection: UView {
         self.items = block()
         super.init(frame: .zero)
         self.items.forEach { self.process($0) }
-        self.reloadData()
     }
     
     public init (
@@ -161,11 +159,19 @@ open class UCollection: UView {
         self.items = [USection(identifier: 0, body: block())]
         super.init(frame: .zero)
         self.items.forEach { self.process($0) }
-        self.reloadData()
     }
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        guard self.isInitialized == false else { return }
+        DispatchQueue.main.async {
+            self.isInitialized = true
+            self.reloadData()
+        }
     }
     
     override public func buildView() {
@@ -288,6 +294,8 @@ extension UCollection {
     }
     
     func reloadData() {
+        guard self.isInitialized else { return }
+
         if self.isChanging {
             self.changesPool += 1
             return

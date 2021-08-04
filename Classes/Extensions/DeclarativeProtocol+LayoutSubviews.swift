@@ -37,6 +37,7 @@ extension AnyDeclarativeProtocol {
             }
             declarativeView.layer.insertSublayer(maskLayer, at: 0)
         }
+        declarativeView.layer.borderColor = declarativeView.properties.borderColor.cgColor
     }
 }
 #endif

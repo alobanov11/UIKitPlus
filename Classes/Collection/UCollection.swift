@@ -14,6 +14,7 @@ public enum UCollectionState<T>: Equatable {
     case data(T)
     case empty
     case stub(UCollectionStub)
+	case error(Error)
 
     public var isStub: Bool {
         guard case .stub = self else { return false }
@@ -25,12 +26,18 @@ public enum UCollectionState<T>: Equatable {
         return true
     }
 
+	public var isError: Bool {
+		guard case .error = self else { return false }
+		return true
+	}
+
     public static func == (lhs: UCollectionState<T>, rhs: UCollectionState<T>) -> Bool {
         switch (lhs, rhs) {
         case (.loading, .loading): return true
         case (.data, .data): return true
         case (.empty, .empty): return true
         case (.stub, .stub): return true
+		case (.error, .error): return true
         default: return false
         }
     }

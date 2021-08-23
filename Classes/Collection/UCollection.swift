@@ -493,6 +493,12 @@ extension UCollection {
         }
         return self
     }
+
+	@discardableResult
+	public func bounces(_ value: Bool = true) -> Self {
+		self.collectionView.bounces = value
+		return self
+	}
     
     @discardableResult
     public func alwaysBounceVertical(_ value: Bool = true) -> Self {

@@ -18,7 +18,7 @@ public struct MultipleSectionItem: USectionItemable {
     public var sectionItem: USectionItem { .multiple(self.items) }
     public let items: [USectionItemable]
 
-    init(_ items: [USectionItemable]) {
+    public init(_ items: [USectionItemable]) {
         self.items = items
     }
 }

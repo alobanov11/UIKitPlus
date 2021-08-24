@@ -46,7 +46,7 @@ public struct MultipleSectionBodyItem: USectionBodyItemable {
     public var sectionBodyItem: USectionBodyItem { .multiple(self.items) }
     public let items: [USectionBodyItemable]
 
-    init(_ items: [USectionBodyItemable]) {
+    public init(_ items: [USectionBodyItemable]) {
         self.items = items
     }
 }

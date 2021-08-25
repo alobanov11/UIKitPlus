@@ -183,7 +183,8 @@ open class UCollection: UView {
     
     override public func buildView() {
         super.buildView()
-        body { collectionView }
+		body { collectionView }
+		collectionView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: topAnchor, constant: 0),
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0),

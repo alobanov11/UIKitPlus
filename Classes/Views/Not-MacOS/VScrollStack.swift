@@ -5,6 +5,10 @@ import UIKit
 public typealias VScrollStack = UVScrollStack
 
 open class UVScrollStack: UScrollView {
+	public var arrangedSubviews: [UIView] {
+		self.stack.arrangedSubviews
+	}
+
     lazy var stack = UVStack().edgesToSuperview().widthToSuperview()
     
     public override init (@BodyBuilder block: BodyBuilder.SingleView) {

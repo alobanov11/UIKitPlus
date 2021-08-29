@@ -402,17 +402,26 @@ extension UCollection: UICollectionViewDataSource {
 extension UCollection: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         guard self.collectionViewOriginalSize.width > 0, self.collectionViewOriginalSize.height > 0 else { return .zero }
-        return self.sections[indexPath.section].items[indexPath.item].size(by: self.collectionViewOriginalSize)
+		let sectionInset = (collectionViewLayout as? UICollectionViewFlowLayout)?.sectionInset ?? .zero
+		let collectionSize = self.collectionViewOriginalSize
+		let size = CGSize(width: collectionSize.width - (sectionInset.left + sectionInset.right), height: collectionSize.height - (sectionInset.top + sectionInset.bottom))
+		return self.sections[indexPath.section].items[indexPath.item].size(by: size)
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         guard self.collectionViewOriginalSize.width > 0, self.collectionViewOriginalSize.height > 0 else { return .zero }
-        return self.sections[section].header?.size(by: self.collectionViewOriginalSize) ?? .zero
+		let sectionInset = (collectionViewLayout as? UICollectionViewFlowLayout)?.sectionInset ?? .zero
+		let collectionSize = self.collectionViewOriginalSize
+		let size = CGSize(width: collectionSize.width - (sectionInset.left + sectionInset.right), height: collectionSize.height - (sectionInset.top + sectionInset.bottom))
+        return self.sections[section].header?.size(by: size) ?? .zero
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
         guard self.collectionViewOriginalSize.width > 0, self.collectionViewOriginalSize.height > 0 else { return .zero }
-        return self.sections[section].footer?.size(by: self.collectionViewOriginalSize) ?? .zero
+		let sectionInset = (collectionViewLayout as? UICollectionViewFlowLayout)?.sectionInset ?? .zero
+		let collectionSize = self.collectionViewOriginalSize
+		let size = CGSize(width: collectionSize.width - (sectionInset.left + sectionInset.right), height: collectionSize.height - (sectionInset.top + sectionInset.bottom))
+        return self.sections[section].footer?.size(by: size) ?? .zero
     }
 }
 

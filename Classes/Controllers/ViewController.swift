@@ -38,18 +38,15 @@ open class ViewController: BaseViewController {
     
     public init (@BodyBuilder block: BodyBuilder.SingleView) {
         super.init(nibName: nil, bundle: nil)
-        _setup()
         body { block() }
     }
     
     public init () {
         super.init(nibName: nil, bundle: nil)
-        _setup()
     }
     
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        _setup()
     }
     
     private func _setup() {
@@ -143,6 +140,7 @@ open class ViewController: BaseViewController {
     
     open override func viewDidLoad() {
         super.viewDidLoad()
+		_setup()
         _viewDidLoad()
     }
     

@@ -107,7 +107,7 @@ public final class UGradient<T: UIView>: UWrapperView<T> {
 			gradientLayer.transform = transform
 		}
 
-		gradientLayer.bounds = self.config.boundsMakeHandler(self.bounds)
+		gradientLayer.frame = self.config.boundsMakeHandler(self.bounds)
 
 		if let positionMakeHandler = self.config.positionMakeHandler {
 			gradientLayer.position = positionMakeHandler(self.frame)

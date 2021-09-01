@@ -31,6 +31,11 @@ public enum UCollectionState<T>: Equatable {
 		return true
 	}
 
+	public var isLoading: Bool {
+		guard case .loading = self else { return false }
+		return true
+	}
+
     public static func == (lhs: UCollectionState<T>, rhs: UCollectionState<T>) -> Bool {
         switch (lhs, rhs) {
         case (.loading, .loading): return true

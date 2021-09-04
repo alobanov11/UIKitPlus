@@ -2,8 +2,11 @@
 import UIKit
 
 extension UIControl {
-    private func actionHandler(action: (() -> Void)? = nil) {
-        struct Storage { static var actions: [Int: (() -> Void)] = [:] }
+	struct Storage {
+		static var actions: [Int: (() -> Void)] = [:]
+	}
+
+	private func actionHandler(action: (() -> Void)? = nil) {
         if let action = action {
             Storage.actions[hashValue] = action
         } else {

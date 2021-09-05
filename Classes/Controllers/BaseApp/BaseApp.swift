@@ -8,7 +8,6 @@
 #if !os(macOS)
 import UIKit
 
-@UIApplicationMain
 open class BaseApp: UIApplication, UIApplicationDelegate {
     public static override var shared: BaseApp { super.shared as! BaseApp }
     public static var mainScene: MainScene { shared.mainScene }

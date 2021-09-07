@@ -37,6 +37,16 @@ public struct UGradientConfiguration {
 	}
 }
 
+extension UGradientConfiguration: Hashable {
+	public static func == (lhs: UGradientConfiguration, rhs: UGradientConfiguration) -> Bool {
+		lhs.uuid == rhs.uuid
+	}
+
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(self.uuid)
+	}
+}
+
 public final class UGradient<T: UIView>: UWrapperView<T> {
 	private var config = UGradientConfiguration(locations: [], colors: [])
 

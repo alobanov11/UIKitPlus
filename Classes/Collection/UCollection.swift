@@ -64,7 +64,7 @@ open class UCollection: UView {
     }
 
     struct Section: Hashable {
-        let identifier: AnyHashable
+		let identifier: USection.Identifier
         let header: USupplementable?
         let items: [UItemable]
         let footer: USupplementable?
@@ -241,6 +241,29 @@ open class UCollection: UView {
         self._shouldHighlightItemAt = handler
         return self
     }
+
+	// MARK: - Layout
+
+	var _sectionInset: ((USection.Identifier) -> UIEdgeInsets?)?
+
+	public func sectionInset(_ handler: @escaping (USection.Identifier) -> UIEdgeInsets?) -> Self {
+		self._sectionInset = handler
+		return self
+	}
+
+	var _minimumLineSpacing: ((USection.Identifier) -> CGFloat?)?
+
+	public func minimumLineSpacing(_ handler: @escaping (USection.Identifier) -> CGFloat?) -> Self {
+		self._minimumLineSpacing = handler
+		return self
+	}
+
+	var _minimumInteritemSpacing: ((USection.Identifier) -> CGFloat?)?
+
+	public func minimumInteritemSpacing(_ handler: @escaping (USection.Identifier) -> CGFloat?) -> Self {
+		self._minimumInteritemSpacing = handler
+		return self
+	}
 
     // MARK: - Helpers
 
@@ -428,6 +451,24 @@ extension UCollection: UICollectionViewDelegateFlowLayout {
 		let size = CGSize(width: collectionSize.width - (sectionInset.left + sectionInset.right), height: collectionSize.height - (sectionInset.top + sectionInset.bottom))
         return self.sections[section].footer?.size(by: size) ?? .zero
     }
+
+	public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+		let sectionInset = (collectionViewLayout as? UICollectionViewFlowLayout)?.sectionInset ?? .zero
+		let customSectionInset = self._sectionInset?(self.sections[section].identifier)
+		return customSectionInset ?? sectionInset
+	}
+
+	public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+		let minimumLineSpacing = (collectionViewLayout as? UICollectionViewFlowLayout)?.minimumLineSpacing ?? .zero
+		let customMinimumLineSpacing = self._minimumLineSpacing?(self.sections[section].identifier)
+		return customMinimumLineSpacing ?? minimumLineSpacing
+	}
+
+	public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+		let minimumInteritemSpacing = (collectionViewLayout as? UICollectionViewFlowLayout)?.minimumInteritemSpacing ?? .zero
+		let customMinimumInteritemSpacing = self._minimumInteritemSpacing?(self.sections[section].identifier)
+		return customMinimumInteritemSpacing ?? minimumInteritemSpacing
+	}
 }
 
 extension UCollection: UICollectionViewDelegate {

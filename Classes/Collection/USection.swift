@@ -128,12 +128,14 @@ public extension UItemableDelegate {
 // MARK: - USection
 
 public struct USection {
-    let identifier: AnyHashable
+	public typealias Identifier = AnyHashable
+
+    let identifier: Identifier
     let body: [USectionBodyItemable]
 }
 
 extension USection {
-    public init<T: Hashable>(_ identifier: T, @CollectionBuilder<USectionBodyItemable> block: () -> [USectionBodyItemable]) {
+    public init(_ identifier: Identifier, @CollectionBuilder<USectionBodyItemable> block: () -> [USectionBodyItemable]) {
         self.identifier = identifier
         self.body = block()
     }

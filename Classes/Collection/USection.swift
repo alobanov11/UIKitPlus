@@ -85,6 +85,8 @@ public extension USupplementable where Self: USupplementableBuilder {
 public final class UItemSizeCache {
 	public static let shared = UItemSizeCache()
 
+	var templates: [String: UICollectionViewCell] = [:]
+
 	private var sizes: [String: [AnyHashable: CGSize]] = [:]
 
 	public func size<Cell: Cellable, Identifier: Hashable>(_ type: Cell.Type, identifier: Identifier) -> CGSize? {
@@ -144,17 +146,31 @@ public extension UItemable where Self: UItemableBuilder {
 		if let cachedSize = UItemSizeCache.shared.size(Cell.self, identifier: self.identifier) {
 			return cachedSize
 		}
+
 		let isDynamicHeight = (direction == .vertical)
 		let width = isDynamicHeight ? original.width : .greatestFiniteMagnitude
 		let height = isDynamicHeight ? .greatestFiniteMagnitude : original.height
-		let cell = Cell(frame: .init(origin: .zero, size: .init(width: width, height: height)))
+
+		let cell: Cell
+		if let cachedCell = UItemSizeCache.shared.templates[self.cellClass.reuseIdentifier] as? Cell {
+			cell = cachedCell
+		}
+		else {
+			let newCell = Cell(frame: .init(origin: .zero, size: .init(width: width, height: height)))
+			UItemSizeCache.shared.templates[self.cellClass.reuseIdentifier] = newCell
+			cell = newCell
+		}
+
 		self.build(cell)
+
 		let size = cell.systemLayoutSizeFitting(
 			.init(width: width, height: height),
 			withHorizontalFittingPriority: isDynamicHeight ? .required : .fittingSizeLevel,
 			verticalFittingPriority: isDynamicHeight ? .fittingSizeLevel : .required
 		)
+
 		UItemSizeCache.shared.update(Cell.self, identifier: self.identifier, size: size)
+
 		return size
 	}
 }

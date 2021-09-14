@@ -47,6 +47,13 @@ open class UCollectionCell: UICollectionViewCell, AnyDeclarativeProtocol, Declar
     open func buildView() {
         backgroundColor = .clear
         contentView.backgroundColor = .clear
+		contentView.translatesAutoresizingMaskIntoConstraints = false
+		NSLayoutConstraint.activate([
+			contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
+			contentView.topAnchor.constraint(equalTo: topAnchor),
+			contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
+			contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
+		])
     }
     
     open override func layoutSubviews() {

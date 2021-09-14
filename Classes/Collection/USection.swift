@@ -105,7 +105,7 @@ public extension USupplementable where Self: USupplementableBuilder {
 		self.build(view)
 
 		let size = view.systemLayoutSizeFitting(
-			.init(width: width, height: height),
+			.init(width: isDynamicHeight ? width : 0, height: isDynamicHeight ? 0 : height),
 			withHorizontalFittingPriority: isDynamicHeight ? .required : .fittingSizeLevel,
 			verticalFittingPriority: isDynamicHeight ? .fittingSizeLevel : .required
 		)
@@ -204,7 +204,7 @@ public extension UItemable where Self: UItemableBuilder {
 		self.build(cell)
 
 		let size = cell.systemLayoutSizeFitting(
-			.init(width: width, height: height),
+			.init(width: isDynamicHeight ? width : 0, height: isDynamicHeight ? 0 : height),
 			withHorizontalFittingPriority: isDynamicHeight ? .required : .fittingSizeLevel,
 			verticalFittingPriority: isDynamicHeight ? .fittingSizeLevel : .required
 		)

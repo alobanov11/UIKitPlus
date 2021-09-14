@@ -203,7 +203,7 @@ public extension UItemable where Self: UItemableBuilder {
 
 		self.build(cell)
 
-		let size = cell.contentView.systemLayoutSizeFitting(
+		let size = cell.systemLayoutSizeFitting(
 			.init(width: width, height: height),
 			withHorizontalFittingPriority: isDynamicHeight ? .required : .fittingSizeLevel,
 			verticalFittingPriority: isDynamicHeight ? .fittingSizeLevel : .required

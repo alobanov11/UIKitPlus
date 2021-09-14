@@ -180,10 +180,8 @@ open class UCollection: UView {
     open override func layoutSubviews() {
         super.layoutSubviews()
         guard self.isInitialized == false else { return }
-        DispatchQueue.main.async {
-            self.isInitialized = true
-            self.reloadData()
-        }
+		self.isInitialized = true
+        DispatchQueue.main.async { self.reloadData() }
     }
     
     override public func buildView() {

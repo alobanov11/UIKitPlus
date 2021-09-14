@@ -82,9 +82,37 @@ public extension USupplementable where Self: USupplementableBuilder {
 
 // MARK: - UItemable
 
+public final class UItemSizeCache {
+	public static let shared = UItemSizeCache()
+
+	private var sizes: [String: [AnyHashable: CGSize]] = [:]
+
+	public func size<Cell: Cellable, Identifier: Hashable>(_ type: Cell.Type, identifier: Identifier) -> CGSize? {
+		self.sizes[type.reuseIdentifier]?[identifier]
+	}
+
+	public func update<Cell: Cellable, Identifier: Hashable>(_ type: Cell.Type, identifier: Identifier, size: CGSize) {
+		if self.sizes[type.reuseIdentifier] == nil {
+			self.sizes[type.reuseIdentifier] = [identifier: size]
+		}
+		else {
+			self.sizes[type.reuseIdentifier]?[identifier] = size
+		}
+	}
+
+	public func clearAll() {
+		self.sizes = [:]
+	}
+
+	public func clear<Cell: Cellable>(for type: Cell.Type) {
+		self.sizes[type.reuseIdentifier] = [:]
+	}
+}
+
 public protocol UItemable: USectionBodyItemable {
     var cellClass: Cellable.Type { get }
-    func generate(collectionView: UICollectionView, for indexPath: IndexPath) -> UICollectionViewCell
+
+	func generate(collectionView: UICollectionView, for indexPath: IndexPath) -> UICollectionViewCell
     func size(by original: CGSize) -> CGSize
 }
 
@@ -101,12 +129,34 @@ public extension UItemable where Self: UItemableBuilder {
     var cellClass: Cellable.Type {
         Cell.self
     }
+
+	func size(by original: CGSize) -> CGSize {
+		self.systemLayoutSize(by: original, direction: original.height > original.width ? .vertical : .horizontal)
+	}
     
     func generate(collectionView: UICollectionView, for indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(with: Cell.self, for: indexPath)
         self.build(cell)
         return cell
     }
+
+	func systemLayoutSize(by original: CGSize, direction: UICollectionView.ScrollDirection) -> CGSize {
+		if let cachedSize = UItemSizeCache.shared.size(Cell.self, identifier: self.identifier) {
+			return cachedSize
+		}
+		let isDynamicHeight = (direction == .vertical)
+		let width = isDynamicHeight ? original.width : .greatestFiniteMagnitude
+		let height = isDynamicHeight ? .greatestFiniteMagnitude : original.height
+		let cell = Cell(frame: .init(origin: .zero, size: .init(width: width, height: height)))
+		self.build(cell)
+		let size = cell.systemLayoutSizeFitting(
+			.init(width: width, height: height),
+			withHorizontalFittingPriority: isDynamicHeight ? .required : .fittingSizeLevel,
+			verticalFittingPriority: isDynamicHeight ? .fittingSizeLevel : .required
+		)
+		UItemSizeCache.shared.update(Cell.self, identifier: self.identifier, size: size)
+		return size
+	}
 }
 
 public protocol UItemableDelegate {

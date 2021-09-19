@@ -21,16 +21,5 @@ extension DeclarativeProtocol {
         }
         return self
     }
-    
-    @discardableResult
-    public func userInteraction<V>(_ expressable: ExpressableState<V, Bool>) -> Self {
-        declarativeView.isUserInteractionEnabled = expressable.value()
-        properties.userInteraction = expressable.value()
-        expressable.state.listen { [weak self] old, new in
-            self?.declarativeView.isUserInteractionEnabled = expressable.value()
-            self?.properties.userInteraction = expressable.value()
-        }
-        return self
-    }
 }
 #endif

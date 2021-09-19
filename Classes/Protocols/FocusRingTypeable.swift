@@ -7,9 +7,6 @@ public protocol FocusRingTypeable {
     
     @discardableResult
     func focusRingType(_ binding: UIKitPlus.State<NSFocusRingType>) -> Self
-    
-    @discardableResult
-    func focusRingType<V>(_ expressable: ExpressableState<V, NSFocusRingType>) -> Self
 }
 
 protocol _FocusRingTypeable: FocusRingTypeable {
@@ -21,11 +18,6 @@ extension FocusRingTypeable {
     public func focusRingType(_ binding: UIKitPlus.State<NSFocusRingType>) -> Self {
         binding.listen { [weak self] in self?.focusRingType($0) }
         return focusRingType(binding.wrappedValue)
-    }
-    
-    @discardableResult
-    public func focusRingType<V>(_ expressable: ExpressableState<V, NSFocusRingType>) -> Self {
-        focusRingType(expressable.unwrap())
     }
 }
 

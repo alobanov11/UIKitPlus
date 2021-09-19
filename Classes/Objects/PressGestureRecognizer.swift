@@ -41,11 +41,6 @@ final public class PressGestureRecognizer: NSPressGestureRecognizer, _GestureTra
     }
     
     @discardableResult
-    public func numberOfTouchesRequired<V>(_ expressable: ExpressableState<V, Int>) -> Self {
-        numberOfTouchesRequired(expressable.unwrap())
-    }
-    
-    @discardableResult
     public func minimumPressDuration(_ v: TimeInterval) -> Self {
         minimumPressDuration = v
         return self
@@ -55,11 +50,6 @@ final public class PressGestureRecognizer: NSPressGestureRecognizer, _GestureTra
     public func minimumPressDuration(_ state: UIKitPlus.State<TimeInterval>) -> Self {
         state.listen { [weak self] in self?.minimumPressDuration = $0 }
         return self
-    }
-
-    @discardableResult
-    public func minimumPressDuration<V>(_ expressable: ExpressableState<V, TimeInterval>) -> Self {
-        minimumPressDuration(expressable.unwrap())
     }
     
     @discardableResult
@@ -73,11 +63,6 @@ final public class PressGestureRecognizer: NSPressGestureRecognizer, _GestureTra
         state.listen { [weak self] in self?.allowableMovement = $0 }
         return self
     }
-
-    @discardableResult
-    public func allowableMovement<V>(_ expressable: ExpressableState<V, CGFloat>) -> Self {
-        allowableMovement(expressable.unwrap())
-    }
     
     @discardableResult
     public func buttonMask(_ v: Int) -> Self {
@@ -89,11 +74,6 @@ final public class PressGestureRecognizer: NSPressGestureRecognizer, _GestureTra
     public func buttonMask(_ state: UIKitPlus.State<Int>) -> Self {
         state.listen { [weak self] in self?.buttonMask = $0 }
         return self
-    }
-
-    @discardableResult
-    public func buttonMask<V>(_ expressable: ExpressableState<V, Int>) -> Self {
-        buttonMask(expressable.unwrap())
     }
     
     var _tag: Int = 0

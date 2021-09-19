@@ -512,12 +512,7 @@ extension UCollection: UIScrollViewDelegate {
         self.scrollPosition = binding
         return self
     }
-    
-    @discardableResult
-    public func scrollPosition<V>(_ expressable: ExpressableState<V, CGPoint>) -> Self {
-        self.scrollPosition = expressable.unwrap()
-        return self
-    }
+
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         self.scrollPosition?.wrappedValue = scrollView.contentOffset

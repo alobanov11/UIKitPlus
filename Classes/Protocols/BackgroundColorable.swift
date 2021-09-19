@@ -13,9 +13,6 @@ public protocol BackgroundColorable: class {
     
     @discardableResult
     func background(_ color: State<UColor>) -> Self
-    
-    @discardableResult
-    func background<V>(_ expressable: ExpressableState<V, UColor>) -> Self
 }
 
 protocol _BackgroundColorable: BackgroundColorable {
@@ -38,11 +35,6 @@ extension BackgroundColorable {
     public func background(_ state: State<UColor>) -> Self {
         state.listen { [weak self] in self?.background($0) }
         return background(state.wrappedValue)
-    }
-    
-    @discardableResult
-    public func background<V>(_ expressable: ExpressableState<V, UColor>) -> Self {
-        background(expressable.unwrap())
     }
 }
 

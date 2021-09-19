@@ -13,9 +13,6 @@ public protocol Tintable: class {
     
     @discardableResult
     func tint(_ color: State<UColor>) -> Self
-    
-    @discardableResult
-    func tint<V>(_ expressable: ExpressableState<V, UColor>) -> Self
 }
 
 protocol _Tintable: Tintable {
@@ -38,11 +35,6 @@ extension Tintable {
     public func tint(_ state: State<UColor>) -> Self {
         state.listen { [weak self] in self?.tint($0) }
         return tint(state.wrappedValue)
-    }
-    
-    @discardableResult
-    public func tint<V>(_ expressable: ExpressableState<V, UColor>) -> Self {
-        tint(expressable.unwrap())
     }
 }
 

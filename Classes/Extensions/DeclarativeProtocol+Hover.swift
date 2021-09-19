@@ -36,11 +36,6 @@ extension DeclarativeProtocol {
     }
 
     @discardableResult
-    public func onHoverGesture<V>(_ expressable: ExpressableState<V, UIGestureRecognizer.State>) -> Self {
-        onHoverGesture(expressable.unwrap())
-    }
-    
-    @discardableResult
     public func hovered(_ action: @escaping (Bool) -> Void) -> Self {
         onHoverGesture { v, s, r in
             let hovered = [.began, .changed].contains(s)
@@ -55,11 +50,6 @@ extension DeclarativeProtocol {
         hovered {
             state.wrappedValue = $0
         }
-    }
-
-    @discardableResult
-    public func hovered<V>(_ expressable: ExpressableState<V, Bool>) -> Self {
-        hovered(expressable.unwrap())
     }
     #endif
 }

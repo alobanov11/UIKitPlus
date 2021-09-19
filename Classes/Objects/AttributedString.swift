@@ -131,13 +131,7 @@ open class AttributedString: AnyString, BodyBuilderItemable {
         }
         return self
     }
-    
-    /// UColor, default nil: no background
-    @discardableResult
-    public func background<V>(_ expressable: ExpressableState<V, UColor>, at range: ClosedRange<Int>? = nil) -> Self {
-        background(expressable.unwrap(), at: range)
-    }
-    
+
     /// UColor, default nil: no background
     @discardableResult
     public func background(_ value: UColor, at range: ClosedRange<Int>? = nil) -> AttributedString {
@@ -158,12 +152,6 @@ open class AttributedString: AnyString, BodyBuilderItemable {
             self?.foreground(new, at: range)
         }
         return self
-    }
-    
-    /// UColor, default blackColor
-    @discardableResult
-    public func foreground<V>(_ expressable: ExpressableState<V, UColor>, at range: ClosedRange<Int>? = nil) -> Self {
-        foreground(expressable.unwrap(), at: range)
     }
     
     /// UColor, default blackColor
@@ -366,13 +354,7 @@ extension AttrStr: _FontableAtRange {
         _paragraphStyle.lineSpacing(state)
         return lineSpacing(state.wrappedValue)
     }
-    
-    @discardableResult
-    public func lineSpacing<V>(_ expressable: ExpressableState<V, CGFloat>) -> Self {
-        _paragraphStyle.lineSpacing(expressable)
-        return self
-    }
-    
+
     // MARK: Paragraph Spacing
     
     @discardableResult
@@ -386,13 +368,7 @@ extension AttrStr: _FontableAtRange {
         _paragraphStyle.paragraphSpacing(state)
         return paragraphSpacing(state.wrappedValue)
     }
-    
-    @discardableResult
-    public func paragraphSpacing<V>(_ expressable: ExpressableState<V, CGFloat>) -> Self {
-        _paragraphStyle.paragraphSpacing(expressable)
-        return self
-    }
-    
+
     // MARK: First Line Head Indent
     
     @discardableResult
@@ -406,13 +382,7 @@ extension AttrStr: _FontableAtRange {
         _paragraphStyle.firstLineHeadIndent(state)
         return firstLineHeadIndent(state.wrappedValue)
     }
-    
-    @discardableResult
-    public func firstLineHeadIndent<V>(_ expressable: ExpressableState<V, CGFloat>) -> Self {
-        _paragraphStyle.firstLineHeadIndent(expressable)
-        return self
-    }
-    
+
     // MARK: Head Indent
     
     @discardableResult
@@ -426,13 +396,7 @@ extension AttrStr: _FontableAtRange {
         _paragraphStyle.headIndent(state)
         return headIndent(state.wrappedValue)
     }
-    
-    @discardableResult
-    public func headIndent<V>(_ expressable: ExpressableState<V, CGFloat>) -> Self {
-        _paragraphStyle.headIndent(expressable)
-        return self
-    }
-    
+
     // MARK: Tail Indent
     
     @discardableResult
@@ -446,13 +410,7 @@ extension AttrStr: _FontableAtRange {
         _paragraphStyle.tailIndent(state)
         return tailIndent(state.wrappedValue)
     }
-    
-    @discardableResult
-    public func tailIndent<V>(_ expressable: ExpressableState<V, CGFloat>) -> Self {
-        _paragraphStyle.tailIndent(expressable)
-        return self
-    }
-    
+
     // MARK: Minimum Line Height
     
     @discardableResult
@@ -466,13 +424,7 @@ extension AttrStr: _FontableAtRange {
         _paragraphStyle.minimumLineHeight(state)
         return minimumLineHeight(state.wrappedValue)
     }
-    
-    @discardableResult
-    public func minimumLineHeight<V>(_ expressable: ExpressableState<V, CGFloat>) -> Self {
-        _paragraphStyle.minimumLineHeight(expressable)
-        return self
-    }
-    
+
     // MARK: Maximum Line Height
     
     @discardableResult
@@ -486,13 +438,7 @@ extension AttrStr: _FontableAtRange {
         _paragraphStyle.maximumLineHeight(state)
         return maximumLineHeight(state.wrappedValue)
     }
-    
-    @discardableResult
-    public func maximumLineHeight<V>(_ expressable: ExpressableState<V, CGFloat>) -> Self {
-        _paragraphStyle.maximumLineHeight(expressable)
-        return self
-    }
-    
+
     // MARK: Line Height Multiple
     
     @discardableResult
@@ -506,13 +452,7 @@ extension AttrStr: _FontableAtRange {
         _paragraphStyle.lineHeightMultiple(state)
         return lineHeightMultiple(state.wrappedValue)
     }
-    
-    @discardableResult
-    public func lineHeightMultiple<V>(_ expressable: ExpressableState<V, CGFloat>) -> Self {
-        _paragraphStyle.lineHeightMultiple(expressable)
-        return self
-    }
-    
+
     // MARK: Default Tab Interval
     
     @discardableResult
@@ -526,13 +466,7 @@ extension AttrStr: _FontableAtRange {
         _paragraphStyle.defaultTabInterval(state)
         return defaultTabInterval(state.wrappedValue)
     }
-    
-    @discardableResult
-    public func defaultTabInterval<V>(_ expressable: ExpressableState<V, CGFloat>) -> Self {
-        _paragraphStyle.defaultTabInterval(expressable)
-        return self
-    }
-    
+
     // MARK: Paragraph Spacing Before
     
     @discardableResult
@@ -546,13 +480,7 @@ extension AttrStr: _FontableAtRange {
         _paragraphStyle.paragraphSpacingBefore(state)
         return paragraphSpacingBefore(state.wrappedValue)
     }
-    
-    @discardableResult
-    public func paragraphSpacingBefore<V>(_ expressable: ExpressableState<V, CGFloat>) -> Self {
-        _paragraphStyle.paragraphSpacingBefore(expressable)
-        return self
-    }
-    
+
     // MARK: Hyphenation Factor
     
     @discardableResult
@@ -566,13 +494,7 @@ extension AttrStr: _FontableAtRange {
         _paragraphStyle.hyphenationFactor(state)
         return hyphenationFactor(state.wrappedValue)
     }
-    
-    @discardableResult
-    public func hyphenationFactor<V>(_ expressable: ExpressableState<V, Float>) -> Self {
-        _paragraphStyle.hyphenationFactor(expressable)
-        return self
-    }
-    
+
     #if os(macOS)
     // MARK: Tightening Factor For Truncation
     
@@ -587,13 +509,7 @@ extension AttrStr: _FontableAtRange {
         _paragraphStyle.tighteningFactorForTruncation(state)
         return tighteningFactorForTruncation(state.wrappedValue)
     }
-    
-    @discardableResult
-    public func tighteningFactorForTruncation<V>(_ expressable: ExpressableState<V, Float>) -> Self {
-        _paragraphStyle.tighteningFactorForTruncation(expressable)
-        return self
-    }
-    
+
     // MARK: Header Level
     
     @discardableResult
@@ -607,13 +523,7 @@ extension AttrStr: _FontableAtRange {
         _paragraphStyle.headerLevel(state)
         return headerLevel(state.wrappedValue)
     }
-    
-    @discardableResult
-    public func headerLevel<V>(_ expressable: ExpressableState<V, Int>) -> Self {
-        _paragraphStyle.headerLevel(expressable)
-        return self
-    }
-    
+
     // MARK: Allows Default Tightening For Truncation
     
     @discardableResult
@@ -627,12 +537,7 @@ extension AttrStr: _FontableAtRange {
         _paragraphStyle.allowsDefaultTighteningForTruncation(state)
         return allowsDefaultTighteningForTruncation(state.wrappedValue)
     }
-    
-    @discardableResult
-    public func allowsDefaultTighteningForTruncation<V>(_ expressable: ExpressableState<V, Bool>) -> Self {
-        _paragraphStyle.allowsDefaultTighteningForTruncation(expressable)
-        return self
-    }
+
     #endif
     
     // MARK: Alignment
@@ -648,12 +553,7 @@ extension AttrStr: _FontableAtRange {
         _paragraphStyle.alignment(state)
         return alignment(state.wrappedValue)
     }
-    
-    @discardableResult
-    public func alignment<V>(_ expressable: ExpressableState<V, NSTextAlignment>) -> Self {
-        _paragraphStyle.alignment(expressable)
-        return self
-    }
+
     
     // MARK: Line Break Mode
     
@@ -668,12 +568,7 @@ extension AttrStr: _FontableAtRange {
         _paragraphStyle.lineBreakMode(state)
         return lineBreakMode(state.wrappedValue)
     }
-    
-    @discardableResult
-    public func lineBreakMode<V>(_ expressable: ExpressableState<V, NSLineBreakMode>) -> Self {
-        _paragraphStyle.lineBreakMode(expressable)
-        return self
-    }
+
     
     // MARK: Base Writing Direction
     
@@ -689,12 +584,6 @@ extension AttrStr: _FontableAtRange {
         return baseWritingDirection(state.wrappedValue)
     }
     
-    @discardableResult
-    public func baseWritingDirection<V>(_ expressable: ExpressableState<V, NSWritingDirection>) -> Self {
-        _paragraphStyle.baseWritingDirection(expressable)
-        return self
-    }
-    
     // MARK: Tab Stops
     
     @discardableResult
@@ -707,12 +596,6 @@ extension AttrStr: _FontableAtRange {
     public func tabStops(_ state: State<[NSTextTab]>) -> Self {
         _paragraphStyle.tabStops(state)
         return tabStops(state.wrappedValue)
-    }
-    
-    @discardableResult
-    public func tabStops<V>(_ expressable: ExpressableState<V, [NSTextTab]>) -> Self {
-        _paragraphStyle.tabStops(expressable)
-        return self
     }
     
     #if os(macOS)
@@ -730,12 +613,6 @@ extension AttrStr: _FontableAtRange {
         return textBlocks(state.wrappedValue)
     }
     
-    @discardableResult
-    public func textBlocks<V>(_ expressable: ExpressableState<V, [NSTextBlock]>) -> Self {
-        _paragraphStyle.textBlocks(expressable)
-        return self
-    }
-    
     // MARK: Text Lists
     
     @discardableResult
@@ -750,10 +627,5 @@ extension AttrStr: _FontableAtRange {
         return textLists(state.wrappedValue)
     }
     
-    @discardableResult
-    public func textLists<V>(_ expressable: ExpressableState<V, [NSTextList]>) -> Self {
-        _paragraphStyle.textLists(expressable)
-        return self
-    }
     #endif
 }

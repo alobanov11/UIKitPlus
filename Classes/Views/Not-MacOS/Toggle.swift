@@ -100,21 +100,9 @@ open class UToggle: UISwitch, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func onTint<V>(_ expressable: ExpressableState<V, UIColor>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.onTint(expressable.value()) }
-        return onTint(expressable.value())
-    }
-    
-    @discardableResult
     public func onTint(_ binding: UIKitPlus.State<Int>) -> Self {
         binding.listen { [weak self] in self?.onTint($0) }
         return onTint(binding.wrappedValue)
-    }
-    
-    @discardableResult
-    public func onTint<V>(_ expressable: ExpressableState<V, Int>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.onTint(expressable.value()) }
-        return onTint(expressable.value())
     }
     
     @discardableResult
@@ -136,21 +124,9 @@ open class UToggle: UISwitch, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func thumbTint<V>(_ expressable: ExpressableState<V, UIColor>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.thumbTint(expressable.value()) }
-        return thumbTint(expressable.value())
-    }
-    
-    @discardableResult
     public func thumbTint(_ binding: UIKitPlus.State<Int>) -> Self {
         binding.listen { [weak self] in self?.thumbTint($0) }
         return thumbTint(binding.wrappedValue)
-    }
-    
-    @discardableResult
-    public func thumbTint<V>(_ expressable: ExpressableState<V, Int>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.thumbTint(expressable.value()) }
-        return thumbTint(expressable.value())
     }
     
     @discardableResult
@@ -166,12 +142,6 @@ open class UToggle: UISwitch, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func onImage<V>(_ expressable: ExpressableState<V, UIImage?>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.onImage(expressable.value()) }
-        return onImage(expressable.value())
-    }
-    
-    @discardableResult
     public func offImage(_ image: UIImage?) -> Self {
         offImage = image
         return self
@@ -181,12 +151,6 @@ open class UToggle: UISwitch, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     public func offImage(_ binding: UIKitPlus.State<UIImage?>) -> Self {
         binding.listen { [weak self] in self?.offImage($0) }
         return offImage(binding.wrappedValue)
-    }
-    
-    @discardableResult
-    public func offImage<V>(_ expressable: ExpressableState<V, UIImage?>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.offImage(expressable.value()) }
-        return offImage(expressable.value())
     }
 }
 

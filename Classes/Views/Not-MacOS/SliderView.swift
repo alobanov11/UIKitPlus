@@ -73,13 +73,6 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func value<V>(_ expressable: ExpressableState<V, Float>) -> Self {
-        bindValue = expressable.unwrap()
-        expressable.state.listen { [weak self] _,_ in self?.value(expressable.value()) }
-        return value(expressable.value())
-    }
-    
-    @discardableResult
     public func minimumValue(_ value: Float) -> Self {
         minimumValue = value
         return self
@@ -89,12 +82,6 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     public func minimumValue(_ binding: UIKitPlus.State<Float>) -> Self {
         binding.listen { [weak self] in self?.minimumValue($0) }
         return minimumValue(binding.wrappedValue)
-    }
-    
-    @discardableResult
-    public func minimumValue<V>(_ expressable: ExpressableState<V, Float>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.minimumValue(expressable.value()) }
-        return minimumValue(expressable.value())
     }
     
     @discardableResult
@@ -110,12 +97,6 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func maximumValue<V>(_ expressable: ExpressableState<V, Float>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.maximumValue(expressable.value()) }
-        return maximumValue(expressable.value())
-    }
-    
-    @discardableResult
     public func minimumValueImage(_ value: UIImage?) -> Self {
         minimumValueImage = value
         return self
@@ -125,12 +106,6 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     public func minimumValueImage(_ binding: UIKitPlus.State<UIImage?>) -> Self {
         binding.listen { [weak self] in self?.minimumValueImage($0) }
         return minimumValueImage(binding.wrappedValue)
-    }
-    
-    @discardableResult
-    public func minimumValueImage<V>(_ expressable: ExpressableState<V, UIImage?>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.minimumValueImage(expressable.value()) }
-        return minimumValueImage(expressable.value())
     }
     
     @discardableResult
@@ -146,12 +121,6 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func maximumValueImage<V>(_ expressable: ExpressableState<V, UIImage?>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.maximumValueImage(expressable.value()) }
-        return maximumValueImage(expressable.value())
-    }
-    
-    @discardableResult
     public func isContinuous(_ value: Bool = true) -> Self {
         isContinuous = value
         return self
@@ -161,12 +130,6 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     public func isContinuous(_ binding: UIKitPlus.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.isContinuous($0) }
         return isContinuous(binding.wrappedValue)
-    }
-    
-    @discardableResult
-    public func isContinuous<V>(_ expressable: ExpressableState<V, Bool>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.isContinuous(expressable.value()) }
-        return isContinuous(expressable.value())
     }
     
     @discardableResult
@@ -188,21 +151,9 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func minimumTrackTintColor<V>(_ expressable: ExpressableState<V, UIColor>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.minimumTrackTintColor(expressable.value()) }
-        return minimumTrackTintColor(expressable.value())
-    }
-    
-    @discardableResult
     public func minimumTrackTintColor(_ binding: UIKitPlus.State<Int>) -> Self {
         binding.listen { [weak self] in self?.minimumTrackTintColor($0) }
         return minimumTrackTintColor(binding.wrappedValue)
-    }
-    
-    @discardableResult
-    public func minimumTrackTintColor<V>(_ expressable: ExpressableState<V, Int>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.minimumTrackTintColor(expressable.value()) }
-        return minimumTrackTintColor(expressable.value())
     }
     
     @discardableResult
@@ -224,21 +175,9 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func maximumTrackTintColor<V>(_ expressable: ExpressableState<V, UIColor>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.maximumTrackTintColor(expressable.value()) }
-        return maximumTrackTintColor(expressable.value())
-    }
-    
-    @discardableResult
     public func maximumTrackTintColor(_ binding: UIKitPlus.State<Int>) -> Self {
         binding.listen { [weak self] in self?.maximumTrackTintColor($0) }
         return maximumTrackTintColor(binding.wrappedValue)
-    }
-    
-    @discardableResult
-    public func maximumTrackTintColor<V>(_ expressable: ExpressableState<V, Int>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.maximumTrackTintColor(expressable.value()) }
-        return maximumTrackTintColor(expressable.value())
     }
     
     @discardableResult
@@ -260,21 +199,9 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func thumbTintColor<V>(_ expressable: ExpressableState<V, UIColor>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.thumbTintColor(expressable.value()) }
-        return thumbTintColor(expressable.value())
-    }
-    
-    @discardableResult
     public func thumbTintColor(_ binding: UIKitPlus.State<Int>) -> Self {
         binding.listen { [weak self] in self?.thumbTintColor($0) }
         return thumbTintColor(binding.wrappedValue)
-    }
-    
-    @discardableResult
-    public func thumbTintColor<V>(_ expressable: ExpressableState<V, Int>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.thumbTintColor(expressable.value()) }
-        return thumbTintColor(expressable.value())
     }
     
     @discardableResult
@@ -296,21 +223,9 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     }
     
     @discardableResult
-    public func tintColor<V>(_ expressable: ExpressableState<V, UIColor>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.tintColor(expressable.value()) }
-        return tintColor(expressable.value())
-    }
-    
-    @discardableResult
     public func tintColor(_ binding: UIKitPlus.State<Int>) -> Self {
         binding.listen { [weak self] in self?.tintColor($0) }
         return tintColor(binding.wrappedValue)
-    }
-    
-    @discardableResult
-    public func tintColor<V>(_ expressable: ExpressableState<V, Int>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.tintColor(expressable.value()) }
-        return tintColor(expressable.value())
     }
     
     @discardableResult
@@ -323,12 +238,6 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     public func thumbImage(_ binding: UIKitPlus.State<UIImage?>) -> Self {
         binding.listen { [weak self] in self?.thumbImage($0) }
         return thumbImage(binding.wrappedValue)
-    }
-    
-    @discardableResult
-    public func thumbImage<V>(_ expressable: ExpressableState<V, UIImage?>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.thumbImage(expressable.value()) }
-        return thumbImage(expressable.value())
     }
     
     var step: Float?

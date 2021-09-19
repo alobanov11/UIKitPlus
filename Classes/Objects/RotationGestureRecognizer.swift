@@ -36,11 +36,6 @@ final public class RotationGestureRecognizer: NSRotationGestureRecognizer, _Gest
     }
 
     @discardableResult
-    public func rotation<V>(_ expressable: ExpressableState<V, CGFloat>) -> Self {
-        rotation(expressable.unwrap())
-    }
-    
-    @discardableResult
     public func rotationInDegrees(_ v: CGFloat) -> Self {
         rotationInDegrees = v
         return self
@@ -52,11 +47,6 @@ final public class RotationGestureRecognizer: NSRotationGestureRecognizer, _Gest
         return self
     }
 
-    @discardableResult
-    public func rotationInDegrees<V>(_ expressable: ExpressableState<V, CGFloat>) -> Self {
-        rotationInDegrees(expressable.unwrap())
-    }
-    
     var _tag: Int = 0
     public override var tag: Int {
         get { _tag }
@@ -91,11 +81,6 @@ final public class RotationGestureRecognizer: UIRotationGestureRecognizer, _Gest
         return self
     }
 
-    @discardableResult
-    public func rotation<V>(_ expressable: ExpressableState<V, CGFloat>) -> Self {
-        rotation(expressable.unwrap())
-    }
-    
     var _tag: Int = 0
     public override var tag: Int {
         get { _tag }

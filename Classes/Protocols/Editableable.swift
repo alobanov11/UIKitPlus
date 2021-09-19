@@ -13,9 +13,6 @@ public protocol Editableable: AnyObject {
     
     @discardableResult
     func editable(_ binding: UIKitPlus.State<Bool>) -> Self
-    
-    @discardableResult
-    func editable<V>(_ expressable: ExpressableState<V, Bool>) -> Self
 }
 
 protocol _Editableable: Editableable {
@@ -32,11 +29,6 @@ extension Editableable {
     public func editable(_ binding: UIKitPlus.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.editable($0) }
         return editable(binding.wrappedValue)
-    }
-    
-    @discardableResult
-    public func editable<V>(_ expressable: ExpressableState<V, Bool>) -> Self {
-        editable(expressable.unwrap())
     }
 }
 

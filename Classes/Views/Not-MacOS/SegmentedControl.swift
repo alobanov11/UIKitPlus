@@ -91,13 +91,6 @@ open class USegmentedControl: UISegmentedControl, AnyDeclarativeProtocol, Declar
         return select(binding.wrappedValue)
     }
     
-    @discardableResult
-    public func select<V>(_ expressable: ExpressableState<V, Int>) -> Self {
-        selectBinding = expressable.unwrap()
-        expressable.state.listen { [weak self] _,_ in self?.select(expressable.value()) }
-        return select(expressable.value())
-    }
-    
     public typealias ChangedClosure = (Int) -> Void
     
     private var _valueChanged: ChangedClosure?

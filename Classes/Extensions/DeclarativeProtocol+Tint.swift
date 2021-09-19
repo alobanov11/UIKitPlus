@@ -28,15 +28,5 @@ extension DeclarativeProtocol {
         }
         return self
     }
-    
-    @discardableResult
-    public func tint<V>(_ expressable: ExpressableState<V, UColor>) -> Self {
-        declarativeView.tintColor = expressable.value()
-        properties.tint = expressable.value()
-        expressable.state.listen { [weak self] old, new in
-            self?.tint(expressable.value())
-        }
-        return self
-    }
 }
 #endif

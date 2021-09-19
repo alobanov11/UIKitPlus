@@ -13,9 +13,6 @@ public protocol Enableable: AnyObject {
     
     @discardableResult
     func enabled(_ binding: UIKitPlus.State<Bool>) -> Self
-    
-    @discardableResult
-    func enabled<V>(_ expressable: ExpressableState<V, Bool>) -> Self
 }
 
 protocol _Enableable: Enableable {
@@ -32,11 +29,6 @@ extension Enableable {
     public func enabled(_ binding: UIKitPlus.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.enabled($0) }
         return enabled(binding.wrappedValue)
-    }
-    
-    @discardableResult
-    public func enabled<V>(_ expressable: ExpressableState<V, Bool>) -> Self {
-        enabled(expressable.unwrap())
     }
 }
 

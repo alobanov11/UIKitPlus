@@ -25,11 +25,6 @@ final public class PinchGestureRecognizer: UIPinchGestureRecognizer, _GestureTra
         state.listen { [weak self] in self?.scale = $0 }
         return self
     }
-
-    @discardableResult
-    public func scale<V>(_ expressable: ExpressableState<V, CGFloat>) -> Self {
-        scale(expressable.unwrap())
-    }
     
     var _tag: Int = 0
     public override var tag: Int {

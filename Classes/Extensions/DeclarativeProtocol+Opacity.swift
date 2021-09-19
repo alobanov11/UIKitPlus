@@ -35,23 +35,4 @@ extension DeclarativeProtocol {
         }
         return self
     }
-    
-    @discardableResult
-    public func opacity<V>(_ expressable: ExpressableState<V, Float>) -> Self {
-        #if os(macOS)
-        declarativeView.layer?.opacity = expressable.value()
-        #else
-        declarativeView.layer.opacity = expressable.value()
-        #endif
-        properties.opacity = expressable.value()
-        expressable.state.listen { [weak self] old, new in
-            #if os(macOS)
-            self?.declarativeView.layer?.opacity = expressable.value()
-            #else
-            self?.declarativeView.layer.opacity = expressable.value()
-            #endif
-            self?.properties.opacity = expressable.value()
-        }
-        return self
-    }
 }

@@ -69,21 +69,9 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     }
     
     @discardableResult
-    public func textColor<V>(_ expressable: ExpressableState<V, UIColor>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.textColor(expressable.value()) }
-        return textColor(expressable.value())
-    }
-    
-    @discardableResult
     public func textColor(_ binding: UIKitPlus.State<Int>) -> Self {
         binding.listen { [weak self] in self?.textColor($0) }
         return textColor(binding.wrappedValue)
-    }
-    
-    @discardableResult
-    public func textColor<V>(_ expressable: ExpressableState<V, Int>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.textColor(expressable.value()) }
-        return textColor(expressable.value())
     }
     
     // MARK: Mode
@@ -100,12 +88,6 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
         return mode(binding.wrappedValue)
     }
     
-    @discardableResult
-    public func mode<V>(_ expressable: ExpressableState<V, UIDatePicker.Mode>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.mode(expressable.value()) }
-        return mode(expressable.value())
-    }
-    
     // MARK: Locale
     
     @discardableResult
@@ -118,12 +100,6 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     public func locale(_ binding: UIKitPlus.State<Locale>) -> Self {
         binding.listen { [weak self] in self?.locale($0) }
         return locale(binding.wrappedValue)
-    }
-    
-    @discardableResult
-    public func locale<V>(_ expressable: ExpressableState<V, Locale>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.locale(expressable.value()) }
-        return locale(expressable.value())
     }
     
     // MARK: Calendar
@@ -140,12 +116,6 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
         return calendar(binding.wrappedValue)
     }
     
-    @discardableResult
-    public func calendar<V>(_ expressable: ExpressableState<V, Calendar>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.calendar(expressable.value()) }
-        return calendar(expressable.value())
-    }
-    
     // MARK: TimeZone
     
     @discardableResult
@@ -158,12 +128,6 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     public func timeZone(_ binding: UIKitPlus.State<TimeZone>) -> Self {
         binding.listen { [weak self] in self?.timeZone($0) }
         return timeZone(binding.wrappedValue)
-    }
-    
-    @discardableResult
-    public func timeZone<V>(_ expressable: ExpressableState<V, TimeZone>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.timeZone(expressable.value()) }
-        return timeZone(expressable.value())
     }
     
     // MARK: Date
@@ -183,11 +147,6 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
         return date(binding.wrappedValue)
     }
     
-    @discardableResult
-    public func date<V>(_ expressable: ExpressableState<V, Date>, animated: Bool = false) -> Self {
-        return date(expressable.unwrap(), animated: animated)
-    }
-    
     // MARK: Minimum Date
     
     @discardableResult
@@ -200,12 +159,6 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     public func minimumDate(_ binding: UIKitPlus.State<Date>) -> Self {
         binding.listen { [weak self] in self?.minimumDate($0) }
         return minimumDate(binding.wrappedValue)
-    }
-    
-    @discardableResult
-    public func minimumDate<V>(_ expressable: ExpressableState<V, Date>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.minimumDate(expressable.value()) }
-        return minimumDate(expressable.value())
     }
     
     // MARK: Maximum Date
@@ -222,12 +175,6 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
         return maximumDate(binding.wrappedValue)
     }
     
-    @discardableResult
-    public func maximumDate<V>(_ expressable: ExpressableState<V, Date>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.maximumDate(expressable.value()) }
-        return maximumDate(expressable.value())
-    }
-    
     // MARK: Countdown Duration
     
     @discardableResult
@@ -242,12 +189,6 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
         return countDownDuration(binding.wrappedValue)
     }
     
-    @discardableResult
-    public func countDownDuration<V>(_ expressable: ExpressableState<V, TimeInterval>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.countDownDuration(expressable.value()) }
-        return countDownDuration(expressable.value())
-    }
-    
     // MARK: Minute Interval
     
     @discardableResult
@@ -260,12 +201,6 @@ open class UDatePicker: UIDatePicker, AnyDeclarativeProtocol, DeclarativeProtoco
     public func minuteInterval(_ binding: UIKitPlus.State<Int>) -> Self {
         binding.listen { [weak self] in self?.minuteInterval($0) }
         return minuteInterval(binding.wrappedValue)
-    }
-    
-    @discardableResult
-    public func minuteInterval<V>(_ expressable: ExpressableState<V, Int>) -> Self {
-        expressable.state.listen { [weak self] _ in self?.minuteInterval(expressable.value()) }
-        return minuteInterval(expressable.value())
     }
     
     // MARK: Handler

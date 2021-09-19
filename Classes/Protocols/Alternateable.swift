@@ -13,9 +13,6 @@ public protocol Alternateable: AnyObject {
     
     @discardableResult
     func alternate(_ binding: UIKitPlus.State<Bool>) -> Self
-    
-    @discardableResult
-    func alternate<V>(_ expressable: ExpressableState<V, Bool>) -> Self
 }
 
 protocol _Alternateable: Alternateable {
@@ -32,11 +29,6 @@ extension Alternateable {
     public func alternate(_ binding: UIKitPlus.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.alternate($0) }
         return alternate(binding.wrappedValue)
-    }
-    
-    @discardableResult
-    public func alternate<V>(_ expressable: ExpressableState<V, Bool>) -> Self {
-        alternate(expressable.unwrap())
     }
 }
 

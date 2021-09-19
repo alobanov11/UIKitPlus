@@ -1,7 +1,9 @@
 extension Stateable {
 	public func map<Result>(_ expression: @escaping (Value) -> Result) -> State<Result> {
 		let state = State(wrappedValue: expression(self.wrappedValue))
-		self.listen { state.wrappedValue = expression($0) }
+		self.listen { [unowned state] in
+			state.wrappedValue = expression($0)
+		}
 		return state
 	}
 }

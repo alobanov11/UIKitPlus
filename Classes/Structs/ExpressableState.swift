@@ -12,7 +12,7 @@ public class ExpressableState<S, Result> where S: Stateable {
     
     public func unwrap() -> State<Result> {
         let state: State<Result> = .init(wrappedValue: self.value())
-        self.state.listen { _ in
+        self.state.listen { [unowned self] _ in
             state.wrappedValue = self.value()
         }
         return state

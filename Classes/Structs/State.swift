@@ -117,4 +117,12 @@ open class State<Value>: Stateable {
         }
         return resultState
     }
+
+	public func map<Result>(_ expression: @escaping (Value) -> Result) -> State<Result> {
+		let state: State<Result> = .init(wrappedValue: expression(self.wrappedValue))
+		self.listen {
+			state.wrappedValue = expression($0)
+		}
+		return state
+	}
 }

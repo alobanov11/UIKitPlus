@@ -63,6 +63,12 @@ open class State<Value>: Stateable {
     public func endTrigger(_ trigger: @escaping Trigger) {
         endTriggers.append(trigger)
     }
+
+	public func listen(_ state: State<Value>) {
+		self.listen { [weak state] in
+			state?.wrappedValue = $0
+		}
+	}
     
     public func listen(_ listener: @escaping Listener) {
         listeners.append(listener)

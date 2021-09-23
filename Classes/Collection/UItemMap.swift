@@ -45,7 +45,7 @@ public final class UItemMap<Item: Hashable> {
 
     public init<T>(
         _ first: State<T>,
-        @CollectionBuilder<USectionItemable> block: @escaping (T) -> [USectionBodyItemable]
+        @CollectionBuilder<USectionBodyItemable> block: @escaping (T) -> [USectionBodyItemable]
     ) where Item == Int {
         let states: [AnyState] = [first]
         self.items = states.map { [0] }
@@ -57,7 +57,7 @@ public final class UItemMap<Item: Hashable> {
     public init<T, V>(
         _ first: State<T>,
         _ second: State<V>,
-        @CollectionBuilder<USectionItemable> block: @escaping (T, V) -> [USectionBodyItemable]
+        @CollectionBuilder<USectionBodyItemable> block: @escaping (T, V) -> [USectionBodyItemable]
     ) where Item == Int {
         let states: [AnyState] = [first, second]
         self.items = states.map { [0] }
@@ -70,7 +70,7 @@ public final class UItemMap<Item: Hashable> {
         _ first: State<T>,
         _ second: State<V>,
         _ third: State<A>,
-        @CollectionBuilder<USectionItemable> block: @escaping (T, V, A) -> [USectionBodyItemable]
+        @CollectionBuilder<USectionBodyItemable> block: @escaping (T, V, A) -> [USectionBodyItemable]
     ) where Item == Int {
         let states: [AnyState] = [first, second, third]
         self.items = states.map { [0] }

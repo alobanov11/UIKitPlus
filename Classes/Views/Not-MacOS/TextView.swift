@@ -204,13 +204,13 @@ open class UTextView: UITextView, AnyDeclarativeProtocol, DeclarativeProtocolInt
     
     @discardableResult
     public func onDidEndEditing(_ handler: @escaping SimpleHandler) -> Self {
-        didBeginEditingHandler = handler
+		didEndEditingHandler = handler
         return self
     }
     
     @discardableResult
     public func onDidEndEditing(_ handler: @escaping SimpleHandlerText) -> Self {
-        didBeginEditingHandlerText = handler
+		didEndEditingHandlerText = handler
         return self
     }
     

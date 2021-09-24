@@ -13,6 +13,12 @@ final public class TapGestureRecognizer: UITapGestureRecognizer, _GestureTrackab
         #endif
         delegate = _delegator
     }
+
+	@discardableResult
+	public func cancelsTouchesInView(_ v: Bool) -> Self {
+		cancelsTouchesInView = v
+		return self
+	}
     
     @discardableResult
     public func numberOfTapsRequired(_ v: Int) -> Self {

@@ -56,7 +56,7 @@ public struct MultipleSectionBodyItem: USectionBodyItemable {
 public protocol USupplementable: USectionBodyItemable {
     var viewClass: Supplementable.Type { get }
     func generate(collectionView: UICollectionView, kind: String, for indexPath: IndexPath) -> UICollectionReusableView
-    func size(by original: CGSize) -> CGSize
+    func size(by original: CGSize, direction: UICollectionView.ScrollDirection) -> CGSize
 }
 
 extension USupplementable {
@@ -73,8 +73,8 @@ public extension USupplementable where Self: USupplementableBuilder {
         View.self
     }
 
-	func size(by original: CGSize) -> CGSize {
-		self.systemLayoutSize(by: original, direction: original.height > original.width ? .vertical : .horizontal)
+	func size(by original: CGSize, direction: UICollectionView.ScrollDirection) -> CGSize {
+		self.systemLayoutSize(by: original, direction: direction)
 	}
 
     func generate(collectionView: UICollectionView, kind: String, for indexPath: IndexPath) -> UICollectionReusableView {
@@ -155,7 +155,7 @@ public protocol UItemable: USectionBodyItemable {
     var cellClass: Cellable.Type { get }
 
 	func generate(collectionView: UICollectionView, for indexPath: IndexPath) -> UICollectionViewCell
-    func size(by original: CGSize) -> CGSize
+    func size(by original: CGSize, direction: UICollectionView.ScrollDirection) -> CGSize
 }
 
 extension UItemable {
@@ -172,8 +172,8 @@ public extension UItemable where Self: UItemableBuilder {
         Cell.self
     }
 
-	func size(by original: CGSize) -> CGSize {
-		self.systemLayoutSize(by: original, direction: original.height > original.width ? .vertical : .horizontal)
+	func size(by original: CGSize, direction: UICollectionView.ScrollDirection) -> CGSize {
+		self.systemLayoutSize(by: original, direction: direction)
 	}
     
     func generate(collectionView: UICollectionView, for indexPath: IndexPath) -> UICollectionViewCell {

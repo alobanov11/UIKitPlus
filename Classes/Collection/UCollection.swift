@@ -181,12 +181,12 @@ open class UCollection: UView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    open override func layoutSubviews() {
-        super.layoutSubviews()
-        guard self.isInitialized == false else { return }
+	open override func didMoveToWindow() {
+		super.didMoveToWindow()
+		guard self.isInitialized == false else { return }
 		self.isInitialized = true
-        DispatchQueue.main.async { self.reloadData() }
-    }
+		DispatchQueue.main.async { self.reloadData() }
+	}
     
     override public func buildView() {
         super.buildView()

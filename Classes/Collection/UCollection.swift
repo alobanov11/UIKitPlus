@@ -270,6 +270,8 @@ open class UCollection: UView {
     // MARK: - Helpers
 
     public func scrollToItem(_ indexPath: IndexPath, at position: UICollectionView.ScrollPosition, offset: CGPoint = .zero, animated: Bool = true) {
+		guard self.isInitialized else { return }
+
         guard offset != .zero else {
             self.collectionView.scrollToItem(at: indexPath, at: position, animated: animated)
             return

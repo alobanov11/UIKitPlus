@@ -4,7 +4,7 @@
 
 import UIKit
 
-public struct ShadowConfiguration {
+public struct UShadowConfiguration {
 	public var shadowColor: UIColor
 	public var offset: CGSize
 	public var opacity: Float
@@ -33,7 +33,7 @@ public struct ShadowConfiguration {
 }
 
 public final class UShadow<T: UIView>: UWrapperView<T> {
-	public private(set) var config: ShadowConfiguration = .init()
+	public private(set) var config: UShadowConfiguration = .init()
 
 	public override func layoutSubviews() {
 		super.layoutSubviews()
@@ -41,7 +41,7 @@ public final class UShadow<T: UIView>: UWrapperView<T> {
 	}
 
 	@discardableResult
-	public func configure(_ config: ShadowConfiguration) -> Self {
+	public func configure(_ config: UShadowConfiguration) -> Self {
 		self.config = config
 		return self
 	}

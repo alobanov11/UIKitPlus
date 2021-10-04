@@ -63,6 +63,12 @@ public final class UGradient<T: UIView>: UWrapperView<T> {
 	}
 
 	@discardableResult
+	public func config(_ value: State<UGradientConfiguration>) -> Self {
+		value.listen { [weak self] in self?.config($0) }
+		return self
+	}
+
+	@discardableResult
 	public func locations(_ value: [NSNumber]) -> Self {
 		self.config.locations = value
 		return self

@@ -12,7 +12,7 @@ extension DeclarativeProtocol {
     }
 
 	@discardableResult
-	func bind<T>(_ state: State<T>, _ objectKeyPath: ReferenceWritableKeyPath<Self, T>) -> Self {
+	public func bind<T>(_ state: State<T>, _ objectKeyPath: ReferenceWritableKeyPath<Self, T>) -> Self {
 		state.listen { [weak self] in
 			self?[keyPath: objectKeyPath] = $0
 		}
@@ -20,7 +20,7 @@ extension DeclarativeProtocol {
 	}
 
 	@discardableResult
-	func bind<T>(_ state: State<T>, _ closure: @escaping (Self, T) -> Void) -> Self {
+	public func bind<T>(_ state: State<T>, _ closure: @escaping (Self, T) -> Void) -> Self {
 		state.listen { [weak self] in
 			guard let self = self else { return }
 			closure(self, $0)

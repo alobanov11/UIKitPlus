@@ -126,6 +126,20 @@ open class UButton: UIButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
         super.didMoveToSuperview()
         movedToSuperview()
     }
+
+	open override var isEnabled: Bool {
+		didSet {
+			alpha = isEnabled ? 1.0 : disabledAlpha ?? 1.0
+		}
+	}
+
+	var disabledAlpha: CGFloat?
+
+	@discardableResult
+	public func disabledAlpha(_ value: CGFloat) -> Self {
+		disabledAlpha = value
+		return self
+	}
     
     open override var isHighlighted: Bool {
         didSet {

@@ -92,6 +92,18 @@ open class UScrollView: UIScrollView, AnyDeclarativeProtocol, DeclarativeProtoco
         isScrollEnabled = enabled
         return self
     }
+
+	@discardableResult
+	public func alwaysBounceVertical(_ value: Bool = true) -> Self {
+		alwaysBounceVertical = value
+		return self
+	}
+
+	@discardableResult
+	public func alwaysBounceHorizontal(_ value: Bool = true) -> Self {
+		alwaysBounceHorizontal = value
+		return self
+	}
     
     // MARK: Indicators
     

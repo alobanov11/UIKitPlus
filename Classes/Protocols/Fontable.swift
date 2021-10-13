@@ -52,17 +52,17 @@ extension _Fontable {
 
 public protocol FontableAtRange {
     @discardableResult
-    func font(v: UFont?, at range: ClosedRange<Int>) -> Self
+    func font(v: UFont?, at range: Range<String.Index>) -> Self
     
     @discardableResult
-    func font(_ identifier: FontIdentifier, _ size: CGFloat, at range: ClosedRange<Int>) -> Self
+    func font(_ identifier: FontIdentifier, _ size: CGFloat, at range: Range<String.Index>) -> Self
 }
 
 protocol _FontableAtRange: _Fontable, FontableAtRange {}
 
 extension FontableAtRange {
     @discardableResult
-    public func font(_ identifier: FontIdentifier, _ size: CGFloat, at range: ClosedRange<Int>) -> Self {
+    public func font(_ identifier: FontIdentifier, _ size: CGFloat, at range: Range<String.Index>) -> Self {
         font(v: UFont(name: identifier.fontName, size: size), at: range)
     }
 }

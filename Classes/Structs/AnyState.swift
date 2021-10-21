@@ -9,7 +9,7 @@ public class AnyStates {
     }
     
     @discardableResult
-    init (_ states: [AnyState], expression: @escaping () -> Void) {
+    public init(_ states: [AnyState], expression: @escaping () -> Void) {
         _expression = expression
         states.forEach { $0.listen(expression) }
     }

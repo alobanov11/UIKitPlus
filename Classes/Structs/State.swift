@@ -131,4 +131,8 @@ open class State<Value>: Stateable {
 		}
 		return state
 	}
+
+	public static func combine(_ states: AnyState..., completion: @escaping () -> Void) {
+		states.forEach { $0.listen(completion) }
+	}
 }

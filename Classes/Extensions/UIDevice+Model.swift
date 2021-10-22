@@ -68,13 +68,13 @@ extension UIDevice {
         }
     }
     
-    class var minHeight: Float {
+	public class var minHeight: Float {
         let w = Float(UIScreen.main.nativeBounds.width)
         let h = Float(UIScreen.main.nativeBounds.height)
         return fmin(w, h)
     }
     
-    class var maxHeight: Float {
+    public class var maxHeight: Float {
         let w = Float(UIScreen.main.nativeBounds.width)
         let h = Float(UIScreen.main.nativeBounds.height)
         return fmax(w, h)

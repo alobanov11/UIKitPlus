@@ -15,7 +15,7 @@ public protocol AnyScene: class {
     
     // Called when scene has been connected to session
     func onConnect(_ handler: @escaping () -> Void) -> Self
-    func onConnect(_ handler: @escaping (UIWindow?) -> Void) -> Self
+    func onConnect(_ handler: @escaping (UIWindow?, Set<NSUserActivity>) -> Void) -> Self
     
     // Called when scene has been disconnected from session
     func onDisconnect(_ handler: @escaping () -> Void) -> Self
@@ -44,7 +44,7 @@ public protocol AnyScene: class {
 }
 
 protocol _AnyScene: AnyScene {
-    var _onConnect: ((UIWindow?) -> Void)? { get set }
+    var _onConnect: ((UIWindow?, Set<NSUserActivity>) -> Void)? { get set }
     var _onDisconnect: ((UIWindow?) -> Void)? { get set }
     var _onDestroy: ((UIWindow?) -> Void)? { get set }
     var _onBecomeActive: ((UIWindow?) -> Void)? { get set }
@@ -56,13 +56,13 @@ protocol _AnyScene: AnyScene {
 @available(iOS 13.0, *)
 extension AnyScene {
     public func onConnect(_ handler: @escaping () -> Void) -> Self {
-        (self as? _AnyScene)?._onConnect = { _ in
+        (self as? _AnyScene)?._onConnect = { _, _ in
             handler()
         }
         return self
     }
     
-    public func onConnect(_ handler: @escaping (UIWindow?) -> Void) -> Self {
+    public func onConnect(_ handler: @escaping (UIWindow?, Set<NSUserActivity>) -> Void) -> Self {
         (self as? _AnyScene)?._onConnect = handler
         return self
     }
@@ -142,13 +142,13 @@ extension AnyScene {
 
 extension _AnyScene {
     public func onConnect(_ handler: @escaping () -> Void) -> Self {
-        _onConnect = { _ in
+        _onConnect = { _, _ in
             handler()
         }
         return self
     }
     
-    public func onConnect(_ handler: @escaping (UIWindow?) -> Void) -> Self {
+    public func onConnect(_ handler: @escaping (UIWindow?, Set<NSUserActivity>) -> Void) -> Self {
         _onConnect = handler
         return self
     }

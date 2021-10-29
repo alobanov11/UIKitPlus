@@ -36,7 +36,7 @@ extension BaseApp {
         public var stateRestorationActivity: NSUserActivity?
         public var userInfo: [String : Any]?
         
-        var _onConnect: ((UIWindow?) -> Void)?
+        var _onConnect: ((UIWindow?, Set<NSUserActivity>) -> Void)?
         var _onDisconnect: ((UIWindow?) -> Void)?
         var _onDestroy: ((UIWindow?) -> Void)?
         var _onBecomeActive: ((UIWindow?) -> Void)?

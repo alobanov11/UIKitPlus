@@ -22,7 +22,7 @@ class _SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 .first { $0.item.type == shortcutItem.type }?
                 .action? { _ in }
         }
-        BaseApp.shared.mainScene._onConnect?(window)
+		BaseApp.shared.mainScene._onConnect?(window, connectionOptions.userActivities)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

@@ -581,7 +581,7 @@ extension ViewController {
 
 // MARK: Titleable
 
-extension BaseViewController: _Titleable {
+extension ViewController: _Titleable {
     var _statedTitle: AnyStringBuilder.Handler? {
         get { nil }
         set {}
@@ -599,7 +599,7 @@ extension BaseViewController: _Titleable {
 }
 
 #if !os(macOS)
-extension BaseViewController: _BackgroundColorable {
+extension ViewController: _BackgroundColorable {
     var _backgroundColorState: State<UColor> {
         .init(wrappedValue: view.backgroundColor ?? .clear)
     }

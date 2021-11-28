@@ -12,6 +12,7 @@ public enum NavigatorTransition {
 	case popToRoot
 	case present(IPresentable)
 	case dismiss
+	case dismissOnRoot
 }
 
 public protocol INavigator: AnyObject {
@@ -50,6 +51,8 @@ public final class Navigator {
 	private var mainScene: BaseApp.MainScene {
 		BaseApp.shared.mainScene
 	}
+
+	public init() {}
 }
 
 extension Navigator: INavigator {
@@ -105,6 +108,8 @@ extension Navigator: INavigator {
 				animated: animated,
 				completion: completion
 			)
+		case .dismissOnRoot:
+			self.mainScene.viewController.dismiss(animated: animated, completion: completion)
 		}
 	}
 }

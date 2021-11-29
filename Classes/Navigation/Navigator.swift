@@ -29,7 +29,7 @@ public protocol INavigator: AnyObject {
 	)
 }
 
-extension INavigator {
+public extension INavigator {
 	func perform(
 		_ transition: NavigatorTransition,
 		animated: Bool = true,

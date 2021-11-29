@@ -16,6 +16,8 @@ public enum NavigatorTransition {
 }
 
 public protocol INavigator: AnyObject {
+	var topViewController: UIViewController { get }
+
 	func `switch`(
 		to scene: SceneScreenType,
 		animation: RootTransitionAnimation,
@@ -30,6 +32,14 @@ public protocol INavigator: AnyObject {
 }
 
 public extension INavigator {
+	func `switch`(
+		to scene: SceneScreenType,
+		animation: RootTransitionAnimation = .none,
+		completion: @escaping () -> Void = {}
+	) {
+		self.switch(to: scene, animation: animation, completion: completion)
+	}
+
 	func perform(
 		_ transition: NavigatorTransition,
 		animated: Bool = true,
@@ -40,7 +50,7 @@ public extension INavigator {
 }
 
 public final class Navigator {
-	private var topViewController: UIViewController {
+	public var topViewController: UIViewController {
 		self.mainScene.viewController.topViewController
 	}
 

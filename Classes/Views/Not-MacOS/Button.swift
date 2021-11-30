@@ -143,6 +143,7 @@ open class UButton: UIButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
     
     open override var isHighlighted: Bool {
         didSet {
+			alpha = isHighlighted ? highlightedAlpha ?? 0.8 : 1.0
             if originalBackground == nil {
                 originalBackground = backgroundColor
             }
@@ -153,6 +154,14 @@ open class UButton: UIButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
             }
         }
     }
+
+	var highlightedAlpha: CGFloat?
+
+	@discardableResult
+	public func highlightedAlpha(_ value: CGFloat) -> Self {
+		highlightedAlpha = value
+		return self
+	}
     
     // MARK: Background Highlighted
     

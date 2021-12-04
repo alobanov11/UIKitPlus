@@ -16,6 +16,11 @@ public enum UCollectionState<T>: Equatable {
     case stub(UCollectionStub)
 	case error(Error)
 
+	public var data: T? {
+		guard case let .data(data) = self else { return nil }
+		return data
+	}
+
     public var isStub: Bool {
         guard case .stub = self else { return false }
         return true

@@ -141,6 +141,13 @@ open class NavigationController<T: UIViewController>: UINavigationController, UI
         isSwipeBackEnabled = value
         return self
     }
+
+	@available(iOS 11.0, *)
+	@discardableResult
+	public func prefersLargeTitles(_ value: Bool = true) -> Self {
+		navigationBar.prefersLargeTitles = value
+		return self
+	}
     
     //    public func setupModal() {
     //        modalTransitionStyle = .coverVertical

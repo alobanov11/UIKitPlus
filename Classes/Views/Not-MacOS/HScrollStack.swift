@@ -98,5 +98,10 @@ open class UHScrollStack: UScrollView {
         stack.spacing = state.wrappedValue
         return self
     }
+
+	public func scrollToArrangedSubview(at index: Int, animated: Bool = true) {
+		guard self.arrangedSubviews.indices.contains(index) else { return }
+		self.scrollRectToVisible(self.arrangedSubviews[index].frame, animated: animated)
+	}
 }
 #endif

@@ -56,6 +56,21 @@ open class USlider: UISlider, AnyDeclarativeProtocol, DeclarativeProtocolInterna
         super.didMoveToSuperview()
         movedToSuperview()
     }
+
+	open override func trackRect(forBounds bounds: CGRect) -> CGRect {
+		guard let customHeight = self.customHeight else {
+			return super.trackRect(forBounds: bounds)
+		}
+		return CGRect(origin: bounds.origin, size: CGSize(width: bounds.width, height: customHeight))
+	}
+
+	private var customHeight: CGFloat?
+
+	@discardableResult
+	public func customHeight(_ value: CGFloat) -> Self {
+		self.customHeight = value
+		return self
+	}
     
     @discardableResult
     public func value(_ value: Float) -> Self {

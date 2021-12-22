@@ -202,8 +202,9 @@ extension BaseApp {
 		) {
 			switch transition {
 			case let .setTab(item):
-				guard let tabBarController = self.tabBarController else {
-					fatalError("Root controller must be UITabBarController")
+				guard let tabBarController = self.rootViewController as? UITabBarController else {
+					print("⚠️ Can't select \(item) root controller must be UITabBarController")
+					return
 				}
 				tabBarController.selectedIndex = item
 				completion()

@@ -11,7 +11,6 @@ public struct SceneScreenType: ExpressibleByStringLiteral, CustomStringConvertib
     
     public static var splash: Self { "splash" }
     public static var login: Self { "login" }
-    public static var logout: Self { "logout" }
     public static var main: Self { "main" }
     public static var onboarding: Self { "onboarding" }
     

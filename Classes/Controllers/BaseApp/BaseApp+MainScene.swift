@@ -73,9 +73,7 @@ extension BaseApp {
         
         @UState public internal(set) var currentScreen: SceneScreenType = .splash
         public internal(set) lazy var current: UIViewController = NotImplementedViewController("nothing")
-        
-        var _showOnboardingBeforeMainScreen = false
-        
+
         var screens: [SceneScreenType: () -> UIViewController] = [:] // NotImplementedViewController("splashScreen")
         
         /// By default shows `splashScreen`
@@ -118,11 +116,6 @@ extension BaseApp {
             return self
         }
         
-        public func logoutScreen(_ handler: @escaping () -> UIViewController) -> Self {
-            screens[.logout] = handler
-            return self
-        }
-        
         public func mainScreen(_ handler: @escaping () -> UIViewController) -> Self {
             screens[.main] = handler
             return self
@@ -138,65 +131,51 @@ extension BaseApp {
             return self
         }
         
-        public func showOnboardingBeforeMainScreen() -> Self {
-            _showOnboardingBeforeMainScreen = true
-            return self
-        }
-        
-        open func `switch`(to type: SceneScreenType, animation: RootTransitionAnimation, beforeTransition: RootBeforeTransition? = nil, completion: RootSimpleCompletion? = nil) {
+        open func `switch`(
+			to type: SceneScreenType,
+			animation: RootTransitionAnimation,
+			beforeTransition: RootBeforeTransition? = nil,
+			completion: RootSimpleCompletion? = nil
+		) {
             if currentScreen == type {
                 print("⚠️ Don't show \(type) twice")
                 return
             }
-            guard let vc = nextViewController(for: type) else { return }
-            if _showOnboardingBeforeMainScreen, screens[.onboarding] != nil {
-                `switch`(to: .onboarding, animation: animation, beforeTransition: beforeTransition, completion: completion)
-                return
-            }
+			let vc = nextViewController(for: type)
             currentScreen = type
             beforeTransition?(vc)
             switch animation {
             case .none:
-                replaceWithoutAnimation(screens[.login]?() ?? NotImplementedViewController(SceneScreenType.login.description))
-//                proceedDeeplink()
+                replaceWithoutAnimation(vc)
                 completion?()
             case .dismiss:
-                animateDismissTransition(to: vc) { [weak self] in
-                    if type == .logout {
-                        self?.currentScreen = .login
-                    }
-//                    self?.proceedDeeplink()
-                    completion?()
-                }
+				animateDismissTransition(to: vc, completion: completion)
             case .fade:
-                animateFadeTransition(to: vc) { [weak self] in
-                    if type == .logout {
-                        self?.currentScreen = .login
-                    }
-//                    self?.proceedDeeplink()
-                    completion?()
-                }
+                animateFadeTransition(to: vc, completion: completion)
             }
         }
         
-        public func `switch`(to: UIViewController, as: SceneScreenType, animation: RootTransitionAnimation, beforeTransition: RootBeforeTransition? = nil, completion: RootSimpleCompletion? = nil) {
+        public func `switch`(
+			to: UIViewController,
+			as: SceneScreenType,
+			animation: RootTransitionAnimation,
+			beforeTransition: RootBeforeTransition? = nil,
+			completion: RootSimpleCompletion? = nil
+		) {
             currentScreen = `as`
             switch animation {
             case .none:
                 beforeTransition?(to)
                 replaceWithoutAnimation(to)
-//                proceedDeeplink()
                 completion?()
             case .dismiss:
                 beforeTransition?(to)
                 animateDismissTransition(to: to) {
-//                    self.proceedDeeplink()
                     completion?()
                 }
             case .fade:
                 beforeTransition?(to)
                 animateFadeTransition(to: to) {
-//                    self.proceedDeeplink()
                     completion?()
                 }
             }
@@ -310,8 +289,8 @@ extension BaseApp {
             }
         }
         
-        func nextViewController(for type: SceneScreenType) -> UIViewController? {
-			return screens[type]?()
+        func nextViewController(for type: SceneScreenType) -> UIViewController {
+			return screens[type]?() ?? NotImplementedViewController(type.description)
         }
     }
 }

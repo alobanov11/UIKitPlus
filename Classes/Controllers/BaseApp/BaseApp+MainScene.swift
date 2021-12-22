@@ -34,8 +34,8 @@ extension BaseApp {
 			self.viewController.topViewController
 		}
 
-		public var tabBarController: UITabBarController? {
-			self.viewController.children.first as? UITabBarController
+		public var rootViewController: UIViewController? {
+			self.viewController.children.first
 		}
 
         public var appBuilderContent: AppBuilderItem { .mainScene(self) }

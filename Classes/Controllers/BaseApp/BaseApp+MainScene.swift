@@ -31,11 +31,7 @@ extension BaseApp {
     
     public class MainScene: _AnyScene, AppBuilderContent {
 		public var topViewController: UIViewController {
-			self.viewController.topViewController
-		}
-
-		public var rootViewController: UIViewController? {
-			self.viewController.children.first
+			self.current.topViewController
 		}
 
         public var appBuilderContent: AppBuilderItem { .mainScene(self) }
@@ -202,8 +198,8 @@ extension BaseApp {
 		) {
 			switch transition {
 			case let .setTab(item):
-				guard let tabBarController = self.rootViewController as? UITabBarController else {
-					print("⚠️ Can't select \(item) root controller must be UITabBarController")
+				guard let tabBarController = self.current as? UITabBarController else {
+					print("⚠️ Can't select \(item) current controller must be UITabBarController")
 					return
 				}
 				tabBarController.selectedIndex = item
@@ -314,16 +310,6 @@ private extension UIViewController {
 		   let lastViewController = navigationController.visibleViewController
 		{
 			return self.findTopViewController(lastViewController)
-		}
-
-		if let pageController = controller as? UIPageViewController,
-		   let lastViewController = pageController.viewControllers?.first
-		{
-			return self.findTopViewController(lastViewController)
-		}
-
-		if let children = controller.children.first, children.view.isHidden == false {
-			return self.findTopViewController(children)
 		}
 
 		return controller

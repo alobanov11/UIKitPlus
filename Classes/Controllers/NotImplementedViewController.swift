@@ -4,14 +4,14 @@ import AppKit
 import UIKit
 #endif
 
-class NotImplementedViewController: ViewController {
+public final class NotImplementedViewController: ViewController {
     #if !os(macOS)
-    override var statusBarStyle: StatusBarStyle { .light }
+	public override var statusBarStyle: StatusBarStyle { .light }
     #endif
     
     let name: String
     
-    init (_ name: String) {
+    public init (_ name: String) {
         self.name = name
         #if os(macOS)
         super.init(nibName: nil, bundle: nil)
@@ -24,7 +24,7 @@ class NotImplementedViewController: ViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func buildUI() {
+	public override func buildUI() {
         super.buildUI()
         #if os(macOS)
         

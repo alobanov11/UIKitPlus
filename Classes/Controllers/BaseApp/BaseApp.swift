@@ -9,7 +9,7 @@
 import UIKit
 
 open class BaseApp: UIApplication, UIApplicationDelegate {
-    public static override var shared: BaseApp { super.shared as! BaseApp }
+	public static override var shared: BaseApp { UIApplication.shared as! BaseApp }
     public static var mainScene: MainScene { shared.mainScene }
     
     @UState public var deviceOrientation = UIDevice.current.orientation

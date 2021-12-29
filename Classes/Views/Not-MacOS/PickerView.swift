@@ -31,6 +31,8 @@ open class UPickerView: UIPickerView, AnyDeclarativeProtocol, DeclarativeProtoco
     var __bottom: State<CGFloat> { _bottom }
     var __centerX: State<CGFloat> { _centerX }
     var __centerY: State<CGFloat> { _centerY }
+
+	private var adapter: PickerViewAdapter?
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -67,6 +69,7 @@ open class UPickerView: UIPickerView, AnyDeclarativeProtocol, DeclarativeProtoco
 	@discardableResult
 	public func data(_ data: [String], onChange: @escaping (String, Int) -> Void) -> Self {
 		let adapter = PickerViewAdapter(data: data, onChange: onChange)
+		self.adapter = adapter
 		dataSource = adapter
 		delegate = adapter
 		return self

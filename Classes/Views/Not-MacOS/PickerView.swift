@@ -63,6 +63,14 @@ open class UPickerView: UIPickerView, AnyDeclarativeProtocol, DeclarativeProtoco
         dataSource = value
         return self
     }
+
+	@discardableResult
+	public func data(_ data: [String], onChange: @escaping (String, Int) -> Void) -> Self {
+		let adapter = PickerViewAdapter(data: data, onChange: onChange)
+		dataSource = adapter
+		delegate = adapter
+		return self
+	}
     
     // MARK: Handler
     
@@ -104,6 +112,33 @@ extension PickerView: UIPickerViewDelegate {
     public func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         _changed(row, component)
     }
+}
+
+private final class PickerViewAdapter: NSObject, UIPickerViewDelegate, UIPickerViewDataSource {
+	private let data: [String]
+	private let onChange: (String, Int) -> Void
+
+	init(data: [String], onChange: @escaping (String, Int) -> Void) {
+		self.data = data
+		self.onChange = onChange
+		super.init()
+	}
+
+	func numberOfComponents(in pickerView: UIPickerView) -> Int {
+		return 1
+	}
+
+	func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+		return data.count
+	}
+
+	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+		onChange(data[row], row)
+	}
+
+	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+		return data[row]
+	}
 }
 #endif
 #endif

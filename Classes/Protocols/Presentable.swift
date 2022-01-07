@@ -10,7 +10,7 @@ public protocol IPresentable {
 public extension IPresentable {
 	func wrap(
 		_ style: NavigationControllerStyle = .default
-	) -> IPresentable {
+	) -> NavigationController<UIViewController> {
 		NavigationController(self.viewControllerToPresent).style(style)
 	}
 }

@@ -22,7 +22,7 @@ open class NavigationController<T: UIViewController>: UINavigationController, UI
     private lazy var font: UIFont = .systemFont(ofSize: 17)
     private lazy var style: NavigationControllerStyle = .default
     private lazy var tintColor: UIColor = .white
-    
+
     private var viewController: T? { return viewControllers.first as? T }
     
     public var isSwipeBackEnabled = true
@@ -61,7 +61,7 @@ open class NavigationController<T: UIViewController>: UINavigationController, UI
     }
     
     private func setupAppearance() {
-        view.backgroundColor = .white
+        view.backgroundColor = .clear
         //        automaticallyAdjustsScrollViewInsets = true // TODO: either delete or fix
         //        extendedLayoutIncludesOpaqueBars = true
         navigationBar.titleTextAttributes = [.foregroundColor: tintColor, .font: font]
@@ -79,7 +79,16 @@ open class NavigationController<T: UIViewController>: UINavigationController, UI
         case .color(let color):
             navigationBar.barTintColor = color
             navigationBar.backgroundColor = color
-            navigationBar.isTranslucent = true
+            navigationBar.isTranslucent = false
+
+			if #available(iOS 13.0, *) {
+				let appearance = UINavigationBarAppearance()
+				appearance.backgroundColor = color
+				appearance.titleTextAttributes = [.foregroundColor: tintColor, .font: font]
+				navigationBar.compactAppearance = appearance
+				navigationBar.scrollEdgeAppearance = appearance
+				navigationBar.standardAppearance = appearance
+			}
         }
     }
     

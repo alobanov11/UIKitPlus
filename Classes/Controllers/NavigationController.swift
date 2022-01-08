@@ -85,6 +85,7 @@ open class NavigationController<T: UIViewController>: UINavigationController, UI
 				let appearance = UINavigationBarAppearance()
 				appearance.backgroundColor = color
 				appearance.shadowImage = UIImage()
+				appearance.shadowColor = .clear
 				appearance.backgroundImage = UIImage()
 				appearance.titleTextAttributes = [.foregroundColor: tintColor, .font: font]
 				navigationBar.compactAppearance = appearance

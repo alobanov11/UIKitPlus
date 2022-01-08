@@ -84,6 +84,7 @@ open class NavigationController<T: UIViewController>: UINavigationController, UI
 			if #available(iOS 13.0, *) {
 				let appearance = UINavigationBarAppearance()
 				appearance.backgroundColor = color
+				appearance.shadowImage = UIImage()
 				appearance.titleTextAttributes = [.foregroundColor: tintColor, .font: font]
 				navigationBar.compactAppearance = appearance
 				navigationBar.scrollEdgeAppearance = appearance

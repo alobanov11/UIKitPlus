@@ -79,7 +79,7 @@ open class NavigationController<T: UIViewController>: UINavigationController, UI
         case .color(let color):
             navigationBar.barTintColor = color
             navigationBar.backgroundColor = color
-            navigationBar.isTranslucent = false
+            navigationBar.isTranslucent = true
 
 			if #available(iOS 13.0, *) {
 				let appearance = UINavigationBarAppearance()

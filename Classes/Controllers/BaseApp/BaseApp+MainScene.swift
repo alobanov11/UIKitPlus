@@ -312,6 +312,12 @@ private extension UIViewController {
 			return self.findTopViewController(lastViewController)
 		}
 
+		if let pageController = controller as? UIPageViewController,
+		   let lastViewController = pageController.viewControllers?.first
+		{
+			return self.findTopViewController(lastViewController)
+		}
+
 		return controller
 	}
 }

@@ -74,6 +74,8 @@ open class SegmentViewController: ViewController {
 			UIView.setAnimationsEnabled(true)
 		}
     }
+
+	open func segmentDidScroll() {}
 }
 
 extension SegmentViewController: SegmentHeaderDelegate {
@@ -107,6 +109,7 @@ extension SegmentViewController: SegmentVerticalCollectionAdapter
 
     func segmentVerticalCollection(didScroll collectionView: UICollectionView) {
         self.syncVerticalScrollIfNeeded()
+		self.segmentDidScroll()
     }
 }
 
@@ -135,6 +138,7 @@ extension SegmentViewController: SegmentPageCollectionAdapter
 
     func segmentPageCollection(didScroll point: CGPoint) {
         self.navigationBarView.segment(didScroll: (point.x / self.view.frame.width) - 1)
+		self.segmentDidScroll()
     }
 }
 
@@ -142,6 +146,7 @@ extension SegmentViewController: SegmentContentDelegate
 {
     public func segmentContent(didScroll scrollView: UIScrollView) {
         self.syncVerticalScrollIfNeeded()
+		self.segmentDidScroll()
     }
 }
 

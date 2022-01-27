@@ -36,39 +36,41 @@ class _SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
-        UIApplication.shared.delegate?.applicationDidBecomeActive?(UIApplication.shared)
+		BaseApp.shared.applicationDidBecomeActive(BaseApp.shared)
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
         // Called when the scene will move from an active state to an inactive state.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
-        UIApplication.shared.delegate?.applicationWillResignActive?(UIApplication.shared)
+		BaseApp.shared.applicationWillResignActive(BaseApp.shared)
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
-        UIApplication.shared.delegate?.applicationWillEnterForeground?(UIApplication.shared)
+		BaseApp.shared.applicationWillEnterForeground(BaseApp.shared)
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
-        UIApplication.shared.delegate?.applicationDidEnterBackground?(UIApplication.shared)
+		BaseApp.shared.applicationDidEnterBackground(BaseApp.shared)
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        guard let url = URLContexts.first?.url else {
-            return
-        }
-        UIApplication.shared.delegate?.application?(
-            UIApplication.shared,
-            open: url,
-            sourceApplication: nil,
-            annotation: [UIApplication.OpenURLOptionsKey.annotation]
-        )
+        guard let url = URLContexts.first?.url else { return }
+		_ = BaseApp.shared.application(
+			BaseApp.shared,
+			open: url,
+			sourceApplication: nil,
+			annotation: [UIApplication.OpenURLOptionsKey.annotation]
+		)
     }
+
+	func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+		_ = BaseApp.shared.application(BaseApp.shared, continue: userActivity) { _ in }
+	}
     
     func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
         BaseApp.shared.shortcuts

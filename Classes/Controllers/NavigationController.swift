@@ -160,6 +160,12 @@ open class NavigationController<T: UIViewController>: UINavigationController, UI
 		navigationBar.prefersLargeTitles = value
 		return self
 	}
+
+	@discardableResult
+	public func backTitle(_ value: String = "") -> Self {
+		self.navigationBar.backItem?.title = value
+		return self
+	}
     
     //    public func setupModal() {
     //        modalTransitionStyle = .coverVertical

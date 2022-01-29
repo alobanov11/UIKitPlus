@@ -26,6 +26,7 @@ open class NavigationController<T: UIViewController>: UINavigationController, UI
     private var viewController: T? { return viewControllers.first as? T }
     
     public var isSwipeBackEnabled = true
+	public var backTitle: String?
     
     public init() {
         let viewController = T(nibName: nil, bundle: nil)
@@ -53,6 +54,11 @@ open class NavigationController<T: UIViewController>: UINavigationController, UI
         super.init(coder: aDecoder)
         setup()
     }
+
+	open override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		self.navigationBar.backItem?.title = backTitle
+	}
     
     private func setup() {
         #if !os(tvOS)
@@ -163,7 +169,7 @@ open class NavigationController<T: UIViewController>: UINavigationController, UI
 
 	@discardableResult
 	public func backTitle(_ value: String = "") -> Self {
-		self.navigationBar.backItem?.title = value
+		self.backTitle = value
 		return self
 	}
     

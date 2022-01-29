@@ -54,11 +54,6 @@ open class NavigationController<T: UIViewController>: UINavigationController, UI
         super.init(coder: aDecoder)
         setup()
     }
-
-	open override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
-		self.navigationBar.backItem?.title = backTitle
-	}
     
     private func setup() {
         #if !os(tvOS)
@@ -177,6 +172,13 @@ open class NavigationController<T: UIViewController>: UINavigationController, UI
     //        modalTransitionStyle = .coverVertical
     //        modalPresentationStyle = .fullScreen
     //    }
+
+	open override func pushViewController(_ viewController: UIViewController, animated: Bool) {
+		if let backTitle = self.backTitle {
+			viewController.navigationItem.backButtonTitle = backTitle
+		}
+		super.pushViewController(viewController, animated: animated)
+	}
 }
 
 extension NavigationController: _Fontable {

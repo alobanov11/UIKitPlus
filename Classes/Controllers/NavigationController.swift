@@ -175,7 +175,7 @@ open class NavigationController<T: UIViewController>: UINavigationController, UI
 
 	open override func pushViewController(_ viewController: UIViewController, animated: Bool) {
 		if let backTitle = self.backTitle {
-			viewController.navigationItem.backButtonTitle = backTitle
+			viewController.navigationItem.backBarButtonItem = UBarButtonItem(backTitle)
 		}
 		super.pushViewController(viewController, animated: animated)
 	}

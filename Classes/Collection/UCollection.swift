@@ -132,6 +132,7 @@ open class UCollection: UView {
     var changesPool = 0
     var isChanging = false
     var isInitialized = false
+	var reversed = false
     
     let configuration: Configuration
     let items: [USectionItemable]
@@ -428,11 +429,15 @@ extension UCollection: UICollectionViewDataSource {
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        self.sections[indexPath.section].items[indexPath.item].generate(collectionView: collectionView, for: indexPath)
+        let cell = self.sections[indexPath.section].items[indexPath.item].generate(collectionView: collectionView, for: indexPath)
+		cell.transform = CGAffineTransform(rotationAngle: self.reversed ? CGFloat(Double.pi) : 0)
+		return cell
     }
     
     public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        self.sections[indexPath.section].header?.generate(collectionView: collectionView, kind: kind, for: indexPath) ?? UICollectionReusableView()
+        let view = self.sections[indexPath.section].header?.generate(collectionView: collectionView, kind: kind, for: indexPath) ?? UICollectionReusableView()
+		view.transform = CGAffineTransform(rotationAngle: self.reversed ? CGFloat(Double.pi) : 0)
+		return view
     }
 }
 
@@ -619,5 +624,13 @@ extension UCollection {
     public func scrollIndicatorInsets(top: CGFloat = 0, left: CGFloat = 0, bottom: CGFloat = 0, right: CGFloat = 0) -> Self {
         self.scrollIndicatorInsets(.init(top: top, left: left, bottom: bottom, right: right))
     }
+
+	@discardableResult
+	public func reversed(_ value: Bool = true) -> Self {
+		self.reversed = value
+		self.collectionView.transform = CGAffineTransform(rotationAngle: value ? -(CGFloat)(Double.pi) : 0)
+		self.collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: self.collectionView.bounds.size.width - 8)
+		return self
+	}
 }
 #endif

@@ -22,6 +22,7 @@ class _SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 .first { $0.item.type == shortcutItem.type }?
                 .action? { _ in }
         }
+		BaseApp.shared.window = window
 		BaseApp.shared.mainScene._onConnect?(window, connectionOptions.userActivities)
     }
 

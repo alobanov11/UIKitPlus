@@ -197,6 +197,14 @@ extension BaseApp {
 			completion: @escaping () -> Void = {}
 		) {
 			switch transition {
+			case let .setRoot(presetable, screen, animation):
+				self.switch(
+					to: presetable.viewControllerToPresent,
+					as: SceneScreenType(type: screen),
+					animation: animation,
+					beforeTransition: nil,
+					completion: completion
+				)
 			case let .setTab(item):
 				guard let tabBarController = self.current as? UITabBarController else {
 					print("⚠️ Can't select \(item) current controller must be UITabBarController")

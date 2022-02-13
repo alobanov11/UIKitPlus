@@ -1,4 +1,5 @@
 public enum RootTransition {
+	case setRoot(IPresentable, String, RootTransitionAnimation)
 	case setTab(Int)
 	case push(IPresentable)
 	case pop

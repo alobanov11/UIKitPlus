@@ -202,7 +202,7 @@ extension SegmentVerticalCollectionView: UICollectionViewDelegateFlowLayout, UIC
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-		guard scrollView.isDragging || scrollView.isTracking else {
+		guard scrollView.contentOffset.y != self.lastContentOffsetY else {
 			return
 		}
         self.adapter.segmentVerticalCollection(didScroll: self.verticalCollectionView)

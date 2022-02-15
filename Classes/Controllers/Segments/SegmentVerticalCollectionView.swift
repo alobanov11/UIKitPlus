@@ -42,6 +42,7 @@ final class SegmentVerticalCollectionView: UIView {
         )
         collectionView.backgroundColor = .clear
         collectionView.alwaysBounceVertical = true
+		collectionView.bounces = true
         collectionView.showsVerticalScrollIndicator = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.delegate = self

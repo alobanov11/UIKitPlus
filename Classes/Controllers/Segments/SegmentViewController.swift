@@ -56,6 +56,7 @@ open class SegmentViewController: ViewController {
         super.viewDidLoad()
         self.viewControllers.forEach {
 			$0.delegate = self
+			$0.segmentScrollView().bounces = false
 		}
 
         self.view.addSubview(self.verticalCollectionView)
@@ -144,7 +145,6 @@ extension SegmentViewController: SegmentPageCollectionAdapter
 extension SegmentViewController: SegmentContentDelegate
 {
     public func segmentContent(didScroll scrollView: UIScrollView) {
-		scrollView.bounces = scrollView.contentOffset.y > 100
         self.syncVerticalScrollIfNeeded()
 		self.segmentDidScroll()
     }
@@ -177,7 +177,10 @@ private extension SegmentViewController
             ? ctx.headerH
             : ctx.verticalY
 
-        self.visibleCollaborativeScrollView.contentOffset.y = max(0, collaborativeY)
+		let contentOffsetY = max(0, collaborativeY)
+
+        self.visibleCollaborativeScrollView.contentOffset.y = contentOffsetY
+		self.visibleCollaborativeScrollView.bounces = contentOffsetY > 100
         self.verticalCollectionView.contentOffsetY = min(ctx.headerH, verticalY)
         self.verticalCollectionView.lastContentOffsetY = min(ctx.headerH, verticalY)
         self.lastCollaborativeScrollView = self.visibleCollaborativeScrollView

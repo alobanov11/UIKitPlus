@@ -69,7 +69,10 @@ final class SegmentVerticalCollectionView: UIView {
     }()
 
     private weak var adapter: SegmentVerticalCollectionAdapter!
-    private let refreshControl: UIRefreshControl?
+
+	private var isTrackingScroll = false
+
+	private let refreshControl: UIRefreshControl?
 
     init(
         adapter: SegmentVerticalCollectionAdapter,
@@ -201,10 +204,16 @@ extension SegmentVerticalCollectionView: UICollectionViewDelegateFlowLayout, UIC
         }
     }
 
+	func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+		self.isTrackingScroll = true
+	}
+
+	func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+		self.isTrackingScroll = false
+	}
+
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-		guard scrollView.isDragging || scrollView.isTracking || scrollView.isDecelerating else {
-			return
-		}
+		guard self.isTrackingScroll else { return }
         self.adapter.segmentVerticalCollection(didScroll: self.verticalCollectionView)
     }
 }

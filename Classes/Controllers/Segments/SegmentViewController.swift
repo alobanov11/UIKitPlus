@@ -177,9 +177,15 @@ private extension SegmentViewController
             ? ctx.headerH
             : ctx.verticalY
 
+		let contentOffsetY = min(ctx.headerH, verticalY)
+
+		guard self.verticalCollectionView.lastContentOffsetY != contentOffsetY else {
+			return
+		}
+
         self.visibleCollaborativeScrollView.contentOffset.y = max(0, collaborativeY)
-        self.verticalCollectionView.contentOffsetY = min(ctx.headerH, verticalY)
-        self.verticalCollectionView.lastContentOffsetY = min(ctx.headerH, verticalY)
+        self.verticalCollectionView.contentOffsetY = contentOffsetY
+        self.verticalCollectionView.lastContentOffsetY = contentOffsetY
         self.lastCollaborativeScrollView = self.visibleCollaborativeScrollView
     }
 

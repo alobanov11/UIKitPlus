@@ -202,6 +202,9 @@ extension SegmentVerticalCollectionView: UICollectionViewDelegateFlowLayout, UIC
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+		guard scrollView.isDragging || scrollView.isTracking || scrollView.isDecelerating else {
+			return
+		}
         self.adapter.segmentVerticalCollection(didScroll: self.verticalCollectionView)
     }
 }

@@ -24,6 +24,8 @@ open class ImagesCache {
 open class ImageLoader {
     lazy var fm = FileManager()
 
+	public var headers: [String: String] = [:]
+
     public var reloadingStyle: ImageReloadingStyle
 
     private var uuid: UUID?
@@ -181,10 +183,25 @@ open class ImageLoader {
             guard let data = try? Data(contentsOf: url) else { return }
             callback(data)
         } else {
-            downloadTask = URLSession.shared.dataTask(with: url) { (data, response, error) in
-                guard let data = data else { return }
-                callback(data)
-            }
+			downloadTask = {
+				guard headers.isEmpty == false else {
+					return URLSession.shared.dataTask(with: url) { (data, response, error) in
+						guard let data = data else { return }
+						callback(data)
+					}
+				}
+
+				var request = URLRequest(url: url)
+
+				headers.forEach {
+					request.setValue($0.value, forHTTPHeaderField: $0.key)
+				}
+
+				return URLSession.shared.dataTask(with: request) { (data, response, error) in
+					guard let data = data else { return }
+					callback(data)
+				}
+			}()
             downloadTask?.resume()
         }
     }

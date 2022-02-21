@@ -72,7 +72,7 @@ final class UImagePickerCell: UCollectionCell {
 							self?.imageRequestId = UImagePickerCell.imageManager.requestImage(
 								for: asset,
 								targetSize: .init(width: size, height: size),
-								contentMode: .aspectFill,
+								contentMode: .default,
 								options: options
 							) { result, _ in
 								self?.imageRequestId = nil

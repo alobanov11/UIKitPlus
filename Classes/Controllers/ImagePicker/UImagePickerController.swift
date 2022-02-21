@@ -28,7 +28,9 @@ public final class UImagePickerController: NavigationController<ViewController> 
 
 	public var emptyAlbumsText: String?
 
-	@UState var countOfSelected = 0
+	public var maximumSelectionsAllowed = -1
+
+	@UState public private(set) var isMaximumSelected = false
 
 	private lazy var fetchOptions: PHFetchOptions = {
 		let options = PHFetchOptions()
@@ -84,10 +86,6 @@ public final class UImagePickerController: NavigationController<ViewController> 
 
 		self.requestAuthorization {
 			self.obtainPhotos()
-		}
-
-		$collectionState.listen { [weak self] in
-			self?.countOfSelected = $0.data?.filter { $0.selected }.count ?? 0
 		}
 	}
 }
@@ -229,8 +227,15 @@ private extension UImagePickerController {
 
 	func selectItem(at index: Int) {
 		guard var data = self.collectionState.data else { return }
+
+		if self.maximumSelectionsAllowed > 0 && data.filter({ $0.selected }).count == self.maximumSelectionsAllowed && data[index].selected == false {
+			self.isMaximumSelected = true
+			return
+		}
+
 		data[index].selected.toggle()
 		self.collectionState = .data(data)
+		self.isMaximumSelected = false
 	}
 
 	func done() {

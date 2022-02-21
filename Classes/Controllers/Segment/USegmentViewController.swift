@@ -4,20 +4,20 @@
 
 import UIKit
 
-open class SegmentViewController: ViewController {
-    public private(set) var headerView: SegmentHeaderView?
-	public private(set) var navigationBarView: SegmentNavigationBarView
+open class USegmentViewController: ViewController {
+    public private(set) var headerView: USegmentHeaderView?
+	public private(set) var navigationBarView: USegmentNavigationBarView
     public private(set) var refreshControl: UIRefreshControl?
-    public private(set) var viewControllers: [SegmentContentViewController] = []
+    public private(set) var viewControllers: [USegmentContentViewController] = []
 
     // MARK: - UI
 
-    private lazy var verticalCollectionView = SegmentVerticalCollectionView(
+    private lazy var verticalCollectionView = USegmentVerticalCollectionView(
         adapter: self,
         refreshControl: self.refreshControl
     )
 
-    private lazy var pageCollectionView = SegmentPageCollectionView(
+    private lazy var pageCollectionView = USegmentPageCollectionView(
         adapter: self
     )
 
@@ -32,9 +32,9 @@ open class SegmentViewController: ViewController {
     // MARK: - UIKit
 
     public init(
-        headerView: SegmentHeaderView? = nil,
-		navigationBarView: SegmentNavigationBarView,
-        viewControllers: [SegmentContentViewController],
+        headerView: USegmentHeaderView? = nil,
+		navigationBarView: USegmentNavigationBarView,
+        viewControllers: [USegmentContentViewController],
         refreshControl: UIRefreshControl? = nil
     ) {
 		self.headerView = headerView
@@ -78,13 +78,13 @@ open class SegmentViewController: ViewController {
 	open func segmentDidScroll() {}
 }
 
-extension SegmentViewController: SegmentHeaderDelegate {
+extension USegmentViewController: USegmentHeaderDelegate {
 	func segmentHeaderReload() {
 		self.verticalCollectionView.reloadItem(at: IndexPath(item: 0, section: 0))
 	}
 }
 
-extension SegmentViewController: SegmentNavigationBarDelegate
+extension USegmentViewController: USegmentNavigationBarDelegate
 {
     func segmentNavigationBar(didSelect item: Int) {
         self.pageCollectionView.scrollToItem(at: item, animated: true)
@@ -92,7 +92,7 @@ extension SegmentViewController: SegmentNavigationBarDelegate
     }
 }
 
-extension SegmentViewController: SegmentVerticalCollectionAdapter
+extension USegmentViewController: USegmentVerticalCollectionAdapter
 {
     func segmentVerticalCollection(headerView collectionView: UICollectionView) -> UIView? {
         self.headerView
@@ -113,7 +113,7 @@ extension SegmentViewController: SegmentVerticalCollectionAdapter
     }
 }
 
-extension SegmentViewController: SegmentPageCollectionAdapter
+extension USegmentViewController: USegmentPageCollectionAdapter
 {
     func segmentPageCollection(shouldShow index: Int) -> Bool {
         self.viewControllers[index].segmentShouldBeShowed()
@@ -142,7 +142,7 @@ extension SegmentViewController: SegmentPageCollectionAdapter
     }
 }
 
-extension SegmentViewController: SegmentContentDelegate
+extension USegmentViewController: USegmentContentDelegate
 {
     public func segmentContent(didScroll scrollView: UIScrollView) {
         self.syncVerticalScrollIfNeeded()
@@ -152,7 +152,7 @@ extension SegmentViewController: SegmentContentDelegate
 
 // MARK: - Private
 
-private extension SegmentViewController
+private extension USegmentViewController
 {
     func syncVerticalScrollIfNeeded() {
         guard self.headerView != nil else {

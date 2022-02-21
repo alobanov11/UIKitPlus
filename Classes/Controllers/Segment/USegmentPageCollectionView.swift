@@ -4,7 +4,7 @@
 
 import UIKit
 
-protocol SegmentPageCollectionAdapter: UIViewController {
+protocol USegmentPageCollectionAdapter: UIViewController {
     func segmentPageCollection(shouldShow index: Int) -> Bool
     func segmentPageCollectionViewControllers() -> [UIViewController]
     func segmentPageCollectionWillBeginDragging()
@@ -12,7 +12,7 @@ protocol SegmentPageCollectionAdapter: UIViewController {
     func segmentPageCollection(didScroll point: CGPoint)
 }
 
-final class SegmentPageCollectionView: UIView {
+final class USegmentPageCollectionView: UIView {
     private(set) var selectedIndex = 0
 
     private var currentIndex: Int {
@@ -43,11 +43,11 @@ final class SegmentPageCollectionView: UIView {
         return controller
     }()
 
-    private weak var adapter: SegmentPageCollectionAdapter!
+    private weak var adapter: USegmentPageCollectionAdapter!
 
     private var shouldListenScroll = true
 
-    init(adapter: SegmentPageCollectionAdapter) {
+    init(adapter: USegmentPageCollectionAdapter) {
         self.adapter = adapter
 
         super.init(frame: .zero)
@@ -98,7 +98,7 @@ final class SegmentPageCollectionView: UIView {
     }
 }
 
-extension SegmentPageCollectionView: UIPageViewControllerDelegate, UIPageViewControllerDataSource
+extension USegmentPageCollectionView: UIPageViewControllerDelegate, UIPageViewControllerDataSource
 {
     func pageViewController(
         _ pageViewController: UIPageViewController,
@@ -149,7 +149,7 @@ extension SegmentPageCollectionView: UIPageViewControllerDelegate, UIPageViewCon
     }
 }
 
-extension SegmentPageCollectionView: UIScrollViewDelegate
+extension USegmentPageCollectionView: UIScrollViewDelegate
 {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let width = self.frame.width

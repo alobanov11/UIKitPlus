@@ -4,9 +4,9 @@
 
 import UIKit
 
-public protocol CollaborativeScroll: UIScrollView, UIGestureRecognizerDelegate {}
+public protocol UCollaborativeScroll: UIScrollView, UIGestureRecognizerDelegate {}
 
-open class CollaborativeScrollView: UIScrollView, UIGestureRecognizerDelegate, CollaborativeScroll
+open class UCollaborativeScrollView: UIScrollView, UIGestureRecognizerDelegate, UCollaborativeScroll
 {
     public func gestureRecognizer(
         _ gestureRecognizer: UIGestureRecognizer,
@@ -16,7 +16,7 @@ open class CollaborativeScrollView: UIScrollView, UIGestureRecognizerDelegate, C
     }
 }
 
-open class CollaborativeCollectionView: UICollectionView, UIGestureRecognizerDelegate, CollaborativeScroll
+open class UCollaborativeCollectionView: UICollectionView, UIGestureRecognizerDelegate, UCollaborativeScroll
 {
     public func gestureRecognizer(
         _ gestureRecognizer: UIGestureRecognizer,
@@ -26,7 +26,7 @@ open class CollaborativeCollectionView: UICollectionView, UIGestureRecognizerDel
     }
 }
 
-open class CollaborativeTableView: UITableView, UIGestureRecognizerDelegate, CollaborativeScroll
+open class UCollaborativeTableView: UITableView, UIGestureRecognizerDelegate, UCollaborativeScroll
 {
     public func gestureRecognizer(
         _ gestureRecognizer: UIGestureRecognizer,

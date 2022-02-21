@@ -4,19 +4,19 @@
 
 import UIKit
 
-public protocol SegmentContentDelegate: AnyObject
+public protocol USegmentContentDelegate: AnyObject
 {
     func segmentContent(didScroll scrollView: UIScrollView)
 }
 
-open class SegmentContentViewController: ViewController {
-	weak var delegate: SegmentContentDelegate?
+open class USegmentContentViewController: ViewController {
+	weak var delegate: USegmentContentDelegate?
 
 	open func segmentShouldBeShowed() -> Bool {
 		return true
 	}
 
-	open func segmentScrollView() -> CollaborativeScroll {
+	open func segmentScrollView() -> UCollaborativeScroll {
 		fatalError("Must be overriden")
 	}
 }

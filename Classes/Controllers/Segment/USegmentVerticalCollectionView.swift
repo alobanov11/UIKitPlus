@@ -4,14 +4,14 @@
 
 import UIKit
 
-protocol SegmentVerticalCollectionAdapter: AnyObject {
+protocol USegmentVerticalCollectionAdapter: AnyObject {
     func segmentVerticalCollection(headerView collectionView: UICollectionView) -> UIView?
     func segmentVerticalCollection(navigationBarView collectionView: UICollectionView) -> UIView?
     func segmentVerticalCollection(pageCollectionView collectionView: UICollectionView) -> UIView
     func segmentVerticalCollection(didScroll collectionView: UICollectionView)
 }
 
-final class SegmentVerticalCollectionView: UIView {
+final class USegmentVerticalCollectionView: UIView {
     private final class ControlContainableCollectionView: UICollectionView
     {
         override func touchesShouldCancel(in view: UIView) -> Bool {
@@ -69,11 +69,11 @@ final class SegmentVerticalCollectionView: UIView {
 		return collectionView
     }()
 
-    private weak var adapter: SegmentVerticalCollectionAdapter!
+    private weak var adapter: USegmentVerticalCollectionAdapter!
     private let refreshControl: UIRefreshControl?
 
     init(
-        adapter: SegmentVerticalCollectionAdapter,
+        adapter: USegmentVerticalCollectionAdapter,
         refreshControl: UIRefreshControl?
     ) {
         self.adapter = adapter
@@ -110,7 +110,7 @@ final class SegmentVerticalCollectionView: UIView {
     }
 }
 
-extension SegmentVerticalCollectionView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
+extension USegmentVerticalCollectionView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     func collectionView(
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int

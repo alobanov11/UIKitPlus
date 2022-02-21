@@ -4,12 +4,12 @@
 
 import UIKit
 
-protocol SegmentHeaderDelegate: AnyObject {
+protocol USegmentHeaderDelegate: AnyObject {
 	func segmentHeaderReload()
 }
 
-open class SegmentHeaderView: UView {
-	weak var delegate: SegmentHeaderDelegate?
+open class USegmentHeaderView: UView {
+	weak var delegate: USegmentHeaderDelegate?
 
 	open override func layoutSubviews() {
 		super.layoutSubviews()

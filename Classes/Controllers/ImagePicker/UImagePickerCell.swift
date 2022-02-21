@@ -67,7 +67,7 @@ final class UImagePickerCell: UCollectionCell {
 							options.isSynchronous = false
 							options.isNetworkAccessAllowed = true
 
-							let size = (UIScreen.main.bounds.width / 3)
+							let size = (UIScreen.main.bounds.width / 2)
 
 							self?.imageRequestId = UImagePickerCell.imageManager.requestImage(
 								for: asset,

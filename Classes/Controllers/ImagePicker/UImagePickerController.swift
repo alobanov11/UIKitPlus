@@ -186,6 +186,12 @@ extension UImagePickerController {
 		self.allowedMediaSubtypes = value
 		return self
 	}
+
+	@discardableResult
+	public func customPickerItems(_ value: [UItemable]) -> Self {
+		self.customPickerItems = value
+		return self
+	}
 }
 
 private extension UImagePickerController {

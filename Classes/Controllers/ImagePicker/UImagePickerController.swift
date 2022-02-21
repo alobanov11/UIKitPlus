@@ -233,13 +233,11 @@ private extension UImagePickerController {
 		guard var data = self.collectionState.data else { return }
 
 		if self.maximumSelectionsAllowed > 0 && data.filter({ $0.selected }).count == self.maximumSelectionsAllowed && data[index].selected == false {
-			self.isMaximumSelected = true
 			return
 		}
 
 		data[index].selected.toggle()
 		self.collectionState = .data(data)
-		self.isMaximumSelected = false
 	}
 
 	func done() {

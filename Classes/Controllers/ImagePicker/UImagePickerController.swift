@@ -30,7 +30,7 @@ public final class UImagePickerController: NavigationController<ViewController> 
 
 	public var maximumSelectionsAllowed = -1
 
-	@UState public private(set) var isMaximumSelected = false
+	@UState public private(set) var isAtLeastOneSelected = false
 
 	private lazy var fetchOptions: PHFetchOptions = {
 		let options = PHFetchOptions()
@@ -86,6 +86,10 @@ public final class UImagePickerController: NavigationController<ViewController> 
 
 		self.requestAuthorization {
 			self.obtainPhotos()
+		}
+
+		$collectionState.listen { [weak self] in
+			self?.isAtLeastOneSelected = ($0.data?.filter { $0.selected }.count ?? 0) > 0
 		}
 	}
 }
@@ -239,6 +243,7 @@ private extension UImagePickerController {
 	}
 
 	func done() {
+		guard self.isAtLeastOneSelected else { return }
 		let assets = self.collectionState.data?.filter { $0.selected }.map { $0.asset } ?? []
 		self.dismiss(animated: true) {
 			self.onFinishSelecting?(assets)

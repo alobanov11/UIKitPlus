@@ -150,12 +150,14 @@ extension UImagePickerController {
 	@discardableResult
 	public func dismissBarButton(builder: (Self) -> UBarButtonItem) -> Self {
 		self.collectionViewController.navigationItem.leftBarButtonItem = builder(self)
+			.tapAction { self.dismiss(animated: true, completion: nil) }
 		return self
 	}
 
 	@discardableResult
 	public func doneBarButton(builder: (Self) -> UBarButtonItem) -> Self {
 		self.collectionViewController.navigationItem.rightBarButtonItem = builder(self)
+			.tapAction { self.done() }
 		return self
 	}
 

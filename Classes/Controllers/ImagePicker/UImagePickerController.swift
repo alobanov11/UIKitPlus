@@ -30,14 +30,6 @@ public final class UImagePickerController: NavigationController<ViewController> 
 
 	@UState var countOfSelected = 0
 
-	public private(set) lazy var dismissBarButtonItem = UBarButtonItem("Close")
-		.tapAction { self.dismiss(animated: true, completion: nil) }
-
-	public private(set) lazy var doneBarButtonItem = UBarButtonItem("Done")
-		.tapAction { self.dismiss(animated: true) { self.done() } }
-
-	public private(set) lazy var titleView = UText("Recent")
-
 	private lazy var fetchOptions: PHFetchOptions = {
 		let options = PHFetchOptions()
 		options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
@@ -65,10 +57,6 @@ public final class UImagePickerController: NavigationController<ViewController> 
 			self.obtainPhotos(with: limit + self.pageSize)
 		}
 		.edgesToSuperview()
-	}.navigationItem { _, navigationItem in
-		navigationItem.leftBarButtonItem = self.dismissBarButtonItem
-		navigationItem.titleView = self.titleView
-		navigationItem.rightBarButtonItem = self.doneBarButtonItem
 	}
 
 	@UState private var collectionState = UCollectionState<[UImagePickerItem]>.empty
@@ -160,20 +148,20 @@ extension UImagePickerController {
 	}
 
 	@discardableResult
-	public func dismissBarButton(configure: (Self, UBarButtonItem) -> Void) -> Self {
-		configure(self, self.dismissBarButtonItem)
+	public func leftBarButtons(builder: (Self) -> [UBarButtonItem]) -> Self {
+		self.collectionViewController.navigationItem.leftBarButtonItems = builder(self)
 		return self
 	}
 
 	@discardableResult
-	public func doneBarButton(configure: (Self, UBarButtonItem) -> Void) -> Self {
-		configure(self, self.doneBarButtonItem)
+	public func rightBarButtons(builder: (Self) -> [UBarButtonItem]) -> Self {
+		self.collectionViewController.navigationItem.rightBarButtonItems = builder(self)
 		return self
 	}
 
 	@discardableResult
-	public func titleView(configure: (Self, UText) -> Void) -> Self {
-		configure(self, self.titleView)
+	public func title(_ value: String) -> Self {
+		self.collectionViewController.title = value
 		return self
 	}
 

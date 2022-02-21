@@ -55,6 +55,7 @@ final class UImageAlbumCell: UCollectionCell {
 			UWrapperView {
 				UHStack {
 					UImage(nil)
+						.mode(.scaleAspectFill)
 						.bind($asset) { [weak self] _, asset in
 							guard let asset = asset else { return }
 

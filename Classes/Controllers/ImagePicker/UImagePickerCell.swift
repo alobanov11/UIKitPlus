@@ -57,6 +57,7 @@ final class UImagePickerCell: UCollectionCell {
 			UWrapperView {
 				UView {
 					UImage(nil)
+						.mode(.scaleAspectFill)
 						.bind($asset) { [weak self] _, asset in
 							guard let asset = asset else { return }
 

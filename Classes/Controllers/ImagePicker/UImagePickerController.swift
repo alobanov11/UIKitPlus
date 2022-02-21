@@ -28,7 +28,7 @@ public final class UImagePickerController: NavigationController<ViewController> 
 
 	public var emptyAlbumsText: String?
 
-	public var maximumSelectionsAllowed: Int = -1
+	@UState var countOfSelected = 0
 
 	public private(set) lazy var dismissBarButtonItem = UBarButtonItem("Close")
 		.tapAction { self.dismiss(animated: true, completion: nil) }
@@ -93,8 +93,13 @@ public final class UImagePickerController: NavigationController<ViewController> 
 
 	public override func viewDidLoad() {
 		super.viewDidLoad()
+
 		self.requestAuthorization {
 			self.obtainPhotos()
+		}
+
+		$collectionState.listen { [weak self] in
+			self?.countOfSelected = $0.data?.filter { $0.selected }.count ?? 0
 		}
 	}
 }
@@ -155,20 +160,20 @@ extension UImagePickerController {
 	}
 
 	@discardableResult
-	public func dismissBarButton(configure: (UBarButtonItem) -> Void) -> Self {
-		configure(self.dismissBarButtonItem)
+	public func dismissBarButton(configure: (Self, UBarButtonItem) -> Void) -> Self {
+		configure(self, self.dismissBarButtonItem)
 		return self
 	}
 
 	@discardableResult
-	public func doneBarButton(configure: (UBarButtonItem) -> Void) -> Self {
-		configure(self.doneBarButtonItem)
+	public func doneBarButton(configure: (Self, UBarButtonItem) -> Void) -> Self {
+		configure(self, self.doneBarButtonItem)
 		return self
 	}
 
 	@discardableResult
-	public func titleView(configure: (UText) -> Void) -> Self {
-		configure(self.titleView)
+	public func titleView(configure: (Self, UText) -> Void) -> Self {
+		configure(self, self.titleView)
 		return self
 	}
 

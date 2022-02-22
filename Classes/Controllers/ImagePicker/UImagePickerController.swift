@@ -231,7 +231,7 @@ private extension UImagePickerController {
 			let asset = self.photoAssets.object(at: index)
 			return UImagePickerItem(
 				asset: asset,
-				selected: self.collectionState.data?.first { $0.asset == asset }?.selected ?? self.initialSelected.contains(asset.localIdentifier),
+				selected: self.collectionState.data?.first { $0.asset == asset }?.selected == true || self.initialSelected.contains(asset.localIdentifier),
 				onSelect: { self.selectItem(at: index) }
 			)
 		})

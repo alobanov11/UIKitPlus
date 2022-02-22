@@ -30,6 +30,8 @@ public final class UImagePickerController: NavigationController<ViewController> 
 
 	public var maximumSelectionsAllowed = -1
 
+	public var initialSelected: [String] = []
+
 	@UState public private(set) var isAtLeastOneSelected = false
 
 	private lazy var fetchOptions: PHFetchOptions = {
@@ -229,7 +231,7 @@ private extension UImagePickerController {
 			let asset = self.photoAssets.object(at: index)
 			return UImagePickerItem(
 				asset: asset,
-				selected: self.collectionState.data?.first { $0.asset == asset }?.selected ?? false,
+				selected: self.collectionState.data?.first { $0.asset == asset }?.selected ?? self.initialSelected.contains(asset.localIdentifier),
 				onSelect: { self.selectItem(at: index) }
 			)
 		})
@@ -241,6 +243,8 @@ private extension UImagePickerController {
 		if self.maximumSelectionsAllowed > 0 && data.filter({ $0.selected }).count == self.maximumSelectionsAllowed && data[index].selected == false {
 			return
 		}
+
+		self.initialSelected.removeAll { $0 == data[index].asset.localIdentifier }
 
 		data[index].selected.toggle()
 		self.collectionState = .data(data)

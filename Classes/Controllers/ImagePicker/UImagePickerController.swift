@@ -240,7 +240,20 @@ private extension UImagePickerController {
 	func selectItem(at index: Int) {
 		guard var data = self.collectionState.data else { return }
 
-		if self.maximumSelectionsAllowed > 0 && data.filter({ $0.selected }).count == self.maximumSelectionsAllowed && data[index].selected == false {
+		if (
+			self.maximumSelectionsAllowed == 1 &&
+			data.contains(where: { $0.selected })
+		), let selectedIndex = data.firstIndex(where: { $0.selected }),
+		   selectedIndex != index
+		{
+			data[selectedIndex].selected = false
+		}
+
+		if (
+			self.maximumSelectionsAllowed > 0 &&
+			data.filter({ $0.selected }).count == self.maximumSelectionsAllowed &&
+			data[index].selected == false
+		) {
 			return
 		}
 

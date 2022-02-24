@@ -312,6 +312,12 @@ open class UCollection: UView {
         self.collectionView.isScrollEnabled = enabled
         return self
     }
+
+	@discardableResult
+	public func paging(_ enabled: Bool) -> Self {
+		self.collectionView.isPagingEnabled = enabled
+		return self
+	}
 }
 
 extension UCollection {

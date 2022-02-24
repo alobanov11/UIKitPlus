@@ -250,6 +250,13 @@ open class UCollection: UView {
         return self
     }
 
+	var _scrollViewDidEndDecelerating: ((UICollectionView) -> Void)?
+
+	public func onScrollViewDidEndDecelerating(_ handler: @escaping (UICollectionView) -> Void) -> Self {
+		self._scrollViewDidEndDecelerating = handler
+		return self
+	}
+
 	// MARK: - Layout
 
 	var _sectionInset: ((USection.Identifier) -> UIEdgeInsets?)?
@@ -539,6 +546,10 @@ extension UCollection: UIScrollViewDelegate {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         self.scrollPosition?.wrappedValue = scrollView.contentOffset
     }
+
+	public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+		self._scrollViewDidEndDecelerating?(self.collectionView)
+	}
 }
 
 extension UCollection {

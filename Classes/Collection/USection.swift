@@ -217,6 +217,7 @@ public extension UItemable where Self: UItemableBuilder {
 
 public protocol UItemableDelegate {
     func willDisplay()
+	func didEndDisplay()
     func didSelect()
     func didDeselect()
     func didHighlight()
@@ -225,6 +226,7 @@ public protocol UItemableDelegate {
 
 public extension UItemableDelegate {
     func willDisplay() {}
+	func didEndDisplay() {}
     func didSelect() {}
     func didDeselect() {}
     func didHighlight() {}

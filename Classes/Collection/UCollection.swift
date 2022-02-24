@@ -214,6 +214,13 @@ open class UCollection: UView {
         self._willDisplay = handler
         return self
     }
+
+	var _didEndDisplay: ((IndexPath) -> Void)?
+
+	public func onDidEndDisplay(_ handler: @escaping (IndexPath) -> Void) -> Self {
+		self._didEndDisplay = handler
+		return self
+	}
     
     var _didSelectItemAt: ((IndexPath) -> Void)?
     
@@ -503,6 +510,11 @@ extension UCollection: UICollectionViewDelegate {
         self._willDisplay?(indexPath)
         (self.sections[indexPath.section].items[indexPath.item] as? UItemableDelegate)?.willDisplay()
     }
+
+	public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+		self._didEndDisplay?(indexPath)
+		(self.sections[indexPath.section].items[indexPath.item] as? UItemableDelegate)?.didEndDisplay()
+	}
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self._didSelectItemAt?(indexPath)

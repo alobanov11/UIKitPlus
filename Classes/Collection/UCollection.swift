@@ -208,51 +208,51 @@ open class UCollection: UView {
     
     // MARK: - Handlers
     
-    var _willDisplay: ((IndexPath) -> Void)?
+    var _willDisplay: ((UICollectionView, IndexPath) -> Void)?
     
-    public func onWillDisplay(_ handler: @escaping (IndexPath) -> Void) -> Self {
+    public func onWillDisplay(_ handler: @escaping (UICollectionView, IndexPath) -> Void) -> Self {
         self._willDisplay = handler
         return self
     }
 
-	var _didEndDisplay: ((IndexPath) -> Void)?
+	var _didEndDisplay: ((UICollectionView, IndexPath) -> Void)?
 
-	public func onDidEndDisplay(_ handler: @escaping (IndexPath) -> Void) -> Self {
+	public func onDidEndDisplay(_ handler: @escaping (UICollectionView, IndexPath) -> Void) -> Self {
 		self._didEndDisplay = handler
 		return self
 	}
     
-    var _didSelectItemAt: ((IndexPath) -> Void)?
+    var _didSelectItemAt: ((UICollectionView, IndexPath) -> Void)?
     
-    public func onDidSelectItemAt(_ handler: @escaping (IndexPath) -> Void) -> Self {
+    public func onDidSelectItemAt(_ handler: @escaping (UICollectionView, IndexPath) -> Void) -> Self {
         self._didSelectItemAt = handler
         return self
     }
 
-    var _didDeselectItemAt: ((IndexPath) -> Void)?
+    var _didDeselectItemAt: ((UICollectionView, IndexPath) -> Void)?
 
-    public func onDidDeselectItemAt(_ handler: @escaping (IndexPath) -> Void) -> Self {
+    public func onDidDeselectItemAt(_ handler: @escaping (UICollectionView, IndexPath) -> Void) -> Self {
         self._didDeselectItemAt = handler
         return self
     }
 
-    var _didHighlightItemAt: ((IndexPath) -> Void)?
+    var _didHighlightItemAt: ((UICollectionView, IndexPath) -> Void)?
 
-    public func onDidHighlightItemAt(_ handler: @escaping (IndexPath) -> Void) -> Self {
+    public func onDidHighlightItemAt(_ handler: @escaping (UICollectionView, IndexPath) -> Void) -> Self {
         self._didHighlightItemAt = handler
         return self
     }
 
-    var _didUnhighlightItemAt: ((IndexPath) -> Void)?
+    var _didUnhighlightItemAt: ((UICollectionView, IndexPath) -> Void)?
 
-    public func onUnhighlightItemAt(_ handler: @escaping (IndexPath) -> Void) -> Self {
+    public func onUnhighlightItemAt(_ handler: @escaping (UICollectionView, IndexPath) -> Void) -> Self {
         self._didUnhighlightItemAt = handler
         return self
     }
     
-    var _shouldHighlightItemAt: ((IndexPath) -> Bool)?
+    var _shouldHighlightItemAt: ((UICollectionView, IndexPath) -> Bool)?
     
-    public func onShouldHighlightItemAt(_ handler: @escaping (IndexPath) -> Bool) -> Self {
+    public func onShouldHighlightItemAt(_ handler: @escaping (UICollectionView, IndexPath) -> Bool) -> Self {
         self._shouldHighlightItemAt = handler
         return self
     }
@@ -507,37 +507,37 @@ extension UCollection: UICollectionViewDelegateFlowLayout {
 
 extension UCollection: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        self._willDisplay?(indexPath)
+        self._willDisplay?(collectionView, indexPath)
         (self.sections[indexPath.section].items[indexPath.item] as? UItemableDelegate)?.willDisplay()
     }
 
 	public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-		self._didEndDisplay?(indexPath)
+		self._didEndDisplay?(collectionView, indexPath)
 		(self.sections[indexPath.section].items[indexPath.item] as? UItemableDelegate)?.didEndDisplay()
 	}
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self._didSelectItemAt?(indexPath)
+        self._didSelectItemAt?(collectionView, indexPath)
         (self.sections[indexPath.section].items[indexPath.item] as? UItemableDelegate)?.didSelect()
     }
 
     public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        self._didDeselectItemAt?(indexPath)
+        self._didDeselectItemAt?(collectionView, indexPath)
         (self.sections[indexPath.section].items[indexPath.item] as? UItemableDelegate)?.didDeselect()
     }
 
     public func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
-        self._didHighlightItemAt?(indexPath)
+        self._didHighlightItemAt?(collectionView, indexPath)
         (self.sections[indexPath.section].items[indexPath.item] as? UItemableDelegate)?.didHighlight()
     }
 
     public func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
-        self._didUnhighlightItemAt?(indexPath)
+        self._didUnhighlightItemAt?(collectionView, indexPath)
         (self.sections[indexPath.section].items[indexPath.item] as? UItemableDelegate)?.didUnhighlight()
     }
     
     public func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
-        self._shouldHighlightItemAt?(indexPath) ?? true
+        self._shouldHighlightItemAt?(collectionView, indexPath) ?? true
     }
 }
 

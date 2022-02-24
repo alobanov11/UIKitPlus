@@ -55,7 +55,7 @@ public final class UImagePickerController: NavigationController<ViewController> 
 				EmptyItem()
 			}
 		}
-		.onWillDisplay { index in
+		.onWillDisplay { _, index in
 			let limit = self.fetchOptions.fetchLimit
 			guard index.item == limit - 1 else { return }
 			self.obtainPhotos(with: limit + self.pageSize)

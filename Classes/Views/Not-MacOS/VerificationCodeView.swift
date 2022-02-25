@@ -148,13 +148,13 @@ open class UVerificationCodeView: UIView, AnyDeclarativeProtocol, DeclarativePro
     
     @discardableResult
     public func digitCorners(_ radius: CGFloat, _ corners: UIRectCorner...) -> Self {
-        digitViews.forEach { $0.label.corners(radius, corners) }
+        digitViews.forEach { $0.corners(radius, corners) }
         return self
     }
     
     @discardableResult
     public func digitBorder(_ width: CGFloat, _ color: UIColor) -> Self {
-        digitViews.forEach { $0.label.border(width, color) }
+        digitViews.forEach { $0.border(width, color) }
         return self
     }
     
@@ -166,7 +166,7 @@ open class UVerificationCodeView: UIView, AnyDeclarativeProtocol, DeclarativePro
     
     @discardableResult
     public func digitBorder(_ side: Borders.Side, _ width: CGFloat, _ color: UIColor) -> Self {
-        digitViews.forEach { $0.label.border(side, width, color) }
+        digitViews.forEach { $0.border(side, width, color) }
         return self
     }
     
@@ -178,7 +178,7 @@ open class UVerificationCodeView: UIView, AnyDeclarativeProtocol, DeclarativePro
     
     @discardableResult
     public func removeDigitBorder(_ side: Borders.Side) -> Self {
-        digitViews.forEach { $0.label.removeBorder(side) }
+        digitViews.forEach { $0.removeBorder(side) }
         return self
     }
     

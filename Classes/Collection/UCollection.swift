@@ -106,6 +106,8 @@ open class UCollection: UView {
         collectionView.register(UCollectionDynamicCell.self)
         collectionView.dataSource = self
         collectionView.delegate = self
+		collectionView.dragDelegate = self
+		collectionView.dropDelegate = self
         collectionView.backgroundColor = .clear
         return collectionView
     }()
@@ -264,6 +266,13 @@ open class UCollection: UView {
 		return self
 	}
 
+	var _onPerformDrop: ((UICollectionView, IndexPath, IndexPath) -> Void)?
+
+	public func onPerformDrop(_ handler: @escaping (UICollectionView, IndexPath, IndexPath) -> Void) -> Self {
+		self._onPerformDrop = handler
+		return self
+	}
+
 	// MARK: - Layout
 
 	var _sectionInset: ((USection.Identifier) -> UIEdgeInsets?)?
@@ -330,6 +339,12 @@ open class UCollection: UView {
 	@discardableResult
 	public func paging(_ enabled: Bool) -> Self {
 		self.collectionView.isPagingEnabled = enabled
+		return self
+	}
+
+	@discardableResult
+	public func dragDrop(_ enabled: Bool) -> Self {
+		self.collectionView.dragInteractionEnabled = enabled
 		return self
 	}
 }
@@ -561,6 +576,38 @@ extension UCollection: UIScrollViewDelegate {
 
 	public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
 		self._scrollViewDidEndDecelerating?(self.collectionView)
+	}
+}
+
+extension UCollection: UICollectionViewDragDelegate {
+	public func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+		let item = self.sections[indexPath.section].items[indexPath.item]
+		let itemProvider = NSItemProvider(object: "\(item.identifier.hashValue)" as NSString)
+		let dragItem = UIDragItem(itemProvider: itemProvider)
+		dragItem.localObject = item
+		return [dragItem]
+	}
+}
+
+extension UCollection: UICollectionViewDropDelegate {
+	public func collectionView(_ collectionView: UICollectionView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal {
+		if collectionView.hasActiveDrag {
+			return UICollectionViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
+		}
+		return UICollectionViewDropProposal(operation: .forbidden)
+	}
+
+
+	public func collectionView(_ collectionView: UICollectionView, performDropWith coordinator: UICollectionViewDropCoordinator) {
+		guard coordinator.proposal.operation == .move,
+			  let item = coordinator.items.first,
+			  let sourceIndexPath = item.sourceIndexPath,
+			  let destanationIndexPath = coordinator.destinationIndexPath
+		else {
+			return
+		}
+		self._onPerformDrop?(collectionView, sourceIndexPath, destanationIndexPath)
+		coordinator.drop(item.dragItem, toItemAt: destanationIndexPath)
 	}
 }
 

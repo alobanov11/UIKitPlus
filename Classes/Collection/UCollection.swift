@@ -100,6 +100,8 @@ open class UCollection: UView {
         case section(Changeset)
         case items(Changeset, Int)
     }
+
+	public var animations = true
     
     lazy var collectionView: UICollectionView = {
         let collectionView = self.configuration.collectionView
@@ -347,6 +349,12 @@ open class UCollection: UView {
 		self.collectionView.dragInteractionEnabled = enabled
 		return self
 	}
+
+	@discardableResult
+	public func animations(_ enabled: Bool) -> Self {
+		self.animations = enabled
+		return self
+	}
 }
 
 extension UCollection {
@@ -408,34 +416,45 @@ extension UCollection {
             let itemsChangeset = Changeset(previous: oldItems, current: newItems)
             changesets.append(.items(itemsChangeset, section))
         }
-        
-        self.collectionView.performBatchUpdates({
-            self.sections = newSections
-            changesets.forEach {
-                switch $0 {
-                case let .section(changes):
-                    self.collectionView.deleteSections(changes.removals)
-                    self.collectionView.insertSections(changes.inserts)
-                    changes.moves.forEach {
-                        self.collectionView.moveSection($0.source, toSection: $0.destination)
-                    }
-                case let .items(changes, section):
-                    self.collectionView.deleteItems(at: changes.removals.map { IndexPath(item: $0, section: section) })
-                    self.collectionView.insertItems(at: changes.inserts.map { IndexPath(item: $0, section: section) })
-                    self.collectionView.reloadItems(at: changes.mutations.map { IndexPath(item: $0, section: section) })
-                    changes.moves.forEach {
-                        self.collectionView.moveItem(at: .init(item: $0.source, section: section), to: .init(item: $0.destination, section: section))
-                    }
-                }
-            }
-        }, completion: { _ in
-            self.isChanging = false
-            if self.changesPool > 0 {
-                self.changesPool -= 1
-                self.reloadData()
-            }
-        })
+
+		if self.animations {
+			self.performUpdates(newSections: newSections, changesets: changesets)
+		}
+		else {
+			UIView.performWithoutAnimation {
+				self.performUpdates(newSections: newSections, changesets: changesets)
+			}
+		}
     }
+
+	func performUpdates(newSections: [Section], changesets: [ChangesetData]) {
+		self.collectionView.performBatchUpdates({
+			self.sections = newSections
+			changesets.forEach {
+				switch $0 {
+				case let .section(changes):
+					self.collectionView.deleteSections(changes.removals)
+					self.collectionView.insertSections(changes.inserts)
+					changes.moves.forEach {
+						self.collectionView.moveSection($0.source, toSection: $0.destination)
+					}
+				case let .items(changes, section):
+					self.collectionView.deleteItems(at: changes.removals.map { IndexPath(item: $0, section: section) })
+					self.collectionView.insertItems(at: changes.inserts.map { IndexPath(item: $0, section: section) })
+					self.collectionView.reloadItems(at: changes.mutations.map { IndexPath(item: $0, section: section) })
+					changes.moves.forEach {
+						self.collectionView.moveItem(at: .init(item: $0.source, section: section), to: .init(item: $0.destination, section: section))
+					}
+				}
+			}
+		}, completion: { _ in
+			self.isChanging = false
+			if self.changesPool > 0 {
+				self.changesPool -= 1
+				self.reloadData()
+			}
+		})
+	}
     
     func updateRegistration() {
         self.sections.forEach {

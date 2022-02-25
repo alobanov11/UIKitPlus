@@ -215,6 +215,14 @@ public extension UItemable where Self: UItemableBuilder {
 	}
 }
 
+public protocol UItemableDrag {
+	var canDrag: Bool { get }
+}
+
+public extension UItemableDrag {
+	var canDrag: Bool { true }
+}
+
 public protocol UItemableDelegate {
     func willDisplay()
 	func didEndDisplay()

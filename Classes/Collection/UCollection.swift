@@ -582,6 +582,7 @@ extension UCollection: UIScrollViewDelegate {
 extension UCollection: UICollectionViewDragDelegate {
 	public func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
 		let item = self.sections[indexPath.section].items[indexPath.item]
+		guard (item as? UItemableDrag)?.canDrag == true else { return [] }
 		let itemProvider = NSItemProvider(object: "\(item.identifier.hashValue)" as NSString)
 		let dragItem = UIDragItem(itemProvider: itemProvider)
 		dragItem.localObject = item

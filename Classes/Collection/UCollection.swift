@@ -221,9 +221,9 @@ open class UCollection: UView {
         return self
     }
 
-	var _didEndDisplay: ((UICollectionView, IndexPath) -> Void)?
+	var _didEndDisplay: ((UICollectionView, UICollectionViewCell, IndexPath) -> Void)?
 
-	public func onDidEndDisplay(_ handler: @escaping (UICollectionView, IndexPath) -> Void) -> Self {
+	public func onDidEndDisplay(_ handler: @escaping (UICollectionView, UICollectionViewCell, IndexPath) -> Void) -> Self {
 		self._didEndDisplay = handler
 		return self
 	}
@@ -270,6 +270,13 @@ open class UCollection: UView {
 		return self
 	}
 
+	var _scrollViewDidEndDragging: ((UICollectionView, Bool) -> Void)?
+
+	public func onScrollViewDidEndDragging(_ handler: @escaping (UICollectionView, Bool) -> Void) -> Self {
+		self._scrollViewDidEndDragging = handler
+		return self
+	}
+
 	var _onPerformDrop: ((UICollectionView, IndexPath, IndexPath) -> Void)?
 
 	public func onPerformDrop(_ handler: @escaping (UICollectionView, IndexPath, IndexPath) -> Void) -> Self {
@@ -279,14 +286,14 @@ open class UCollection: UView {
 
 	var _prefetchItemsAt: ((UICollectionView, [IndexPath]) -> Void)?
 
-	public func prefetchItemsAt(_ handler: @escaping (UICollectionView, [IndexPath]) -> Void) -> Self {
+	public func onPrefetchItemsAt(_ handler: @escaping (UICollectionView, [IndexPath]) -> Void) -> Self {
 		self._prefetchItemsAt = handler
 		return self
 	}
 
 	var _cancelPrefetchingForItemsAt: ((UICollectionView, [IndexPath]) -> Void)?
 
-	public func cancelPrefetchingForItemsAt(_ handler: @escaping (UICollectionView, [IndexPath]) -> Void) -> Self {
+	public func onCancelPrefetchingForItemsAt(_ handler: @escaping (UICollectionView, [IndexPath]) -> Void) -> Self {
 		self._cancelPrefetchingForItemsAt = handler
 		return self
 	}
@@ -568,7 +575,7 @@ extension UCollection: UICollectionViewDelegate {
     }
 
 	public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-		self._didEndDisplay?(collectionView, indexPath)
+		self._didEndDisplay?(collectionView, cell, indexPath)
 		(self.sections[indexPath.section].items[indexPath.item] as? UItemableDelegate)?.didEndDisplay()
 	}
     
@@ -617,6 +624,10 @@ extension UCollection: UIScrollViewDelegate {
 
 	public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
 		self._scrollViewDidEndDecelerating?(self.collectionView)
+	}
+
+	public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+		self._scrollViewDidEndDragging?(self.collectionView, decelerate)
 	}
 }
 

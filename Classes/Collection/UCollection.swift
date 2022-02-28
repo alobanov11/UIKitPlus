@@ -118,7 +118,7 @@ open class UCollection: UView {
     var collectionViewOriginalSize: CGSize {
         let size = self.collectionView.frame.size
         let contentInset = self.collectionView.contentInset
-        let safeInset = self.collectionView.safeInsets
+		let safeInset = self.isSafeAreaIncluded ? self.collectionView.safeInsets : .zero
         return CGSize(
             width: size.width - (contentInset.left + contentInset.right) - (safeInset.left + safeInset.right),
             height: size.height - (contentInset.top + contentInset.bottom) - (safeInset.top + safeInset.bottom)
@@ -138,6 +138,7 @@ open class UCollection: UView {
     var isChanging = false
     var isInitialized = false
 	var reversed = false
+	var isSafeAreaIncluded = true
     
     let configuration: Configuration
     let items: [USectionItemable]
@@ -368,6 +369,12 @@ open class UCollection: UView {
 	@discardableResult
 	public func animations(_ enabled: Bool) -> Self {
 		self.animations = enabled
+		return self
+	}
+
+	@discardableResult
+	public func includeSafeArea(_ value: Bool) -> Self {
+		self.isSafeAreaIncluded = value
 		return self
 	}
 }

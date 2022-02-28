@@ -110,6 +110,7 @@ open class UCollection: UView {
         collectionView.delegate = self
 		collectionView.dragDelegate = self
 		collectionView.dropDelegate = self
+		collectionView.prefetchDataSource = self
         collectionView.backgroundColor = .clear
         return collectionView
     }()
@@ -272,6 +273,20 @@ open class UCollection: UView {
 
 	public func onPerformDrop(_ handler: @escaping (UICollectionView, IndexPath, IndexPath) -> Void) -> Self {
 		self._onPerformDrop = handler
+		return self
+	}
+
+	var _prefetchItemsAt: ((UICollectionView, [IndexPath]) -> Void)?
+
+	public func prefetchItemsAt(_ handler: @escaping (UICollectionView, [IndexPath]) -> Void) -> Self {
+		self._prefetchItemsAt = handler
+		return self
+	}
+
+	var _cancelPrefetchingForItemsAt: ((UICollectionView, [IndexPath]) -> Void)?
+
+	public func cancelPrefetchingForItemsAt(_ handler: @escaping (UICollectionView, [IndexPath]) -> Void) -> Self {
+		self._cancelPrefetchingForItemsAt = handler
 		return self
 	}
 
@@ -628,6 +643,16 @@ extension UCollection: UICollectionViewDropDelegate {
 		}
 		self._onPerformDrop?(collectionView, sourceIndexPath, destanationIndexPath)
 		coordinator.drop(item.dragItem, toItemAt: destanationIndexPath)
+	}
+}
+
+extension UCollection: UICollectionViewDataSourcePrefetching {
+	public func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+		self._prefetchItemsAt?(collectionView, indexPaths)
+	}
+
+	public func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
+		self._cancelPrefetchingForItemsAt?(collectionView, indexPaths)
 	}
 }
 

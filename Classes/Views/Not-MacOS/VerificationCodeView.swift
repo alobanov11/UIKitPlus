@@ -68,11 +68,13 @@ open class UVerificationCodeView: UIView, AnyDeclarativeProtocol, DeclarativePro
         movedToSuperview()
     }
     
-    lazy var hiddenTextField = UTextField().edgesToSuperview(top: 0, leading: 0)
-                                                            .alpha(0.05)
-                                                            .keyboard(.numberPad)
-                                                            .editingChanged(edited)
-                                                            .shouldChangeCharacters(shouldChangeCharacters)
+	lazy var hiddenTextField = UTextField()
+		.edgesToSuperview(top: 0, leading: 0)
+		.color(.clear)
+		.alpha(0.05)
+		.keyboard(.numberPad)
+		.editingChanged(edited)
+		.shouldChangeCharacters(shouldChangeCharacters)
     
     var digitViews: [DigitView] = []
     

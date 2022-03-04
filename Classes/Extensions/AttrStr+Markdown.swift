@@ -43,6 +43,14 @@ public enum MarkdownAttributeValue {
 	case bold
 	case italic
 	case link(String)
+
+	var key: NSAttributedString.Key {
+		switch self {
+		case .bold: return MarkdownAttributeKey.bold
+		case .italic: return MarkdownAttributeKey.italic
+		case .link: return MarkdownAttributeKey.link
+		}
+	}
 }
 
 extension AttributedString {
@@ -98,6 +106,32 @@ extension AttributedString {
 		}
 
 		return markdownRange
+	}
+
+	public static func toggleMarkdownAttribute(
+		in attributedString: NSAttributedString,
+		range: NSRange,
+		value: MarkdownAttributeValue,
+		attributes: MarkdownAttributes
+	) -> NSAttributedString {
+		let attributedString = NSMutableAttributedString(attributedString: attributedString)
+
+		var hasAttribute = false
+
+		attributedString.enumerateAttributes(in: range, options: []) { attributes, range, _ in
+			hasAttribute = attributes.keys.contains(value.key)
+		}
+
+		if hasAttribute {
+			attributedString.removeAttribute(value.key, range: range)
+		}
+		else {
+			attributedString.addAttribute(value.key, value: value, range: range)
+		}
+
+		let markdownString = self.parseAttributedStringToMarkdown(attributedString)
+
+		return self.parseMarkdownString(markdownString.string, attributes: attributes)
 	}
 }
 

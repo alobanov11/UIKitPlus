@@ -64,6 +64,8 @@ open class AttributedString: AnyString, BodyBuilderItemable {
     public func onUpdate(_ handler: @escaping (NSAttributedString) -> Void) {
         _updateHandler = handler
     }
+
+	public var string: String { self.attributedString.string }
     
     public var attributedString: NSAttributedString { _attributedString }
     
@@ -96,13 +98,19 @@ open class AttributedString: AnyString, BodyBuilderItemable {
         _attributedString = .init(string: String(localized))
         _setup()
     }
-    
+
     private func _setup() {
         _paragraphStyle.onUpdate { [weak self] in
             guard let self = self else { return }
             self.paragraphStyle(self._paragraphStyle)
         }
     }
+
+	@discardableResult
+	func addAttributes(_ attrs: [NSAttributedString.Key: Any], at range: Range<String.Index>? = nil) -> AttributedString {
+		attrs.forEach { self.addAttribute($0.key, $0.value, at: range) }
+		return self
+	}
     
     @discardableResult
     func addAttribute(_ attr: NSAttributedString.Key, _ value: Any, at range: Range<String.Index>? = nil) -> AttributedString {

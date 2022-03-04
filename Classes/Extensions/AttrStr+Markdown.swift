@@ -47,11 +47,11 @@ public enum MarkdownAttributeValue {
 
 extension AttributedString {
 	public convenience init(_ string: String, attributes: MarkdownAttributes) {
-		self.init(AttributedString.parseMarkdownString(string, attributes: attributes))
+		self.init(AttrStr.parseMarkdownString(string, attributes: attributes))
 	}
 
 	public static func parseMarkdownString(_ string: String, attributes: MarkdownAttributes) -> NSAttributedString {
-		AttributedString(string)
+		AttrStr(string)
 			.addAttribute(.foregroundColor, attributes.body.textColor)
 			.addAttribute(.font, attributes.body.font)
 			.parseLinkFromMarkdown(attributes.link)
@@ -61,16 +61,48 @@ extension AttributedString {
 	}
 
 	public static func parseAttributedStringToMarkdown(_ attributedString: NSAttributedString) -> NSAttributedString {
-		AttributedString(attributedString)
+		AttrStr(attributedString)
 			.parseBoldToMarkdown()
 			.parseItalicToMarkdown()
 			.parseLinkToMarkdown()
 			.attributedString
 	}
+
+	public static func convertRange(_ attributedString: NSAttributedString, with range: NSRange) -> NSRange {
+		let attributedString = NSMutableAttributedString(attributedString: attributedString)
+		let attributeKey = NSAttributedString.Key(rawValue: "Attribute__Pointer")
+
+		if range.length == 0 {
+			let pointer = NSMutableAttributedString(string: "?")
+			pointer.addAttribute(attributeKey, value: 0, range: NSRange(location: 0, length: 1))
+			attributedString.insert(pointer, at: range.location)
+		}
+		else {
+			attributedString.addAttribute(attributeKey, value: 0, range: range)
+		}
+
+		let markdownString = NSMutableAttributedString(attributedString: self.parseAttributedStringToMarkdown(attributedString))
+		let wholeRange = NSRange(location: 0, length: markdownString.length)
+		var markdownRange: NSRange!
+
+		markdownString.enumerateAttributes(in: wholeRange, options: []) { attributes, range, _ in
+			if attributes.keys.contains(attributeKey) {
+				if range.length == 0 {
+					markdownRange = NSRange(location: range.location, length: 0)
+					markdownString.replaceCharacters(in: range, with: "")
+				}
+				else {
+					markdownRange = range
+				}
+			}
+		}
+
+		return markdownRange
+	}
 }
 
 private extension AttributedString {
-	func parseBoldFromMarkdown(_ attributes: MarkdownAttributeSet) -> AttributedString {
+	func parseBoldFromMarkdown(_ attributes: MarkdownAttributeSet) -> AttrStr {
 		let regex = "(\\*\\*|__)(?=\\S)(?:.+?[*_]*)(?<=\\S)\\1"
 		let result = NSMutableAttributedString(attributedString: self.attributedString)
 		var matches = self.matches(regex: regex, string: result.string)
@@ -86,7 +118,7 @@ private extension AttributedString {
 
 			result.replaceCharacters(
 				in: match.range,
-				with: AttributedString(replacedString)
+				with: AttrStr(replacedString)
 					.addAttributes(originalAttributes)
 					.removeAttribute(.font)
 					.addAttribute(.font, (originalAttributes[.font] as? UIFont)?.withTraits(.traitBold) ?? attributes.font.withTraits(.traitBold))
@@ -98,10 +130,10 @@ private extension AttributedString {
 		}
 		while matches.isEmpty == false
 
-		return AttributedString(result)
+		return AttrStr(result)
 	}
 
-	func parseItalicFromMarkdown(_ attributes: MarkdownAttributeSet) -> AttributedString {
+	func parseItalicFromMarkdown(_ attributes: MarkdownAttributeSet) -> AttrStr {
 		let regex = "(\\*|_)(?=\\S)(.+?)(?<=\\S)\\1"
 		let result = NSMutableAttributedString(attributedString: self.attributedString)
 		var matches = self.matches(regex: regex, string: result.string)
@@ -117,7 +149,7 @@ private extension AttributedString {
 
 			result.replaceCharacters(
 				in: match.range,
-				with: AttributedString(replacedString)
+				with: AttrStr(replacedString)
 					.addAttributes(originalAttributes)
 					.removeAttribute(.font)
 					.addAttribute(.font, (originalAttributes[.font] as? UIFont)?.withTraits(.traitItalic) ?? attributes.font.withTraits(.traitItalic))
@@ -129,10 +161,10 @@ private extension AttributedString {
 		}
 		while matches.isEmpty == false
 
-		return AttributedString(result)
+		return AttrStr(result)
 	}
 
-	func parseLinkFromMarkdown(_ attributes: MarkdownAttributeSet) -> AttributedString {
+	func parseLinkFromMarkdown(_ attributes: MarkdownAttributeSet) -> AttrStr {
 		let regex = "\\[([^\\[]+)\\]\\([ \t]*<?(.*?)>?[ \t]*((['\"])(.*?)\\4)?\\)"
 		let result = NSMutableAttributedString(attributedString: self.attributedString)
 		var matches = self.matches(regex: regex, string: result.string)
@@ -148,7 +180,7 @@ private extension AttributedString {
 
 			result.replaceCharacters(
 				in: match.range,
-				with: AttributedString(titleString)
+				with: AttrStr(titleString)
 					.addAttributes(originalAttributes)
 					.removeAttribute(.font)
 					.addAttribute(.font, attributes.font)
@@ -163,7 +195,7 @@ private extension AttributedString {
 		}
 		while matches.isEmpty == false
 
-		return AttributedString(result)
+		return AttrStr(result)
 	}
 
 	func matches(regex: String, string: String) -> [NSTextCheckingResult] {
@@ -176,7 +208,7 @@ private extension AttributedString {
 }
 
 private extension AttributedString {
-	func parseBoldToMarkdown() -> AttributedString {
+	func parseBoldToMarkdown() -> AttrStr {
 		let result = NSMutableAttributedString(attributedString: self.attributedString)
 		var ranges = result.attributes(MarkdownAttributeKey.bold)
 
@@ -189,7 +221,7 @@ private extension AttributedString {
 
 			result.replaceCharacters(
 				in: range,
-				with: AttributedString("**\(originalString)**")
+				with: AttrStr("**\(originalString)**")
 					.addAttributes(originalAttributes)
 					.removeAttribute(MarkdownAttributeKey.bold)
 					.attributedString
@@ -199,10 +231,10 @@ private extension AttributedString {
 		}
 		while ranges.isEmpty == false
 
-		return AttributedString(result)
+		return AttrStr(result)
 	}
 
-	func parseItalicToMarkdown() -> AttributedString {
+	func parseItalicToMarkdown() -> AttrStr {
 		let result = NSMutableAttributedString(attributedString: self.attributedString)
 		var ranges = result.attributes(MarkdownAttributeKey.italic)
 
@@ -215,7 +247,7 @@ private extension AttributedString {
 
 			result.replaceCharacters(
 				in: range,
-				with: AttributedString("*\(originalString)*")
+				with: AttrStr("*\(originalString)*")
 					.addAttributes(originalAttributes)
 					.removeAttribute(MarkdownAttributeKey.italic)
 					.attributedString
@@ -225,10 +257,10 @@ private extension AttributedString {
 		}
 		while ranges.isEmpty == false
 
-		return AttributedString(result)
+		return AttrStr(result)
 	}
 
-	func parseLinkToMarkdown() -> AttributedString {
+	func parseLinkToMarkdown() -> AttrStr {
 		let result = NSMutableAttributedString(attributedString: self.attributedString)
 		var ranges = result.attributes(MarkdownAttributeKey.link)
 
@@ -246,7 +278,7 @@ private extension AttributedString {
 
 			result.replaceCharacters(
 				in: range,
-				with: AttributedString("[\(originalString)](\(urlString))")
+				with: AttrStr("[\(originalString)](\(urlString))")
 					.addAttributes(originalAttributes)
 					.removeAttribute(MarkdownAttributeKey.link)
 					.attributedString
@@ -256,7 +288,7 @@ private extension AttributedString {
 		}
 		while ranges.isEmpty == false
 
-		return AttributedString(result)
+		return AttrStr(result)
 	}
 }
 

@@ -97,14 +97,14 @@ extension AttributedString {
 		let wholeRange = NSRange(location: 0, length: markdownString.length)
 		var markdownRange: NSRange!
 
-		markdownString.enumerateAttributes(in: wholeRange, options: []) { attributes, range, _ in
+		markdownString.enumerateAttributes(in: wholeRange, options: []) { attributes, expectedRange, _ in
 			if attributes.keys.contains(attributeKey) {
 				if range.length == 0 {
-					markdownRange = NSRange(location: range.location, length: 0)
-					markdownString.replaceCharacters(in: range, with: "")
+					markdownRange = NSRange(location: expectedRange.location, length: 0)
+					markdownString.replaceCharacters(in: NSRange(location: expectedRange.location, length: 1), with: "")
 				}
 				else {
-					markdownRange = range
+					markdownRange = expectedRange
 				}
 			}
 		}

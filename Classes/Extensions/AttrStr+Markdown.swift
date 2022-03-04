@@ -77,6 +77,10 @@ extension AttributedString {
 	}
 
 	public static func markdownRange(_ attributedString: NSAttributedString, with range: NSRange) -> NSRange {
+		guard attributedString.string.isEmpty == false else {
+			return range
+		}
+
 		let attributedString = NSMutableAttributedString(attributedString: attributedString)
 		let attributeKey = NSAttributedString.Key(rawValue: "Attribute__Pointer")
 
@@ -114,6 +118,10 @@ extension AttributedString {
 		value: MarkdownAttributeValue,
 		attributes: MarkdownAttributes
 	) -> NSAttributedString {
+		guard attributedString.string.isEmpty == false else {
+			return attributedString
+		}
+
 		let attributedString = NSMutableAttributedString(attributedString: attributedString)
 
 		var hasAttribute = false

@@ -55,10 +55,10 @@ public enum MarkdownAttributeValue {
 
 extension AttributedString {
 	public convenience init(_ string: String, attributes: MarkdownAttributes) {
-		self.init(AttrStr.parseMarkdownString(string, attributes: attributes))
+		self.init(AttrStr.parseFromMarkdownToAttributedString(string, attributes: attributes))
 	}
 
-	public static func parseMarkdownString(_ string: String, attributes: MarkdownAttributes) -> NSAttributedString {
+	public static func parseFromMarkdownToAttributedString(_ string: String, attributes: MarkdownAttributes) -> NSAttributedString {
 		AttrStr(string)
 			.addAttribute(.foregroundColor, attributes.body.textColor)
 			.addAttribute(.font, attributes.body.font)
@@ -68,7 +68,7 @@ extension AttributedString {
 			.attributedString
 	}
 
-	public static func parseAttributedStringToMarkdown(_ attributedString: NSAttributedString) -> NSAttributedString {
+	public static func parseFromAttributedStringToMarkdown(_ attributedString: NSAttributedString) -> NSAttributedString {
 		AttrStr(attributedString)
 			.parseBoldToMarkdown()
 			.parseItalicToMarkdown()
@@ -89,7 +89,7 @@ extension AttributedString {
 			attributedString.addAttribute(attributeKey, value: 0, range: range)
 		}
 
-		let markdownString = NSMutableAttributedString(attributedString: self.parseAttributedStringToMarkdown(attributedString))
+		let markdownString = NSMutableAttributedString(attributedString: self.parseFromAttributedStringToMarkdown(attributedString))
 		let wholeRange = NSRange(location: 0, length: markdownString.length)
 		var markdownRange: NSRange!
 
@@ -108,7 +108,7 @@ extension AttributedString {
 		return markdownRange
 	}
 
-	public static func toggleMarkdownAttribute(
+	public static func toggleMarkdownAttributeInAttributedString(
 		in attributedString: NSAttributedString,
 		range: NSRange,
 		value: MarkdownAttributeValue,
@@ -129,9 +129,9 @@ extension AttributedString {
 			attributedString.addAttribute(value.key, value: value, range: range)
 		}
 
-		let markdownString = self.parseAttributedStringToMarkdown(attributedString)
+		let markdownString = self.parseFromAttributedStringToMarkdown(attributedString)
 
-		return self.parseMarkdownString(markdownString.string, attributes: attributes)
+		return self.parseFromMarkdownToAttributedString(markdownString.string, attributes: attributes)
 	}
 }
 

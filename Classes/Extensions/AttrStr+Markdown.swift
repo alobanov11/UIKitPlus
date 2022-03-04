@@ -68,7 +68,7 @@ extension AttributedString {
 			.attributedString
 	}
 
-	public static func convertRange(_ attributedString: NSAttributedString, with range: NSRange) -> NSRange {
+	public static func markdownRange(_ attributedString: NSAttributedString, with range: NSRange) -> NSRange {
 		let attributedString = NSMutableAttributedString(attributedString: attributedString)
 		let attributeKey = NSAttributedString.Key(rawValue: "Attribute__Pointer")
 

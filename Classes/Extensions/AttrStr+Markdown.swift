@@ -46,10 +46,6 @@ public enum MarkdownAttributeValue {
 }
 
 extension AttributedString {
-	public var markdownString: String {
-		AttributedString.parseAttributedStringToMarkdown(self.attributedString)
-	}
-
 	public convenience init(_ string: String, attributes: MarkdownAttributes) {
 		self.init(AttributedString.parseMarkdownString(string, attributes: attributes))
 	}
@@ -64,12 +60,12 @@ extension AttributedString {
 			.attributedString
 	}
 
-	public static func parseAttributedStringToMarkdown(_ attributedString: NSAttributedString) -> String {
+	public static func parseAttributedStringToMarkdown(_ attributedString: NSAttributedString) -> NSAttributedString {
 		AttributedString(attributedString)
 			.parseBoldToMarkdown()
 			.parseItalicToMarkdown()
 			.parseLinkToMarkdown()
-			.string
+			.attributedString
 	}
 }
 

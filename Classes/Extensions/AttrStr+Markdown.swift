@@ -88,18 +88,24 @@ extension AttributedString {
 
 		let attributedString = NSMutableAttributedString(attributedString: attributedString)
 		let originalString = attributedString.string.substring(with: range.lowerBound ..< range.upperBound)
+		let originalAttributedString = NSMutableAttributedString(string: originalString)
 
-		let hasAttribute = (range.lowerBound ..< range.upperBound).map {
-			attributedString.attributes(at: $0, effectiveRange: nil).keys.contains(value.key)
+		var hasAttribute = false
+
+		(range.lowerBound ..< range.upperBound).enumerated().forEach {
+			var attributes = attributedString.attributes(at: $0.element, effectiveRange: nil)
+			if attributes.keys.contains(value.key) {
+				attributes[value.key] = nil
+				hasAttribute = true
+			}
+			originalAttributedString.addAttributes(attributes, range: NSRange(location: $0.offset, length: 1))
 		}
 
-		let originalAttributedString = AttrStr(originalString)
-
-		if hasAttribute.allSatisfy({ $0 == false }) {
-			originalAttributedString.addAttribute(value.key, value)
+		if hasAttribute == false {
+			originalAttributedString.addAttribute(value.key, value: value, range: NSRange(location: 0, length: originalString.count))
 		}
 
-		attributedString.replaceCharacters(in: range, with: originalAttributedString.attributedString)
+		attributedString.replaceCharacters(in: range, with: originalAttributedString)
 
 		let markdownString = self.parseFromAttributedStringToMarkdown(attributedString)
 

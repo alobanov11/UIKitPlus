@@ -336,8 +336,13 @@ private extension String {
 		var index = 0
 		var result = 0
 		repeat {
-			if Array(self)[index].isWhitespace { result += 1 }
-			index += 1
+			if Array(self)[index].isWhitespace {
+				result += 1
+				index += 1
+			}
+			else {
+				break
+			}
 		}
 		while index < self.count
 		return Array(repeating: " ", count: result).joined()
@@ -348,8 +353,13 @@ private extension String {
 		var index = self.count - 1
 		var result = 0
 		repeat {
-			if Array(self)[index].isWhitespace { result += 1 }
-			index -= 1
+			if Array(self)[index].isWhitespace {
+				result += 1
+				index -= 1
+			}
+			else {
+				break
+			}
 		}
 		while index >= 0
 		return Array(repeating: " ", count: result).joined()

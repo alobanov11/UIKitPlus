@@ -87,7 +87,6 @@ extension AttributedString {
 		}
 
 		let attributedString = NSMutableAttributedString(attributedString: attributedString)
-		let originalAttributes = attributedString.attributes(at: range.location, longestEffectiveRange: nil, in: range)
 		let originalString = attributedString.string.substring(with: range.lowerBound ..< range.upperBound)
 
 		let hasAttribute = (range.lowerBound ..< range.upperBound).map {
@@ -95,13 +94,9 @@ extension AttributedString {
 		}
 
 		let originalAttributedString = AttrStr(originalString)
-			.addAttributes(originalAttributes)
 
-		if hasAttribute.allSatisfy({ $0 }) == false {
+		if hasAttribute.allSatisfy({ $0 == false }) {
 			originalAttributedString.addAttribute(value.key, value)
-		}
-		else {
-			originalAttributedString.removeAttribute(value.key)
 		}
 
 		attributedString.replaceCharacters(in: range, with: originalAttributedString.attributedString)

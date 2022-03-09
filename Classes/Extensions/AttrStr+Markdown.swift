@@ -87,17 +87,24 @@ extension AttributedString {
 		}
 
 		let attributedString = NSMutableAttributedString(attributedString: attributedString)
+		let originalAttributes = attributedString.attributes(at: range.location, longestEffectiveRange: nil, in: range)
+		let originalString = attributedString.string.substring(with: range.lowerBound ..< range.upperBound)
 
 		let hasAttribute = (range.lowerBound ..< range.upperBound).map {
 			attributedString.attributes(at: $0, effectiveRange: nil).keys.contains(value.key)
 		}
 
+		let originalAttributedString = AttrStr(originalString)
+			.addAttributes(originalAttributes)
+
 		if hasAttribute.allSatisfy({ $0 }) == false {
-			attributedString.addAttribute(value.key, value: value, range: range)
+			originalAttributedString.addAttribute(value.key, value)
 		}
 		else {
-			attributedString.removeAttribute(value.key, range: range)
+			originalAttributedString.removeAttribute(value.key)
 		}
+
+		attributedString.replaceCharacters(in: range, with: originalAttributedString.attributedString)
 
 		let markdownString = self.parseFromAttributedStringToMarkdown(attributedString)
 

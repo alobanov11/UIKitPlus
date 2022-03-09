@@ -88,17 +88,15 @@ extension AttributedString {
 
 		let attributedString = NSMutableAttributedString(attributedString: attributedString)
 
-		var hasAttribute = false
-
-		attributedString.enumerateAttributes(in: range, options: []) { attributes, range, _ in
-			hasAttribute = attributes.keys.contains(value.key)
+		let hasAttribute = (range.lowerBound ..< range.upperBound).map {
+			attributedString.attributes(at: $0, effectiveRange: nil).keys.contains(value.key)
 		}
 
-		if hasAttribute {
-			attributedString.removeAttribute(value.key, range: range)
+		if hasAttribute.allSatisfy({ $0 }) == false {
+			attributedString.addAttribute(value.key, value: value, range: range)
 		}
 		else {
-			attributedString.addAttribute(value.key, value: value, range: range)
+			attributedString.removeAttribute(value.key, range: range)
 		}
 
 		let markdownString = self.parseFromAttributedStringToMarkdown(attributedString)
@@ -227,7 +225,7 @@ private extension AttributedString {
 
 			result.replaceCharacters(
 				in: range,
-				with: AttrStr("\(originalString.leadingSpaces())**\(originalString.trimmingCharacters(in: .whitespaces))**\(originalString.trailingSpaces())")
+				with: AttrStr("**\(originalString)**")
 					.addAttributes(originalAttributes)
 					.removeAttribute(MarkdownAttributeKey.bold)
 					.attributedString
@@ -253,7 +251,7 @@ private extension AttributedString {
 
 			result.replaceCharacters(
 				in: range,
-				with: AttrStr("\(originalString.leadingSpaces())*\(originalString.trimmingCharacters(in: .whitespaces))*\(originalString.trailingSpaces())")
+				with: AttrStr("*\(originalString)*")
 					.addAttributes(originalAttributes)
 					.removeAttribute(MarkdownAttributeKey.italic)
 					.attributedString
@@ -284,7 +282,7 @@ private extension AttributedString {
 
 			result.replaceCharacters(
 				in: range,
-				with: AttrStr("\(originalString.leadingSpaces())[\(originalString.trimmingCharacters(in: .whitespaces))](\(urlString))\(originalString.trailingSpaces())")
+				with: AttrStr("[\(originalString)](\(urlString))")
 					.addAttributes(originalAttributes)
 					.removeAttribute(MarkdownAttributeKey.link)
 					.attributedString
@@ -329,40 +327,6 @@ private extension String {
 
 	func chopSuffix(_ count: Int) -> String {
 		substring(to: index(endIndex, offsetBy: -count))
-	}
-
-	func leadingSpaces() -> String {
-		guard self.isEmpty == false else { return "" }
-		var index = 0
-		var result = 0
-		repeat {
-			if Array(self)[index].isWhitespace {
-				result += 1
-				index += 1
-			}
-			else {
-				break
-			}
-		}
-		while index < self.count
-		return Array(repeating: " ", count: result).joined()
-	}
-
-	func trailingSpaces() -> String {
-		guard self.isEmpty == false else { return "" }
-		var index = self.count - 1
-		var result = 0
-		repeat {
-			if Array(self)[index].isWhitespace {
-				result += 1
-				index -= 1
-			}
-			else {
-				break
-			}
-		}
-		while index >= 0
-		return Array(repeating: " ", count: result).joined()
 	}
 }
 

@@ -70,6 +70,7 @@ extension AttributedString {
 
 	public static func parseFromAttributedStringToMarkdown(_ attributedString: NSAttributedString) -> NSAttributedString {
 		AttrStr(attributedString)
+			.cleanupSpaces()
 			.parseBoldToMarkdown()
 			.parseItalicToMarkdown()
 			.parseLinkToMarkdown()
@@ -86,7 +87,8 @@ extension AttributedString {
 			return attributedString
 		}
 
-		let attributedString = NSMutableAttributedString(attributedString: attributedString)
+		let cleanedString = AttrStr(attributedString).cleanupSpaces().attributedString
+		let attributedString = NSMutableAttributedString(attributedString: cleanedString)
 		let originalString = attributedString.attributedSubstring(from: range).string
 		let originalAttributedString = NSMutableAttributedString(string: originalString)
 
@@ -220,6 +222,16 @@ private extension AttributedString {
 }
 
 private extension AttributedString {
+	func cleanupSpaces() -> AttrStr {
+		let result = NSMutableAttributedString(attributedString: self.attributedString)
+		Array(result.string).enumerated().forEach {
+			if $0.element.isWhitespace {
+				result.setAttributes(nil, range: NSRange(location: $0.offset, length: 1))
+			}
+		}
+		return AttrStr(result)
+	}
+
 	func parseBoldToMarkdown() -> AttrStr {
 		let result = NSMutableAttributedString(attributedString: self.attributedString)
 		var ranges = result.attributes(MarkdownAttributeKey.bold)

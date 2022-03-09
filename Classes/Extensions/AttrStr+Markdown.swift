@@ -87,7 +87,7 @@ extension AttributedString {
 		}
 
 		let attributedString = NSMutableAttributedString(attributedString: attributedString)
-		let originalString = attributedString.string.substring(with: range.lowerBound ..< range.upperBound)
+		let originalString = attributedString.attributedSubstring(from: range).string
 		let originalAttributedString = NSMutableAttributedString(string: originalString)
 
 		var hasAttribute = false

@@ -309,7 +309,7 @@ private extension AttributedString {
 			let originalString = NSMutableAttributedString(attributedString: result.attributedSubstring(from: range))
 
 			originalString.insert(NSAttributedString(string: "["), at: 0)
-			originalString.append(NSAttributedString(string: "](\(urlString)"))
+			originalString.append(NSAttributedString(string: "](\(urlString))"))
 			originalString.removeAttribute(MarkdownAttributeKey.link, range: NSRange(location: 0, length: originalString.length))
 			result.replaceCharacters(in: range, with: originalString)
 

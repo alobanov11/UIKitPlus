@@ -157,7 +157,7 @@ extension AttributedString {
 
 private extension AttributedString {
 	func parseBoldFromMarkdown() -> AttrStr {
-		let regex = "(\\*\\*|__)(?=\\S)(?:.+?[*_]*)(?<=\\S)\\1"
+		let regex = "(.?|^)(\\*\\*|__)(?=\\S)(.+?)(?<=\\S)(\\2)"
 		let result = NSMutableAttributedString(attributedString: self.attributedString)
 		var matches = self.matches(regex: regex, string: result.string)
 
@@ -165,12 +165,10 @@ private extension AttributedString {
 
 		repeat {
 			let match = matches.removeFirst()
-			let range = NSRange(location: match.range.location + 2, length: match.range.length - 4)
-			let newRange = NSRange(location: match.range.location, length: range.length)
-			let originalString = result.attributedSubstring(from: range)
 
-			result.replaceCharacters(in: match.range, with: originalString)
-			result.addAttribute(MarkdownAttributeKey.bold, value: MarkdownAttributeValue.bold, range: newRange)
+			result.deleteCharacters(in: match.range(at: 4))
+			result.addAttribute(MarkdownAttributeKey.bold, value: MarkdownAttributeValue.bold, range: match.range(at: 3))
+			result.deleteCharacters(in: match.range(at: 2))
 
 			matches = self.matches(regex: regex, string: result.string)
 		}
@@ -180,7 +178,7 @@ private extension AttributedString {
 	}
 
 	func parseItalicFromMarkdown() -> AttrStr {
-		let regex = "(\\*|_)(?=\\S)(.+?)(?<=\\S)\\1"
+		let regex = "(.?|^)(\\*|_)(?=\\S)(.+?)(?<![\\*_\\s])(\\2)"
 		let result = NSMutableAttributedString(attributedString: self.attributedString)
 		var matches = self.matches(regex: regex, string: result.string)
 
@@ -188,12 +186,10 @@ private extension AttributedString {
 
 		repeat {
 			let match = matches.removeFirst()
-			let range = NSRange(location: match.range.location + 1, length: match.range.length - 2)
-			let newRange = NSRange(location: match.range.location, length: range.length)
-			let originalString = result.attributedSubstring(from: range)
 
-			result.replaceCharacters(in: match.range, with: originalString)
-			result.addAttribute(MarkdownAttributeKey.italic, value: MarkdownAttributeValue.italic, range: newRange)
+			result.deleteCharacters(in: match.range(at: 4))
+			result.addAttribute(MarkdownAttributeKey.italic, value: MarkdownAttributeValue.italic, range: match.range(at: 3))
+			result.deleteCharacters(in: match.range(at: 2))
 
 			matches = self.matches(regex: regex, string: result.string)
 		}

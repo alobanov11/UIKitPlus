@@ -86,31 +86,24 @@ extension AttributedString {
 			return attributedString
 		}
 
-		let attributedString = NSMutableAttributedString(attributedString: attributedString)
-		let originalString = attributedString.attributedSubstring(from: range).string
-		let originalAttributedString = NSMutableAttributedString(string: originalString)
+		let result = NSMutableAttributedString(attributedString: attributedString)
+		let string = attributedString.string
+		let hasAttribute = (attributedString.attributedSubstring(from: range).attributes(value.key).isEmpty == false)
 
-		var hasAttribute = false
-
-		(range.lowerBound ..< range.upperBound).enumerated().forEach {
-			var attributes = attributedString.attributes(at: $0.element, effectiveRange: nil)
-			if attributes.keys.contains(value.key) {
-				attributes[value.key] = nil
-				hasAttribute = true
-			}
-			if Array(originalString)[$0.offset].isWhitespace {
-				attributes = [:]
-			}
-			originalAttributedString.addAttributes(attributes, range: NSRange(location: $0.offset, length: 1))
+		if hasAttribute {
+			result.removeAttribute(value.key, range: range)
+		}
+		else {
+			result.addAttribute(value.key, value: value, range: range)
 		}
 
-		if hasAttribute == false {
-			originalAttributedString.addAttribute(value.key, value: value, range: NSRange(location: 0, length: originalString.count))
+		(range.lowerBound ..< range.upperBound).forEach {
+			if Array(string)[$0].isWhitespace {
+				result.setAttributes(nil, range: NSRange(location: $0, length: 1))
+			}
 		}
 
-		attributedString.replaceCharacters(in: range, with: originalAttributedString)
-
-		let markdownString = self.parseFromAttributedStringToMarkdown(attributedString)
+		let markdownString = self.parseFromAttributedStringToMarkdown(result)
 
 		return self.parseFromMarkdownToAttributedString(markdownString.string, attributes: attributes)
 	}
@@ -307,11 +300,11 @@ private extension AttributedString {
 	}
 }
 
-private extension NSMutableAttributedString {
+private extension NSAttributedString {
 	func attributes(_ key: NSAttributedString.Key) -> [(NSRange, Any)] {
 		var ranges: [(NSRange, Any)] = []
 
-		self.attributedString.enumerateAttributes(in: NSRange(location: 0, length: self.attributedString.length), options: []) { attributes, range, _ in
+		self.enumerateAttributes(in: NSRange(location: 0, length: self.length), options: []) { attributes, range, _ in
 			if let value = attributes[key] {
 				ranges.append((range, value))
 			}

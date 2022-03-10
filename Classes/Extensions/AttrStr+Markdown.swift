@@ -277,8 +277,8 @@ private extension AttributedString {
 			let (range, _) = ranges.removeFirst()
 			let originalString = NSMutableAttributedString(attributedString: result.attributedSubstring(from: range))
 
-			originalString.insert(NSAttributedString(string: "*"), at: 0)
-			originalString.append(NSAttributedString(string: "*"))
+			originalString.insert(NSAttributedString(string: "_"), at: 0)
+			originalString.append(NSAttributedString(string: "_"))
 			originalString.removeAttribute(MarkdownAttributeKey.italic, range: NSRange(location: 0, length: originalString.length))
 			result.replaceCharacters(in: range, with: originalString)
 

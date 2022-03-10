@@ -5,6 +5,17 @@
 import Foundation
 import UIKit
 
+public struct MarkdownFontAttributes: OptionSet {
+	public var rawValue: Int32 = 0
+
+	public init(rawValue: Int32) {
+		self.rawValue = rawValue
+	}
+
+	public static let bold = MarkdownFontAttributes(rawValue: 1 << 0)
+	public static let italic = MarkdownFontAttributes(rawValue: 1 << 1)
+}
+
 public final class MarkdownAttributeSet {
 	public let font: UIFont
 	public let textColor: UIColor
@@ -59,13 +70,54 @@ extension AttributedString {
 	}
 
 	public static func parseFromMarkdownToAttributedString(_ string: String, attributes: MarkdownAttributes) -> NSAttributedString {
-		AttrStr(string)
-			.addAttribute(.foregroundColor, attributes.body.textColor)
-			.addAttribute(.font, attributes.body.font)
-			.parseLinkFromMarkdown(attributes.link)
-			.parseBoldFromMarkdown(attributes.bold)
-			.parseItalicFromMarkdown(attributes.body)
+		let stateText = AttrStr(string)
+			.parseLinkFromMarkdown()
+			.parseBoldFromMarkdown()
+			.parseItalicFromMarkdown()
 			.attributedString
+
+		let result = NSMutableAttributedString(string: stateText.string)
+		let fullRange = NSRange(location: 0, length: result.length)
+
+		result.addAttribute(.font, value: attributes.body.font, range: fullRange)
+		result.addAttribute(.foregroundColor, value: attributes.body.textColor, range: fullRange)
+
+		stateText.enumerateAttributes(in: fullRange, options: [], using: { attrs, range, _ in
+			var fontAttributes: MarkdownFontAttributes = []
+
+			for (key, value) in attrs {
+				if key == MarkdownAttributeKey.link, case let .link(url) = value as? MarkdownAttributeValue {
+					result.addAttribute(key, value: value, range: range)
+					result.addAttribute(.foregroundColor, value: attributes.link.textColor, range: range)
+					result.addAttribute(.link, value: url, range: range)
+				}
+				else if key == MarkdownAttributeKey.bold {
+					result.addAttribute(key, value: value, range: range)
+					fontAttributes.insert(.bold)
+				}
+				else if key == MarkdownAttributeKey.italic {
+					result.addAttribute(key, value: value, range: range)
+					fontAttributes.insert(.italic)
+				}
+			}
+
+			if fontAttributes.isEmpty == false {
+				var font: UIFont?
+				if fontAttributes == [.bold, .italic] {
+					font = attributes.bold.font.withTraits(.traitItalic)
+				} else if fontAttributes == [.bold] {
+					font = attributes.bold.font
+				} else if fontAttributes == [.italic] {
+					font = attributes.body.font.withTraits(.traitItalic)
+				}
+
+				if let font = font {
+					result.addAttribute(NSAttributedString.Key.font, value: font, range: range)
+				}
+			}
+		})
+
+		return result
 	}
 
 	public static func parseFromAttributedStringToMarkdown(_ attributedString: NSAttributedString) -> NSAttributedString {
@@ -88,7 +140,6 @@ extension AttributedString {
 		}
 
 		let result = NSMutableAttributedString(attributedString: attributedString)
-		let string = attributedString.string
 		let hasAttribute = (attributedString.attributedSubstring(from: range).attributes(value.key).isEmpty == false)
 
 		if hasAttribute {
@@ -105,7 +156,7 @@ extension AttributedString {
 }
 
 private extension AttributedString {
-	func parseBoldFromMarkdown(_ attributes: MarkdownAttributeSet) -> AttrStr {
+	func parseBoldFromMarkdown() -> AttrStr {
 		let regex = "(\\*\\*|__)(?=\\S)(?:.+?[*_]*)(?<=\\S)\\1"
 		let result = NSMutableAttributedString(attributedString: self.attributedString)
 		var matches = self.matches(regex: regex, string: result.string)
@@ -114,20 +165,12 @@ private extension AttributedString {
 
 		repeat {
 			let match = matches.removeFirst()
+			let range = NSRange(location: match.range.location + 2, length: match.range.length - 4)
+			let newRange = NSRange(location: match.range.location, length: range.length)
+			let originalString = result.attributedSubstring(from: range)
 
-			let originalAttributes = result.attributes(at: match.range.location, longestEffectiveRange: nil, in: match.range)
-			let originalString = result.string.substring(with: match.range.lowerBound ..< match.range.upperBound)
-			let replacedString = originalString.chopPrefix(2).chopSuffix(2)
-
-			result.replaceCharacters(
-				in: match.range,
-				with: AttrStr(replacedString)
-					.addAttributes(originalAttributes)
-					.removeAttribute(.font)
-					.addAttribute(.font, (originalAttributes[.font] as? UIFont)?.withTraits(.traitBold) ?? attributes.font.withTraits(.traitBold))
-					.addAttribute(MarkdownAttributeKey.bold, MarkdownAttributeValue.bold)
-					.attributedString
-			)
+			result.replaceCharacters(in: match.range, with: originalString)
+			result.addAttribute(MarkdownAttributeKey.bold, value: MarkdownAttributeValue.bold, range: newRange)
 
 			matches = self.matches(regex: regex, string: result.string)
 		}
@@ -136,7 +179,7 @@ private extension AttributedString {
 		return AttrStr(result)
 	}
 
-	func parseItalicFromMarkdown(_ attributes: MarkdownAttributeSet) -> AttrStr {
+	func parseItalicFromMarkdown() -> AttrStr {
 		let regex = "(\\*|_)(?=\\S)(.+?)(?<=\\S)\\1"
 		let result = NSMutableAttributedString(attributedString: self.attributedString)
 		var matches = self.matches(regex: regex, string: result.string)
@@ -145,20 +188,12 @@ private extension AttributedString {
 
 		repeat {
 			let match = matches.removeFirst()
+			let range = NSRange(location: match.range.location + 1, length: match.range.length - 2)
+			let newRange = NSRange(location: match.range.location, length: range.length)
+			let originalString = result.attributedSubstring(from: range)
 
-			let originalAttributes = result.attributes(at: match.range.location, longestEffectiveRange: nil, in: match.range)
-			let originalString = result.string.substring(with: match.range.lowerBound ..< match.range.upperBound)
-			let replacedString = originalString.chopPrefix(1).chopSuffix(1)
-
-			result.replaceCharacters(
-				in: match.range,
-				with: AttrStr(replacedString)
-					.addAttributes(originalAttributes)
-					.removeAttribute(.font)
-					.addAttribute(.font, (originalAttributes[.font] as? UIFont)?.withTraits(.traitItalic) ?? attributes.font.withTraits(.traitItalic))
-					.addAttribute(MarkdownAttributeKey.italic, MarkdownAttributeValue.italic)
-					.attributedString
-			)
+			result.replaceCharacters(in: match.range, with: originalString)
+			result.addAttribute(MarkdownAttributeKey.italic, value: MarkdownAttributeValue.italic, range: newRange)
 
 			matches = self.matches(regex: regex, string: result.string)
 		}
@@ -167,7 +202,7 @@ private extension AttributedString {
 		return AttrStr(result)
 	}
 
-	func parseLinkFromMarkdown(_ attributes: MarkdownAttributeSet) -> AttrStr {
+	func parseLinkFromMarkdown() -> AttrStr {
 		let regex = "\\[([^\\[]+)\\]\\([ \t]*<?(.*?)>?[ \t]*((['\"])(.*?)\\4)?\\)"
 		let result = NSMutableAttributedString(attributedString: self.attributedString)
 		var matches = self.matches(regex: regex, string: result.string)
@@ -177,22 +212,12 @@ private extension AttributedString {
 		repeat {
 			let match = matches.removeFirst()
 
-			let originalAttributes = result.attributes(at: match.range.location, longestEffectiveRange: nil, in: match.range)
 			let titleString = result.string.substring(with: match.range(at: 1).lowerBound ..< match.range(at: 1).upperBound)
 			let urlString = result.string.substring(with: match.range(at: 2).lowerBound ..< match.range(at: 2).upperBound)
+			let range = NSRange(location: match.range.location, length: titleString.count)
 
-			result.replaceCharacters(
-				in: match.range,
-				with: AttrStr(titleString)
-					.addAttributes(originalAttributes)
-					.removeAttribute(.font)
-					.addAttribute(.font, attributes.font)
-					.removeAttribute(.foregroundColor)
-					.addAttribute(.foregroundColor, attributes.textColor)
-					.link(urlString)
-					.addAttribute(MarkdownAttributeKey.link, MarkdownAttributeValue.link(urlString))
-					.attributedString
-			)
+			result.replaceCharacters(in: match.range, with: titleString)
+			result.addAttribute(MarkdownAttributeKey.link, value: MarkdownAttributeValue.link(urlString), range: range)
 
 			matches = self.matches(regex: regex, string: result.string)
 		}
@@ -232,16 +257,12 @@ private extension AttributedString {
 
 		repeat {
 			let (range, _) = ranges.removeFirst()
-			let originalAttributes = result.attributes(at: range.location, longestEffectiveRange: nil, in: range)
-			let originalString = result.string.substring(with: range.lowerBound ..< range.upperBound)
+			let originalString = NSMutableAttributedString(attributedString: result.attributedSubstring(from: range))
 
-			result.replaceCharacters(
-				in: range,
-				with: AttrStr("**\(originalString)**")
-					.addAttributes(originalAttributes)
-					.removeAttribute(MarkdownAttributeKey.bold)
-					.attributedString
-			)
+			originalString.insert(NSAttributedString(string: "**"), at: 0)
+			originalString.append(NSAttributedString(string: "**"))
+			originalString.removeAttribute(MarkdownAttributeKey.bold, range: NSRange(location: 0, length: originalString.length))
+			result.replaceCharacters(in: range, with: originalString)
 
 			ranges = result.attributes(MarkdownAttributeKey.bold)
 		}
@@ -258,16 +279,12 @@ private extension AttributedString {
 
 		repeat {
 			let (range, _) = ranges.removeFirst()
-			let originalAttributes = result.attributes(at: range.location, longestEffectiveRange: nil, in: range)
-			let originalString = result.string.substring(with: range.lowerBound ..< range.upperBound)
+			let originalString = NSMutableAttributedString(attributedString: result.attributedSubstring(from: range))
 
-			result.replaceCharacters(
-				in: range,
-				with: AttrStr("*\(originalString)*")
-					.addAttributes(originalAttributes)
-					.removeAttribute(MarkdownAttributeKey.italic)
-					.attributedString
-			)
+			originalString.insert(NSAttributedString(string: "*"), at: 0)
+			originalString.append(NSAttributedString(string: "*"))
+			originalString.removeAttribute(MarkdownAttributeKey.italic, range: NSRange(location: 0, length: originalString.length))
+			result.replaceCharacters(in: range, with: originalString)
 
 			ranges = result.attributes(MarkdownAttributeKey.italic)
 		}
@@ -289,16 +306,12 @@ private extension AttributedString {
 				break
 			}
 
-			let originalAttributes = result.attributes(at: range.location, longestEffectiveRange: nil, in: range)
-			let originalString = result.string.substring(with: range.lowerBound ..< range.upperBound)
+			let originalString = NSMutableAttributedString(attributedString: result.attributedSubstring(from: range))
 
-			result.replaceCharacters(
-				in: range,
-				with: AttrStr("[\(originalString)](\(urlString))")
-					.addAttributes(originalAttributes)
-					.removeAttribute(MarkdownAttributeKey.link)
-					.attributedString
-			)
+			originalString.insert(NSAttributedString(string: "["), at: 0)
+			originalString.append(NSAttributedString(string: "](\(urlString)"))
+			originalString.removeAttribute(MarkdownAttributeKey.link, range: NSRange(location: 0, length: originalString.length))
+			result.replaceCharacters(in: range, with: originalString)
 
 			ranges = result.attributes(MarkdownAttributeKey.link)
 		}
@@ -331,14 +344,6 @@ private extension String {
 		let startIndex = index(from: r.lowerBound)
 		let endIndex = index(from: r.upperBound)
 		return String(self[startIndex..<endIndex])
-	}
-
-	func chopPrefix(_ count: Int) -> String {
-		substring(from: index(startIndex, offsetBy: count))
-	}
-
-	func chopSuffix(_ count: Int) -> String {
-		substring(to: index(endIndex, offsetBy: -count))
 	}
 }
 

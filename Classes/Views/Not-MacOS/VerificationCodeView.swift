@@ -338,8 +338,13 @@ extension UVerificationCodeView {
         
         func setupView() {
             body {
-                label.alignment(.center).edgesToSuperview().color($labelColor).font(v: labelFont).background($labelBackground)
+                label
+					.alignment(.center)
+					.edgesToSuperview()
+					.color($labelColor)
+					.font(v: labelFont)
             }
+			.background($labelBackground)
         }
     }
 }

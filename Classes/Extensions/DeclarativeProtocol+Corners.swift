@@ -46,6 +46,7 @@ extension DeclarativeProtocol {
             return self
         }
         _declarativeView._properties.customCorners = CustomCorners(radius: radius, corners: corners)
+		_declarativeView._properties.customCorners?.backgroundColor = declarativeView.backgroundColor
         return self
     }
     

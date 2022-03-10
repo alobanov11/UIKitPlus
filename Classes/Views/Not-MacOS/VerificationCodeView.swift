@@ -76,7 +76,7 @@ open class UVerificationCodeView: UIView, AnyDeclarativeProtocol, DeclarativePro
 		.editingChanged(edited)
 		.shouldChangeCharacters(shouldChangeCharacters)
     
-    var digitViews: [DigitView] = []
+    var digitViews: [UText] = []
     
     var isSecureField = false {
         didSet {
@@ -119,13 +119,10 @@ open class UVerificationCodeView: UIView, AnyDeclarativeProtocol, DeclarativePro
         spaceBetweenDigitViews = margin
         return self
     }
-    
-    private var digitColor: UIColor = .black
-    
-    @discardableResult
+
+	@discardableResult
     public func digitColor(_ color: UIColor) -> Self {
-        digitColor = color
-        digitViews.forEach { $0.labelColor = color }
+		digitViews.forEach { $0.color(color) }
         return self
     }
     
@@ -133,13 +130,10 @@ open class UVerificationCodeView: UIView, AnyDeclarativeProtocol, DeclarativePro
     public func digitColor(_ number: Int) -> Self {
         digitColor(number.color)
     }
-    
-    var digitBackground: UIColor = .clear
-    
+
     @discardableResult
     public func digitBackground(_ color: UIColor) -> Self {
-        digitBackground = color
-        digitViews.forEach { $0.labelBackground = color }
+		digitViews.forEach { $0.background(color) }
         return self
     }
     
@@ -196,7 +190,12 @@ open class UVerificationCodeView: UIView, AnyDeclarativeProtocol, DeclarativePro
     }
     
     func setupView() {
-        digitViews = (0...quantity - 1).map { _ in DigitView().background(digitBackground).width($widthOfDigitView) }
+        digitViews = (0...quantity - 1).map { _ in
+			UText()
+				.alignment(.center)
+				.background(.clear)
+				.width($widthOfDigitView)
+		}
         body {
             hiddenTextField.size(1, 30).content(.oneTimeCode)
             UHStack {
@@ -207,9 +206,8 @@ open class UVerificationCodeView: UIView, AnyDeclarativeProtocol, DeclarativePro
     }
     
     open func edited(_ textField: UTextField) {
-        let labels = digitViews.map { $0.label }
+        let labels = digitViews
         for label in labels {
-            label.textColor = digitColor
             guard let text = hiddenTextField.text else { continue }
             guard let index = labels.firstIndex(of: label) else { continue }
             let letters = text.map { String($0) }
@@ -267,85 +265,6 @@ open class UVerificationCodeView: UIView, AnyDeclarativeProtocol, DeclarativePro
 
 extension VerificationCodeView: _Fontable {
     func _setFont(_ v: UIFont?) {
-        digitViews.forEach { $0.labelFont = v }
+		digitViews.forEach { $0.font(v: v) }
     }
-}
-
-extension UVerificationCodeView {
-    class DigitView: UIView, AnyDeclarativeProtocol, DeclarativeProtocolInternal {
-        public var declarativeView: DigitView { self }
-        public lazy var properties = Properties<DigitView>()
-        lazy var _properties = PropertiesInternal()
-        
-        @State public var height: CGFloat = 0
-        @State public var width: CGFloat = 0
-        @State public var top: CGFloat = 0
-        @State public var leading: CGFloat = 0
-        @State public var left: CGFloat = 0
-        @State public var trailing: CGFloat = 0
-        @State public var right: CGFloat = 0
-        @State public var bottom: CGFloat = 0
-        @State public var centerX: CGFloat = 0
-        @State public var centerY: CGFloat = 0
-        
-        var __height: State<CGFloat> { _height }
-        var __width: State<CGFloat> { _width }
-        var __top: State<CGFloat> { _top }
-        var __leading: State<CGFloat> { _leading }
-        var __left: State<CGFloat> { _left }
-        var __trailing: State<CGFloat> { _trailing }
-        var __right: State<CGFloat> { _right }
-        var __bottom: State<CGFloat> { _bottom }
-        var __centerX: State<CGFloat> { _centerX }
-        var __centerY: State<CGFloat> { _centerY }
-        
-        public init () {
-            super.init(frame: .zero)
-            translatesAutoresizingMaskIntoConstraints = false
-            setupView()
-        }
-        
-        public override init(frame: CGRect) {
-            super.init(frame: frame)
-            translatesAutoresizingMaskIntoConstraints = false
-            setupView()
-        }
-        
-        required public init?(coder aDecoder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-        
-        open override func layoutSubviews() {
-            super.layoutSubviews()
-            onLayoutSubviews()
-        }
-        
-        open override func didMoveToSuperview() {
-            super.didMoveToSuperview()
-            movedToSuperview()
-        }
-        
-        @State var labelBackground: UIColor = .clear
-        @State var labelColor: UIColor = .black
-        
-        var labelFont: UIFont? = .systemFont(ofSize: 30) {
-            didSet {
-                label.font(v: labelFont)
-            }
-        }
-        
-        lazy var label = UText()
-        
-        func setupView() {
-            body {
-                label
-					.alignment(.center)
-					.edgesToSuperview()
-					.color($labelColor)
-					.font(v: labelFont)
-            }
-			.background($labelBackground)
-        }
-    }
-}
-#endif
+}#endif

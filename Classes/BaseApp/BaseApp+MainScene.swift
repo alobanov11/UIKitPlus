@@ -242,7 +242,8 @@ extension BaseApp {
 					completion: completion
 				)
 			case .dismiss:
-				self.topViewController.dismiss(
+				let topViewController = self.topViewController
+				(topViewController.navigationController ?? topViewController).dismiss(
 					animated: animated,
 					completion: completion
 				)

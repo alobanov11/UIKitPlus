@@ -30,12 +30,12 @@ extension BaseApp {
     public typealias RootBeforeTransition = (UIViewController) -> Void
     
     public class MainScene: _AnyScene, AppBuilderContent {
-		public var mostTopViewController: UIViewController {
-			self.current.mostTopViewController
+		public var topViewController: UIViewController {
+			self.current.topViewController
 		}
 
 		public var topPresentedViewController: UIViewController {
-			self.current.topPresentedViewController
+			self.viewController.topViewController
 		}
 
         public var appBuilderContent: AppBuilderItem { .mainScene(self) }
@@ -217,18 +217,18 @@ extension BaseApp {
 				tabBarController.selectedIndex = item
 				completion()
 			case let .push(presentable):
-				self.mostTopViewController.navigationController?.pushViewController(
+				self.topViewController.navigationController?.pushViewController(
 					presentable.viewControllerToPresent,
 					animated: animated,
 					completion: completion
 				)
 			case .pop:
-				self.mostTopViewController.navigationController?.popViewController(
+				self.topViewController.navigationController?.popViewController(
 					animated: animated,
 					completion: completion
 				)
 			case .popToRoot:
-				self.mostTopViewController.navigationController?.popToRootViewController(
+				self.topViewController.navigationController?.popToRootViewController(
 					animated: animated,
 					completion: completion
 				)
@@ -305,21 +305,13 @@ extension BaseApp {
 }
 
 private extension UIViewController {
-	var mostTopViewController: UIViewController {
+	var topViewController: UIViewController {
 		self.findTopViewController(self)
 	}
 
-	var topPresentedViewController: UIViewController {
-		self.findTopViewController(self, presentedOnly: true)
-	}
-
-	private func findTopViewController(_ controller: UIViewController, presentedOnly: Bool = false) -> UIViewController {
+	private func findTopViewController(_ controller: UIViewController) -> UIViewController {
 		if let presented = controller.presentedViewController {
-			return self.findTopViewController(presented, presentedOnly: presentedOnly)
-		}
-
-		if presentedOnly {
-			return controller
+			return self.findTopViewController(presented)
 		}
 
 		if let tabController = controller as? UITabBarController, let selected = tabController.selectedViewController {

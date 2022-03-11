@@ -31,10 +31,6 @@ extension BaseApp {
     
     public class MainScene: _AnyScene, AppBuilderContent {
 		public var topViewController: UIViewController {
-			self.current.topViewController
-		}
-
-		public var topPresentedViewController: UIViewController {
 			self.viewController.topViewController
 		}
 
@@ -233,13 +229,13 @@ extension BaseApp {
 					completion: completion
 				)
 			case let .present(presentable):
-				self.topPresentedViewController.present(
+				self.topViewController.present(
 					presentable.viewControllerToPresent,
 					animated: animated,
 					completion: completion
 				)
 			case .dismiss:
-				self.topPresentedViewController.dismiss(
+				self.topViewController.dismiss(
 					animated: animated,
 					completion: completion
 				)
@@ -312,6 +308,10 @@ private extension UIViewController {
 	private func findTopViewController(_ controller: UIViewController) -> UIViewController {
 		if let presented = controller.presentedViewController {
 			return self.findTopViewController(presented)
+		}
+
+		if controller is BaseApp.MainScene.MainSceneViewController, let childrenController = controller.children.first {
+			return self.findTopViewController(childrenController)
 		}
 
 		if let tabController = controller as? UITabBarController, let selected = tabController.selectedViewController {

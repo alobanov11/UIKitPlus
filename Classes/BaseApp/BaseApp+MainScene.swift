@@ -229,7 +229,14 @@ extension BaseApp {
 					completion: completion
 				)
 			case let .present(presentable):
-				self.topViewController.present(
+				let topViewController: UIViewController
+				if self.current is UITabBarController, self.current.presentedViewController == nil {
+					topViewController = self.current
+				}
+				else {
+					topViewController = self.topViewController
+				}
+				topViewController.present(
 					presentable.viewControllerToPresent,
 					animated: animated,
 					completion: completion

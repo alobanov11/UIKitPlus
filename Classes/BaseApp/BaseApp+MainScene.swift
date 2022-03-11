@@ -236,7 +236,7 @@ extension BaseApp {
 				else {
 					topViewController = self.topViewController
 				}
-				topViewController.present(
+				(topViewController.navigationController ?? topViewController).present(
 					presentable.viewControllerToPresent,
 					animated: animated,
 					completion: completion

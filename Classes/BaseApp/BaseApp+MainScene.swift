@@ -319,7 +319,7 @@ private extension UIViewController {
 		}
 
 		if presentedOnly {
-			return self
+			return controller
 		}
 
 		if let tabController = controller as? UITabBarController, let selected = tabController.selectedViewController {

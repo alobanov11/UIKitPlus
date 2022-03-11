@@ -30,8 +30,12 @@ extension BaseApp {
     public typealias RootBeforeTransition = (UIViewController) -> Void
     
     public class MainScene: _AnyScene, AppBuilderContent {
-		public var topViewController: UIViewController {
-			self.current.topViewController
+		public var mostTopViewController: UIViewController {
+			self.current.mostTopViewController
+		}
+
+		public var topPresentedViewController: UIViewController {
+			self.current.topPresentedViewController
 		}
 
         public var appBuilderContent: AppBuilderItem { .mainScene(self) }
@@ -213,37 +217,29 @@ extension BaseApp {
 				tabBarController.selectedIndex = item
 				completion()
 			case let .push(presentable):
-				self.topViewController.navigationController?.pushViewController(
+				self.mostTopViewController.navigationController?.pushViewController(
 					presentable.viewControllerToPresent,
 					animated: animated,
 					completion: completion
 				)
 			case .pop:
-				self.topViewController.navigationController?.popViewController(
+				self.mostTopViewController.navigationController?.popViewController(
 					animated: animated,
 					completion: completion
 				)
 			case .popToRoot:
-				self.topViewController.navigationController?.popToRootViewController(
+				self.mostTopViewController.navigationController?.popToRootViewController(
 					animated: animated,
 					completion: completion
 				)
 			case let .present(presentable):
-				let topViewController: UIViewController
-				if (self.current as? UITabBarController)?.presentedViewController == nil {
-					topViewController = self.current
-				}
-				else {
-					topViewController = self.topViewController
-				}
-				(topViewController.navigationController ?? topViewController).present(
+				self.topPresentedViewController.present(
 					presentable.viewControllerToPresent,
 					animated: animated,
 					completion: completion
 				)
 			case .dismiss:
-				let topViewController = self.topViewController
-				(topViewController.navigationController ?? topViewController).dismiss(
+				self.topPresentedViewController.dismiss(
 					animated: animated,
 					completion: completion
 				)
@@ -309,13 +305,21 @@ extension BaseApp {
 }
 
 private extension UIViewController {
-	var topViewController: UIViewController {
+	var mostTopViewController: UIViewController {
 		self.findTopViewController(self)
 	}
 
-	private func findTopViewController(_ controller: UIViewController) -> UIViewController {
+	var topPresentedViewController: UIViewController {
+		self.findTopViewController(self, presentedOnly: true)
+	}
+
+	private func findTopViewController(_ controller: UIViewController, presentedOnly: Bool = false) -> UIViewController {
 		if let presented = controller.presentedViewController {
-			return self.findTopViewController(presented)
+			return self.findTopViewController(presented, presentedOnly: presentedOnly)
+		}
+
+		if presentedOnly {
+			return self
 		}
 
 		if let tabController = controller as? UITabBarController, let selected = tabController.selectedViewController {

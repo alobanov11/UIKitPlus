@@ -160,9 +160,36 @@ extension AttributedString {
 			}
 		}
 
+
+		var intersections = self.intersections(in: result)
+
+		repeat {
+			intersections.forEach { result.setAttributes($0.value, range: $0.key) }
+			intersections = self.intersections(in: result)
+		}
+		while intersections.isEmpty == false
+
 		let markdownString = self.convertToMarkdown(result)
 
 		return self.convertFromMarkdown(markdownString.string, attributes: attributes)
+	}
+
+	private static func intersections(in attrString: NSAttributedString) -> [NSRange: [NSAttributedString.Key: Any]] {
+		var prevAttrs: (attrs: [NSAttributedString.Key: Any], range: NSRange)?
+		var intersections: [NSRange: [NSAttributedString.Key: Any]] = [:]
+
+		attrString.enumerateAttributes(in: NSRange(location: 0, length: attrString.length), options: []) { curAttrs, curRange, _ in
+			let curKeys = curAttrs.keys.filter { $0.rawValue.contains("Attribute__") }
+			let prevKeys = prevAttrs?.attrs.keys.filter { $0.rawValue.contains("Attribute__") }
+
+			if curKeys == prevKeys, let prevRange = prevAttrs?.range {
+				intersections[NSRange(location: prevRange.location, length: prevRange.length + curRange.length)] = curAttrs
+			}
+
+			prevAttrs = (curAttrs, curRange)
+		}
+
+		return intersections
 	}
 }
 

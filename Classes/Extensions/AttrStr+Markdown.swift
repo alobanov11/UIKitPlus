@@ -148,16 +148,7 @@ extension AttributedString {
 			result.removeAttribute(value.key, range: range)
 		}
 		else {
-			var hasIntersections = false
-
-			result.enumerateAttributes(in: range, options: []) { _, partRange, _ in
-				hasIntersections = true
-				result.addAttribute(value.key, value: value, range: partRange)
-			}
-
-			if hasIntersections == false {
-				result.addAttribute(value.key, value: value, range: range)
-			}
+			result.addAttribute(value.key, value: value, range: range)
 		}
 
 		var intersections = self.intersections(in: result)

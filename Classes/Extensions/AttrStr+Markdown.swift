@@ -66,10 +66,10 @@ public enum MarkdownAttributeValue {
 
 extension AttributedString {
 	public convenience init(_ string: String, attributes: MarkdownAttributes) {
-		self.init(AttrStr.parseFromMarkdownToAttributedString(string, attributes: attributes))
+		self.init(AttrStr.convertFromMarkdown(string, attributes: attributes))
 	}
 
-	public static func parseFromMarkdownToAttributedString(_ string: String, attributes: MarkdownAttributes) -> NSAttributedString {
+	public static func convertFromMarkdown(_ string: String, attributes: MarkdownAttributes) -> NSAttributedString {
 		let stateText = AttrStr(string)
 			.parseLinkFromMarkdown()
 			.parseBoldFromMarkdown()
@@ -103,11 +103,14 @@ extension AttributedString {
 
 			if fontAttributes.isEmpty == false {
 				var font: UIFont?
+
 				if fontAttributes == [.bold, .italic] {
 					font = attributes.bold.font.withTraits(.traitItalic)
-				} else if fontAttributes == [.bold] {
+				}
+				else if fontAttributes == [.bold] {
 					font = attributes.bold.font
-				} else if fontAttributes == [.italic] {
+				}
+				else if fontAttributes == [.italic] {
 					font = attributes.body.font.withTraits(.traitItalic)
 				}
 
@@ -120,16 +123,15 @@ extension AttributedString {
 		return result
 	}
 
-	public static func parseFromAttributedStringToMarkdown(_ attributedString: NSAttributedString) -> NSAttributedString {
+	public static func convertToMarkdown(_ attributedString: NSAttributedString) -> NSAttributedString {
 		AttrStr(attributedString)
-			.cleanupSpaces()
 			.parseBoldToMarkdown()
 			.parseItalicToMarkdown()
 			.parseLinkToMarkdown()
 			.attributedString
 	}
 
-	public static func toggleMarkdownAttributeInAttributedString(
+	public static func updateMarkdownAttribute(
 		in attributedString: NSAttributedString,
 		range: NSRange,
 		value: MarkdownAttributeValue,
@@ -146,12 +148,21 @@ extension AttributedString {
 			result.removeAttribute(value.key, range: range)
 		}
 		else {
-			result.addAttribute(value.key, value: value, range: range)
+			var hasIntersections = false
+
+			result.enumerateAttributes(in: range, options: []) { _, partRange, _ in
+				hasIntersections = true
+				result.addAttribute(value.key, value: value, range: partRange)
+			}
+
+			if hasIntersections == false {
+				result.addAttribute(value.key, value: value, range: range)
+			}
 		}
 
-		let markdownString = self.parseFromAttributedStringToMarkdown(result)
+		let markdownString = self.convertToMarkdown(result)
 
-		return self.parseFromMarkdownToAttributedString(markdownString.string, attributes: attributes)
+		return self.convertFromMarkdown(markdownString.string, attributes: attributes)
 	}
 }
 
@@ -232,19 +243,6 @@ private extension AttributedString {
 }
 
 private extension AttributedString {
-	func cleanupSpaces() -> AttrStr {
-		let result = NSMutableAttributedString(attributedString: self.attributedString)
-		let string = result.string
-
-		Array(string).enumerated().forEach {
-			if $0.element.isWhitespace {
-				result.setAttributes(nil, range: NSRange(location: $0.offset, length: 1))
-			}
-		}
-
-		return AttrStr(result)
-	}
-
 	func parseBoldToMarkdown() -> AttrStr {
 		let result = NSMutableAttributedString(attributedString: self.attributedString)
 		var ranges = result.attributes(MarkdownAttributeKey.bold)

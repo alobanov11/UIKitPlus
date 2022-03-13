@@ -345,8 +345,14 @@ private extension AttrStr {
 		var spaces: [Int] = []
 
 		attrString.enumerateAttributes(in: NSRange(location: 0, length: attrString.length), options: []) { curAttrs, curRange, _ in
-			if attrString.attributedSubstring(from: curRange).string.last?.isWhitespace == true && curAttrs.isEmpty == false {
-				spaces.append(curRange.location + curRange.length - 1)
+			let string = attrString.attributedSubstring(from: curRange).string
+			if curAttrs.isEmpty == false {
+				if string.last?.isWhitespace == true {
+					spaces.append(curRange.location + curRange.length - 1)
+				}
+				if string.first?.isWhitespace == true {
+					spaces.append(curRange.location)
+				}
 			}
 		}
 

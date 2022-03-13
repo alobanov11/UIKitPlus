@@ -345,7 +345,7 @@ private extension AttrStr {
 		var spaces: [Int] = []
 
 		attrString.enumerateAttributes(in: NSRange(location: 0, length: attrString.length), options: []) { curAttrs, curRange, _ in
-			if attrString.attributedSubstring(from: curRange).string.last?.isWhitespace == true {
+			if attrString.attributedSubstring(from: curRange).string.last?.isWhitespace == true && curAttrs.isEmpty == false {
 				spaces.append(curRange.location + curRange.length - 1)
 			}
 		}

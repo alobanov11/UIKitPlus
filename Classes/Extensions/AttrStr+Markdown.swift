@@ -160,7 +160,6 @@ extension AttributedString {
 			}
 		}
 
-
 		var intersections = self.intersections(in: result)
 
 		repeat {

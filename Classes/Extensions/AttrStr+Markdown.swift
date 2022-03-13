@@ -125,7 +125,6 @@ extension AttributedString {
 
 	public static func convertToMarkdown(_ attributedString: NSAttributedString) -> NSAttributedString {
 		AttrStr(attributedString)
-			.cleanupSpaces()
 			.parseBoldToMarkdown()
 			.parseItalicToMarkdown()
 			.parseLinkToMarkdown()
@@ -160,27 +159,17 @@ extension AttributedString {
 		}
 		while intersections.isEmpty == false
 
+		var spaces = self.spaces(in: result)
+
+		repeat {
+			spaces.forEach { result.setAttributes(nil, range: NSRange(location: $0, length: 1)) }
+			spaces = self.spaces(in: result)
+		}
+		while spaces.isEmpty == false
+
 		let markdownString = self.convertToMarkdown(result)
 
 		return self.convertFromMarkdown(markdownString.string, attributes: attributes)
-	}
-
-	private static func intersections(in attrString: NSAttributedString) -> [NSRange: [NSAttributedString.Key: Any]] {
-		var prevAttrs: (attrs: [NSAttributedString.Key: Any], range: NSRange)?
-		var intersections: [NSRange: [NSAttributedString.Key: Any]] = [:]
-
-		attrString.enumerateAttributes(in: NSRange(location: 0, length: attrString.length), options: []) { curAttrs, curRange, _ in
-			let curKeys = curAttrs.keys.filter { $0.rawValue.contains("Attribute__") }
-			let prevKeys = prevAttrs?.attrs.keys.filter { $0.rawValue.contains("Attribute__") }
-
-			if curKeys == prevKeys, let prevRange = prevAttrs?.range {
-				intersections[NSRange(location: prevRange.location, length: prevRange.length + curRange.length)] = curAttrs
-			}
-
-			prevAttrs = (curAttrs, curRange)
-		}
-
-		return intersections
 	}
 }
 
@@ -261,19 +250,6 @@ private extension AttributedString {
 }
 
 private extension AttributedString {
-	func cleanupSpaces() -> AttrStr {
-		let result = NSMutableAttributedString(attributedString: self.attributedString)
-		let string = result.string
-
-		Array(string).enumerated().forEach {
-			if $0.element.isWhitespace {
-				result.setAttributes(nil, range: NSRange(location: $0.offset, length: 1))
-			}
-		}
-
-		return AttrStr(result)
-	}
-
 	func parseBoldToMarkdown() -> AttrStr {
 		let result = NSMutableAttributedString(attributedString: self.attributedString)
 		var ranges = result.attributes(MarkdownAttributeKey.bold)
@@ -343,6 +319,38 @@ private extension AttributedString {
 		while ranges.isEmpty == false
 
 		return AttrStr(result)
+	}
+}
+
+private extension AttrStr {
+	static func intersections(in attrString: NSAttributedString) -> [NSRange: [NSAttributedString.Key: Any]] {
+		var prevAttrs: (attrs: [NSAttributedString.Key: Any], range: NSRange)?
+		var intersections: [NSRange: [NSAttributedString.Key: Any]] = [:]
+
+		attrString.enumerateAttributes(in: NSRange(location: 0, length: attrString.length), options: []) { curAttrs, curRange, _ in
+			let curKeys = curAttrs.keys.filter { $0.rawValue.contains("Attribute__") }
+			let prevKeys = prevAttrs?.attrs.keys.filter { $0.rawValue.contains("Attribute__") }
+
+			if curKeys == prevKeys, let prevRange = prevAttrs?.range {
+				intersections[NSRange(location: prevRange.location, length: prevRange.length + curRange.length)] = curAttrs
+			}
+
+			prevAttrs = (curAttrs, curRange)
+		}
+
+		return intersections
+	}
+
+	static func spaces(in attrString: NSAttributedString) -> [Int] {
+		var spaces: [Int] = []
+
+		attrString.enumerateAttributes(in: NSRange(location: 0, length: attrString.length), options: []) { curAttrs, curRange, _ in
+			if attrString.attributedSubstring(from: curRange).string.last?.isWhitespace == true {
+				spaces.append(curRange.location + curRange.length - 1)
+			}
+		}
+
+		return spaces
 	}
 }
 

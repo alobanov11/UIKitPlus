@@ -332,7 +332,16 @@ private extension AttrStr {
 			let prevKeys = prevAttrs?.attrs.keys.filter { $0.rawValue.contains("Attribute__") }
 
 			if curKeys == prevKeys, let prevRange = prevAttrs?.range {
-				intersections[NSRange(location: prevRange.location, length: prevRange.length + curRange.length)] = curAttrs
+				let wholeRange = NSRange(location: prevRange.location, length: prevRange.length + curRange.length)
+
+				intersections[wholeRange] = curAttrs
+
+				if case let .link(curLink) = curAttrs[MarkdownAttributeKey.link] as? MarkdownAttributeValue,
+				   case let .link(prevLink) = prevAttrs?.attrs[MarkdownAttributeKey.link] as? MarkdownAttributeValue,
+				   curLink != prevLink
+				{
+					intersections[wholeRange] = nil
+				}
 			}
 
 			prevAttrs = (curAttrs, curRange)

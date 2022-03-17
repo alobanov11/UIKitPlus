@@ -69,6 +69,7 @@ public final class UImagePickerController: NavigationController<ViewController> 
 		didSet { self.updateCollectionState() }
 	}
 
+	private var onErrorMaxSelecting: (() -> Void)?
 	private var onFinishSelecting: (([PHAsset]) -> Void)?
 
 	private let pageSize = 100
@@ -172,6 +173,12 @@ extension UImagePickerController {
 	}
 
 	@discardableResult
+	public func onErrorMaxSelection(_ completion: @escaping () -> Void) -> Self {
+		self.onErrorMaxSelecting = completion
+		return self
+	}
+
+	@discardableResult
 	public func onFinish(_ completion: @escaping ([PHAsset]) -> Void) -> Self {
 		self.onFinishSelecting = completion
 		return self
@@ -254,6 +261,7 @@ private extension UImagePickerController {
 			data.filter({ $0.selected }).count == self.maximumSelectionsAllowed &&
 			data[index].selected == false
 		) {
+			self.onErrorMaxSelecting?()
 			return
 		}
 

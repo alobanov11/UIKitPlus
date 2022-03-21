@@ -37,7 +37,7 @@ open class USegmentedControl: UISegmentedControl, AnyDeclarativeProtocol, Declar
     }
     
     public init(_ items: [SegmentControlable]) {
-		super.init(frame: .zero)
+		super.init(items: [])
 		setup()
         items.enumerated().forEach { offset, item in
             switch item.item {

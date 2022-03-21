@@ -491,6 +491,7 @@ extension UCollection {
             $0.items.forEach { self.collectionView.register($0.cellClass) }
             _ = $0.footer.map { self.collectionView.register($0.viewClass, UICollectionView.elementKindSectionFooter) }
         }
+		self.collectionView.register(UCollectionCell.self)
     }
     
     func unwrapSections(_ item: USectionItemable) -> [USection] {
@@ -508,17 +509,28 @@ extension UCollection: UICollectionViewDataSource {
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        self.sections[section].items.count
+		guard self.sections.indices.contains(section) else { return 0 }
+        return self.sections[section].items.count
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = self.sections[indexPath.section].items[indexPath.item].generate(collectionView: collectionView, for: indexPath)
+		guard let item = self.item(for: indexPath) else { return collectionView.dequeueReusableCell(with: UCollectionCell.self, for: indexPath) }
+        let cell = item.generate(collectionView: collectionView, for: indexPath)
 		cell.transform = CGAffineTransform(rotationAngle: self.reversed ? CGFloat(Double.pi) : 0)
 		return cell
     }
     
     public func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let view = self.sections[indexPath.section].header?.generate(collectionView: collectionView, kind: kind, for: indexPath) ?? UICollectionReusableView()
+		guard self.sections.indices.contains(indexPath.section) else { return UICollectionReusableView() }
+		let view: UICollectionReusableView
+		switch kind {
+		case UICollectionView.elementKindSectionHeader:
+			view = self.sections[indexPath.section].header?.generate(collectionView: collectionView, kind: kind, for: indexPath) ?? UICollectionReusableView()
+		case UICollectionView.elementKindSectionFooter:
+			view = self.sections[indexPath.section].footer?.generate(collectionView: collectionView, kind: kind, for: indexPath) ?? UICollectionReusableView()
+		default:
+			view = UICollectionReusableView()
+		}
 		view.transform = CGAffineTransform(rotationAngle: self.reversed ? CGFloat(Double.pi) : 0)
 		return view
     }
@@ -526,14 +538,16 @@ extension UCollection: UICollectionViewDataSource {
 
 extension UCollection: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+		guard let item = self.item(for: indexPath) else { return .zero }
         guard self.collectionViewOriginalSize.width > 0 && self.collectionViewOriginalSize.height > 0 else { return .zero }
 		let sectionInset = (collectionViewLayout as? UICollectionViewFlowLayout)?.sectionInset ?? .zero
 		let collectionSize = self.collectionViewOriginalSize
 		let size = CGSize(width: collectionSize.width - (sectionInset.left + sectionInset.right), height: collectionSize.height - (sectionInset.top + sectionInset.bottom))
-		return self.sections[indexPath.section].items[indexPath.item].size(by: size, direction: self.direction)
+		return item.size(by: size, direction: self.direction)
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+		guard self.sections.indices.contains(section) else { return .zero }
         guard self.collectionViewOriginalSize.width > 0 && self.collectionViewOriginalSize.height > 0 else { return .zero }
 		let sectionInset = (collectionViewLayout as? UICollectionViewFlowLayout)?.sectionInset ?? .zero
 		let collectionSize = self.collectionViewOriginalSize
@@ -542,6 +556,7 @@ extension UCollection: UICollectionViewDelegateFlowLayout {
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+		guard self.sections.indices.contains(section) else { return .zero }
         guard self.collectionViewOriginalSize.width > 0 && self.collectionViewOriginalSize.height > 0 else { return .zero }
 		let sectionInset = (collectionViewLayout as? UICollectionViewFlowLayout)?.sectionInset ?? .zero
 		let collectionSize = self.collectionViewOriginalSize
@@ -550,18 +565,21 @@ extension UCollection: UICollectionViewDelegateFlowLayout {
     }
 
 	public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+		guard self.sections.indices.contains(section) else { return .zero }
 		let sectionInset = (collectionViewLayout as? UICollectionViewFlowLayout)?.sectionInset ?? .zero
 		let customSectionInset = self._sectionInset?(self.sections[section].identifier)
 		return customSectionInset ?? sectionInset
 	}
 
 	public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+		guard self.sections.indices.contains(section) else { return .zero }
 		let minimumLineSpacing = (collectionViewLayout as? UICollectionViewFlowLayout)?.minimumLineSpacing ?? .zero
 		let customMinimumLineSpacing = self._minimumLineSpacing?(self.sections[section].identifier)
 		return customMinimumLineSpacing ?? minimumLineSpacing
 	}
 
 	public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+		guard self.sections.indices.contains(section) else { return .zero }
 		let minimumInteritemSpacing = (collectionViewLayout as? UICollectionViewFlowLayout)?.minimumInteritemSpacing ?? .zero
 		let customMinimumInteritemSpacing = self._minimumInteritemSpacing?(self.sections[section].identifier)
 		return customMinimumInteritemSpacing ?? minimumInteritemSpacing
@@ -571,32 +589,32 @@ extension UCollection: UICollectionViewDelegateFlowLayout {
 extension UCollection: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         self._willDisplay?(collectionView, indexPath)
-        (self.sections[indexPath.section].items[indexPath.item] as? UItemableDelegate)?.willDisplay()
+        (self.item(for: indexPath) as? UItemableDelegate)?.willDisplay()
     }
 
 	public func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
 		self._didEndDisplay?(collectionView, cell, indexPath)
-		(self.sections[indexPath.section].items[indexPath.item] as? UItemableDelegate)?.didEndDisplay()
+		(self.item(for: indexPath) as? UItemableDelegate)?.didEndDisplay()
 	}
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self._didSelectItemAt?(collectionView, indexPath)
-        (self.sections[indexPath.section].items[indexPath.item] as? UItemableDelegate)?.didSelect()
+		(self.item(for: indexPath) as? UItemableDelegate)?.didSelect()
     }
 
     public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         self._didDeselectItemAt?(collectionView, indexPath)
-        (self.sections[indexPath.section].items[indexPath.item] as? UItemableDelegate)?.didDeselect()
+		(self.item(for: indexPath) as? UItemableDelegate)?.didDeselect()
     }
 
     public func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
         self._didHighlightItemAt?(collectionView, indexPath)
-        (self.sections[indexPath.section].items[indexPath.item] as? UItemableDelegate)?.didHighlight()
+		(self.item(for: indexPath) as? UItemableDelegate)?.didHighlight()
     }
 
     public func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
         self._didUnhighlightItemAt?(collectionView, indexPath)
-        (self.sections[indexPath.section].items[indexPath.item] as? UItemableDelegate)?.didUnhighlight()
+		(self.item(for: indexPath) as? UItemableDelegate)?.didUnhighlight()
     }
     
     public func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
@@ -633,8 +651,7 @@ extension UCollection: UIScrollViewDelegate {
 
 extension UCollection: UICollectionViewDragDelegate {
 	public func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
-		let item = self.sections[indexPath.section].items[indexPath.item]
-		guard (item as? UItemableDrag)?.canDrag == true else { return [] }
+		guard let item = self.item(for: indexPath), (item as? UItemableDrag)?.canDrag == true else { return [] }
 		let itemProvider = NSItemProvider(object: "\(item.identifier.hashValue)" as NSString)
 		let dragItem = UIDragItem(itemProvider: itemProvider)
 		dragItem.localObject = item
@@ -770,6 +787,13 @@ extension UCollection {
 		self.collectionView.transform = CGAffineTransform(rotationAngle: value ? -(CGFloat)(Double.pi) : 0)
 		self.collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: self.collectionView.bounds.size.width - 8)
 		return self
+	}
+
+	public func item(for indexPath: IndexPath) -> UItemable? {
+		guard self.sections.indices.contains(indexPath.section) && self.sections[indexPath.section].items.indices.contains(indexPath.item) else {
+			return nil
+		}
+		return self.sections[indexPath.section].items[indexPath.item]
 	}
 }
 #endif

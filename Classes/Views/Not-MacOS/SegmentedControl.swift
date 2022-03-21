@@ -36,7 +36,7 @@ open class USegmentedControl: UISegmentedControl, AnyDeclarativeProtocol, Declar
         setup()
     }
     
-    init(_ items: [SegmentControlable]) {
+    init(items: [SegmentControlable]) {
         super.init(items: [])
         items.enumerated().forEach { offset, item in
             switch item.item {
@@ -47,7 +47,7 @@ open class USegmentedControl: UISegmentedControl, AnyDeclarativeProtocol, Declar
     }
     
     public convenience init(_ items: SegmentControlable...) {
-        self.init(items)
+		self.init(items: items)
     }
     
     private func setup() {
@@ -57,7 +57,7 @@ open class USegmentedControl: UISegmentedControl, AnyDeclarativeProtocol, Declar
     
     @discardableResult
     public static func items(_ items: SegmentControlable...) -> SegmentedControl {
-        SegmentedControl(items)
+        SegmentedControl(items: items)
     }
     
     open override func layoutSubviews() {

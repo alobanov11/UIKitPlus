@@ -36,7 +36,7 @@ open class USegmentedControl: UISegmentedControl, AnyDeclarativeProtocol, Declar
         setup()
     }
     
-    init(items: [SegmentControlable]) {
+    public init(_ items: [SegmentControlable]) {
         super.init(items: [])
         items.enumerated().forEach { offset, item in
             switch item.item {
@@ -46,10 +46,6 @@ open class USegmentedControl: UISegmentedControl, AnyDeclarativeProtocol, Declar
         }
     }
     
-    public convenience init(_ items: SegmentControlable...) {
-		self.init(items: items)
-    }
-    
     private func setup() {
         translatesAutoresizingMaskIntoConstraints = false
         addTarget(self, action: #selector(valueChanged), for: .valueChanged)
@@ -57,7 +53,7 @@ open class USegmentedControl: UISegmentedControl, AnyDeclarativeProtocol, Declar
     
     @discardableResult
     public static func items(_ items: SegmentControlable...) -> SegmentedControl {
-        SegmentedControl(items: items)
+        SegmentedControl(items)
     }
     
     open override func layoutSubviews() {

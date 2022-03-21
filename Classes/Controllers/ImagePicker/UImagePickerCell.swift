@@ -32,7 +32,7 @@ struct UImagePickerItem: UItemable, UItemableBuilder, UItemableDelegate {
 
 final class UImagePickerCell: UCollectionCell {
 	static var selectedBackgroundColor: UIColor = .black.withAlphaComponent(0.4)
-	static var pinBackgroundColor: UIColor = .gray
+	static var pinBuilder: (() -> UView)?
 
 	@UState var asset: PHAsset?
 	@UState var choosed = false
@@ -41,6 +41,13 @@ final class UImagePickerCell: UCollectionCell {
 
 	private var imageRequestId: PHImageRequestID?
 	private var imageView: UImage?
+
+	private lazy var pinView: UView = {
+		guard let builder = UImagePickerCell.pinBuilder else {
+			return UView()
+		}
+		return builder()
+	}()
 
 	override func prepareForReuse() {
 		super.prepareForReuse()
@@ -53,6 +60,7 @@ final class UImagePickerCell: UCollectionCell {
 
 	override func buildView() {
 		super.buildView()
+		
 		body {
 			UWrapperView {
 				UView {
@@ -85,14 +93,7 @@ final class UImagePickerCell: UCollectionCell {
 						.background(UImagePickerCell.selectedBackgroundColor)
 						.hidden($choosed.map { $0 == false })
 						.edgesToSuperview()
-					UView()
-						.border(1, .white)
-						.background(UImagePickerCell.pinBackgroundColor)
-						.size(20)
-						.circle()
-						.topToSuperview(6)
-						.trailingToSuperview(-6)
-						.hidden($choosed.map { $0 == false })
+					pinView.hidden($choosed.map { $0 == false })
 				}
 			}
 			.padding(3)

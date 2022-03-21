@@ -105,8 +105,8 @@ extension UImagePickerController {
 	}
 
 	@discardableResult
-	public func pinBackgroundColor(_ color: UIColor) -> Self {
-		UImagePickerCell.pinBackgroundColor = color
+	public func pinView(_ builder: @escaping () -> UView) -> Self {
+		UImagePickerCell.pinBuilder = builder
 		return self
 	}
 

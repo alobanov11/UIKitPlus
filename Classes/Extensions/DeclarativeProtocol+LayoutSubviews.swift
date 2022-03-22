@@ -37,10 +37,7 @@ extension AnyDeclarativeProtocol {
 				maskLayer.accessibilityLabel = "maskLayer.accessibilityLabel"
 				maskLayer.path = path.cgPath
 				maskLayer.fillColor = _declarativeView._properties.customCorners?.backgroundColor?.cgColor ?? UIColor.white.cgColor
-				if declarativeView.layer.sublayers?.contains(where: { $0.accessibilityLabel == maskLayer.accessibilityLabel }) == true {
-					declarativeView.layer.sublayers?.removeFirst()
-				}
-				declarativeView.layer.insertSublayer(maskLayer, at: 0)
+				declarativeView.layer.mask = maskLayer
 			}
         }
         declarativeView.layer.borderColor = declarativeView.properties.borderColor.cgColor

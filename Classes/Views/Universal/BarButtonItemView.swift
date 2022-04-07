@@ -10,6 +10,13 @@ open class UBarButtonItem: UIBarButtonItem {
         self.title = title
         setup()
     }
+
+	public init(_ title: State<String>) {
+		super.init()
+		self.title = title.wrappedValue
+		setup()
+		title.listen { [weak self] in self?.title = $0 }
+	}
     
     public init(_ localized: LocalizedString...) {
         super.init()

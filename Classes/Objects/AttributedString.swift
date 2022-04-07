@@ -255,6 +255,14 @@ open class AttributedString: AnyString, BodyBuilderItemable {
     public func attachment(_ value: NSTextAttachment, at range: Range<String.Index>? = nil) -> AttributedString {
         addAttribute(.attachment, value, at: range)
     }
+
+	/// NSTextAttachment image
+	@discardableResult
+	public func attachment(_ image: UIImage, at range: Range<String.Index>? = nil) -> AttributedString {
+		let attachment = NSTextAttachment()
+		attachment.image = image
+		return addAttribute(.attachment, attachment, at: range)
+	}
     
     /// NSTextAttachment(data: Data, ofType: String), default nil
     @discardableResult

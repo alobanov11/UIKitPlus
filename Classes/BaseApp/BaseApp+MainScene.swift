@@ -176,80 +176,6 @@ extension BaseApp {
                 }
             }
         }
-
-		public func perform(
-			_ transitions: [RootTransition],
-			animated: Bool = true,
-			completion: @escaping () -> Void = {}
-		) {
-			guard transitions.isEmpty == false else { return completion() }
-
-			var transitions = transitions
-
-			self.perform(transitions.removeFirst(), animated: animated) { [weak self] in
-				self?.perform(transitions, animated: animated, completion: completion)
-			}
-		}
-
-		public func perform(
-			_ transition: RootTransition,
-			animated: Bool = true,
-			completion: @escaping () -> Void = {}
-		) {
-			switch transition {
-			case let .setRoot(presetable, screen, animation):
-				self.switch(
-					to: presetable.viewControllerToPresent,
-					as: SceneScreenType(type: screen),
-					animation: animation,
-					beforeTransition: nil,
-					completion: completion
-				)
-			case let .setTab(item):
-				guard let tabBarController = self.current as? UITabBarController else {
-					print("⚠️ Can't select \(item) current controller must be UITabBarController")
-					return
-				}
-				tabBarController.selectedIndex = item
-				completion()
-			case let .push(presentable):
-				self.topViewController.navigationController?.pushViewController(
-					presentable.viewControllerToPresent,
-					animated: animated,
-					completion: completion
-				)
-			case .pop:
-				self.topViewController.navigationController?.popViewController(
-					animated: animated,
-					completion: completion
-				)
-			case .popToRoot:
-				self.topViewController.navigationController?.popToRootViewController(
-					animated: animated,
-					completion: completion
-				)
-			case let .present(presentable):
-				let topViewController: UIViewController
-				if self.current is UITabBarController, self.current.presentedViewController == nil {
-					topViewController = self.current
-				}
-				else {
-					topViewController = self.topViewController
-				}
-				topViewController.present(
-					presentable.viewControllerToPresent,
-					animated: animated,
-					completion: completion
-				)
-			case .dismiss:
-				self.topViewController.dismiss(
-					animated: animated,
-					completion: completion
-				)
-			case .dismissOnRoot:
-				self.viewController.dismiss(animated: animated, completion: completion)
-			}
-		}
         
         private func replaceWithoutAnimation(_ new: UIViewController) {
             viewController.addChild(new)
@@ -338,52 +264,6 @@ private extension UIViewController {
 		}
 
 		return controller
-	}
-}
-
-private extension UINavigationController {
-	func pushViewController(_ viewController: UIViewController, animated: Bool, completion: @escaping () -> Void) {
-		self.pushViewController(viewController, animated: animated)
-
-		guard animated, let coordinator = self.transitionCoordinator else {
-			DispatchQueue.main.async { completion() }
-			return
-		}
-
-		coordinator.animate(alongsideTransition: nil) { _ in completion() }
-	}
-
-	func popViewController(animated: Bool, completion: @escaping () -> Void) {
-		self.popViewController(animated: animated)
-
-		guard animated, let coordinator = self.transitionCoordinator else {
-			DispatchQueue.main.async { completion() }
-			return
-		}
-
-		coordinator.animate(alongsideTransition: nil) { _ in completion() }
-	}
-
-	func popToViewController(_ viewController: UIViewController, animated: Bool, completion: @escaping () -> Void) {
-		self.popToViewController(viewController, animated: animated)
-
-		guard animated, let coordinator = self.transitionCoordinator else {
-			DispatchQueue.main.async { completion() }
-			return
-		}
-
-		coordinator.animate(alongsideTransition: nil) { _ in completion() }
-	}
-
-	func popToRootViewController(animated: Bool, completion: @escaping () -> Void) {
-		self.popToRootViewController(animated: animated)
-
-		guard animated, let coordinator = self.transitionCoordinator else {
-			DispatchQueue.main.async { completion() }
-			return
-		}
-
-		coordinator.animate(alongsideTransition: nil) { _ in completion() }
 	}
 }
 #endif

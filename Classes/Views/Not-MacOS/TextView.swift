@@ -182,35 +182,35 @@ open class UTextView: UITextView, AnyDeclarativeProtocol, DeclarativeProtocolInt
     
     // MARK: textViewDidBeginEditing
     
-    var didBeginEditingHandler: SimpleHandler?
-    var didBeginEditingHandlerText: SimpleHandlerText?
+    var didBeginEditingHandler: [SimpleHandler] = []
+    var didBeginEditingHandlerText: [SimpleHandlerText] = []
     
     @discardableResult
     public func onDidBeginEditing(_ handler: @escaping SimpleHandler) -> Self {
-        didBeginEditingHandler = handler
+		didBeginEditingHandler.append(handler)
         return self
     }
     
     @discardableResult
     public func onDidBeginEditing(_ handler: @escaping SimpleHandlerText) -> Self {
-        didBeginEditingHandlerText = handler
+		didBeginEditingHandlerText.append(handler)
         return self
     }
     
     // MARK: textViewDidEndEditing
     
-    var didEndEditingHandler: SimpleHandler?
-    var didEndEditingHandlerText: SimpleHandlerText?
+    var didEndEditingHandler: [SimpleHandler] = []
+    var didEndEditingHandlerText: [SimpleHandlerText] = []
     
     @discardableResult
     public func onDidEndEditing(_ handler: @escaping SimpleHandler) -> Self {
-		didEndEditingHandler = handler
+		didEndEditingHandler.append(handler)
         return self
     }
     
     @discardableResult
     public func onDidEndEditing(_ handler: @escaping SimpleHandlerText) -> Self {
-		didEndEditingHandlerText = handler
+		didEndEditingHandlerText.append(handler)
         return self
     }
     
@@ -259,18 +259,18 @@ open class UTextView: UITextView, AnyDeclarativeProtocol, DeclarativeProtocolInt
     
     // MARK: textViewDidChange
     
-    var didChangeTextHandler: SimpleHandler?
-    var didChangeTextHandlerText: SimpleHandlerText?
+    var didChangeTextHandler: [SimpleHandler] = []
+    var didChangeTextHandlerText: [SimpleHandlerText] = []
     
     @discardableResult
     public func onTextDidChange(_ handler: @escaping SimpleHandler) -> Self {
-        didChangeTextHandler = handler
+		didChangeTextHandler.append(handler)
         return self
     }
     
     @discardableResult
     public func onTextDidChange(_ handler: @escaping SimpleHandlerText) -> Self {
-        didChangeTextHandlerText = handler
+		didChangeTextHandlerText.append(handler)
         return self
     }
     
@@ -515,8 +515,8 @@ extension UTextView: _TextAutocorrectionable {
 extension UTextView: _Cleanupable {
     func _cleanup() {
         text = ""
-        didChangeTextHandler?()
-        didChangeTextHandlerText?(self)
+		didChangeTextHandler.forEach { $0() }
+		didChangeTextHandlerText.forEach { $0(self) }
     }
 }
 

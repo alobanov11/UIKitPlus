@@ -107,13 +107,13 @@ open class AttributedString: AnyString, BodyBuilderItemable {
     }
 
 	@discardableResult
-	func addAttributes(_ attrs: [NSAttributedString.Key: Any], at range: Range<String.Index>? = nil) -> AttributedString {
+	public func addAttributes(_ attrs: [NSAttributedString.Key: Any], at range: Range<String.Index>? = nil) -> AttributedString {
 		attrs.forEach { self.addAttribute($0.key, $0.value, at: range) }
 		return self
 	}
     
     @discardableResult
-    func addAttribute(_ attr: NSAttributedString.Key, _ value: Any, at range: Range<String.Index>? = nil) -> AttributedString {
+	public func addAttribute(_ attr: NSAttributedString.Key, _ value: Any, at range: Range<String.Index>? = nil) -> AttributedString {
         // TODO: check range
 		let range = range ?? _attributedString.string.range(of: attributedString.string)
 		range.map { _attributedString.addAttribute(attr, value: value, range: NSRange($0, in: _attributedString.string)) }
@@ -122,7 +122,7 @@ open class AttributedString: AnyString, BodyBuilderItemable {
     }
     
     @discardableResult
-    func removeAttribute(_ attr: NSAttributedString.Key, at range: Range<String.Index>? = nil) -> AttributedString {
+	public func removeAttribute(_ attr: NSAttributedString.Key, at range: Range<String.Index>? = nil) -> AttributedString {
         // TODO: check range
 		let range = range ?? _attributedString.string.range(of: attributedString.string)
 		range.map { _attributedString.removeAttribute(attr, range: NSRange($0, in: _attributedString.string)) }

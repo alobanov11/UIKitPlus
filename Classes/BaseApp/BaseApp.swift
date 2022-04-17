@@ -107,10 +107,8 @@ open class BaseApp: UIApplication, UIApplicationDelegate {
             return false
         }
         lifecycle?._didFinishLaunching?()
-        if #available(iOS 13.0, *) {} else {
-            window = UIWindow(frame: UIScreen.main.bounds)
-            mainScene.viewController.attach(to: window)
-        }
+		window = UIWindow(frame: UIScreen.main.bounds)
+		mainScene.viewController.attach(to: window)
         return true
     }
     
@@ -305,41 +303,6 @@ open class BaseApp: UIApplication, UIApplicationDelegate {
             }
         } else {
             self.pushAuthorizationStatus = UIApplication.shared.currentUserNotificationSettings?.types.isEmpty == false ? .authorized : .notDetermined
-        }
-    }
-    
-    // MARK: - Scene
-    
-    @available(iOS 13.0, *)
-    func makeWindowForScene(_ scene: UIScene) -> UIWindow? {
-        mainScene.viewController.attach(to: scene)
-    }
-    
-    @available(iOS 13.0, *)
-    public func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        NSLog("options.urlContexts: \(options.urlContexts)")
-        NSLog("options.sourceApplication: \(options.sourceApplication)")
-        NSLog("options.handoffUserActivityType: \(options.handoffUserActivityType)")
-        NSLog("options.userActivities: \(options.userActivities)")
-        NSLog("options.notificationResponse: \(options.notificationResponse)")
-        NSLog("options.shortcutItem: \(options.shortcutItem)")
-        let config = UISceneConfiguration(name: nil, sessionRole: UISceneSession.Role.windowApplication)
-        config.delegateClass = UIKitPlus._SceneDelegate.self
-        config.sceneClass = UIKitPlus._Scene.self
-        print("config: \(config)")
-        return config
-    }
-    
-    @available(iOS 13.0, *)
-    public func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        let pids = sceneSessions.map { session -> (String, UIWindow?) in
-            (session.persistentIdentifier, (session.scene as? UIWindowScene)?.windows.first)
-        }
-        scenes.compactMap { scene -> (_AnyScene, UIWindow?)? in
-            guard let pid = pids.first(where: { $0.0 == scene.persistentIdentifier }) else { return nil }
-            return (scene, pid.1)
-        }.forEach {
-            $0.0._onDestroy?($0.1)
         }
     }
     

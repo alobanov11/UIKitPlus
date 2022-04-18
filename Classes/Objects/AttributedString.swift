@@ -78,6 +78,12 @@ open class AttributedString: AnyString, BodyBuilderItemable {
     public static func make(_ v: NSAttributedString) -> Self {
         .init(v)
     }
+
+	public convenience init (_ image: UIImage) {
+		let attachment = NSTextAttachment()
+		attachment.image = image
+		self.init(NSMutableAttributedString(attachment: attachment))
+	}
     
     public required init (_ attrString: NSAttributedString) {
         _attributedString = .init(attributedString: attrString)
@@ -88,7 +94,7 @@ open class AttributedString: AnyString, BodyBuilderItemable {
         _attributedString = .init(string: string)
         _setup()
     }
-    
+
     public init (_ localized: LocalizedString...) {
         _attributedString = .init(string: String(localized))
         _setup()

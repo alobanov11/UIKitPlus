@@ -79,9 +79,12 @@ open class AttributedString: AnyString, BodyBuilderItemable {
         .init(v)
     }
 
-	public convenience init (_ image: UIImage) {
+	public convenience init (_ image: UIImage, bounds: CGRect? = nil) {
 		let attachment = NSTextAttachment()
 		attachment.image = image
+		if let bounds = bounds {
+			attachment.bounds = bounds
+		}
 		self.init(NSMutableAttributedString(attachment: attachment))
 	}
     

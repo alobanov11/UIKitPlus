@@ -16,6 +16,8 @@ public protocol NavigatorRootProvider {
 		animation: RootTransitionAnimation,
 		completion: (() -> Void)?
 	)
+
+	func presentFrom() -> UIViewController
 }
 
 public final class BaseNavigatorRootProvider: NavigatorRootProvider {
@@ -41,6 +43,10 @@ public final class BaseNavigatorRootProvider: NavigatorRootProvider {
 			beforeTransition: nil,
 			completion: completion
 		)
+	}
+
+	public func presentFrom() -> UIViewController {
+		BaseApp.mainScene.presentFrom()
 	}
 }
 

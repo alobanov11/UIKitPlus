@@ -78,18 +78,7 @@ public final class Navigator {
 				print("⚠️ Can't build \(type(of: screen))")
 				return
 			}
-
-			let rootViewController = self.rootProvider.rootViewController
-			let topViewController: UIViewController?
-
-			if rootViewController is UITabBarController, rootViewController?.presentedViewController == nil {
-				topViewController = rootViewController
-			}
-			else {
-				topViewController = self.rootProvider.topViewController
-			}
-
-			topViewController?.present(
+			self.rootProvider.presentFrom().present(
 				viewController,
 				animated: animated,
 				completion: completion

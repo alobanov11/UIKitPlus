@@ -176,6 +176,20 @@ extension BaseApp {
                 }
             }
         }
+
+		public func presentFrom() -> UIViewController {
+			let rootViewController = self.viewController
+			let topViewController: UIViewController
+
+			if rootViewController.presentedViewController == nil {
+				topViewController = rootViewController
+			}
+			else {
+				topViewController = self.topViewController
+			}
+
+			return topViewController
+		}
         
         private func replaceWithoutAnimation(_ new: UIViewController) {
             viewController.addChild(new)

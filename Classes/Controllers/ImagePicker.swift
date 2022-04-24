@@ -14,30 +14,28 @@ open class ImagePicker: NSObject {
     public private(set) lazy var picker = UIImagePickerController()
     
     private var cancelHandler = {}
-    private var doneHandler: (UIImage, Info)->() = { _,_ in }
+    private var doneHandler: (UIImage?, Info)->() = { _,_ in }
     private var sourceType: UIImagePickerController.SourceType = .camera
     
     public struct Info {
-        public let original: [UIImagePickerController.InfoKey : Any]
-		public let mediaType: String
-		public let originalImage: UIImage
+		public let originalImage: UIImage?
 		public let editedImage: UIImage?
-		public let cropRect: CGRect
-		public let mediaURL: URL?
-		public let mediaMetadata: NSDictionary
+		public let cropRect: CGRect?
+		public let mediaMetadata: NSDictionary?
+		public let mediaURL: URL
+		public let mediaType: String
+		public let original: [UIImagePickerController.InfoKey : Any]
         
         init? (_ info: [UIImagePickerController.InfoKey : Any]) {
-            original = info
             guard let mediaType = info[.mediaType] as? String else { return nil }
-            guard let originalImage = info[.originalImage] as? UIImage else { return nil }
-            guard let cropRect = info[.cropRect] as? CGRect else { return nil }
-            guard let mediaMetadata = info[.mediaMetadata] as? NSDictionary else { return nil }
-            self.mediaType = mediaType
-            self.originalImage = originalImage
-            self.cropRect = cropRect
-            self.mediaURL = info[.mediaURL] as? URL
-            self.mediaMetadata = mediaMetadata
-            editedImage = info[.editedImage] as? UIImage
+			guard let mediaURL = info[.mediaURL] as? URL else { return nil }
+            self.originalImage = info[.originalImage] as? UIImage
+			self.editedImage = info[.editedImage] as? UIImage
+            self.cropRect = info[.cropRect] as? CGRect
+            self.mediaMetadata = info[.mediaMetadata] as? NSDictionary
+			self.mediaURL = mediaURL
+			self.mediaType = mediaType
+			self.original = info
         }
     }
     
@@ -148,13 +146,13 @@ open class ImagePicker: NSObject {
     }
     
     @discardableResult
-    public func onDone(_ handler: @escaping (UIImage, Info) -> Void) -> Self {
+    public func onDone(_ handler: @escaping (UIImage?, Info) -> Void) -> Self {
         doneHandler = handler
         return self
     }
     
     @discardableResult
-    public func onDone(_ handler: @escaping (UIImage) -> Void) -> Self {
+    public func onDone(_ handler: @escaping (UIImage?) -> Void) -> Self {
         doneHandler = { image, info in
             handler(image)
         }

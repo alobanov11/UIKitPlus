@@ -11,7 +11,7 @@ import UIKit
 private var _picker: ImagePicker?
 
 open class ImagePicker: NSObject {
-    private lazy var picker = UIImagePickerController()
+    public private(set) lazy var picker = UIImagePickerController()
     
     private var cancelHandler = {}
     private var doneHandler: (UIImage, Info)->() = { _,_ in }

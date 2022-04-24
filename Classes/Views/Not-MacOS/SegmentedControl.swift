@@ -66,6 +66,20 @@ open class USegmentedControl: UISegmentedControl, AnyDeclarativeProtocol, Declar
         super.didMoveToSuperview()
         movedToSuperview()
     }
+
+	private var _oldValue: Int?
+
+	open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+		self._oldValue = self.selectedSegmentIndex
+		super.touchesBegan(touches, with: event)
+	}
+
+	open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+		super.touchesEnded(touches, with: event)
+		if self._oldValue == self.selectedSegmentIndex {
+			self.sendActions(for: .valueChanged)
+		}
+	}
     
     @objc
     private func valueChanged() {

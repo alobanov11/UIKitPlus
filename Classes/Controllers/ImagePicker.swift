@@ -18,13 +18,13 @@ open class ImagePicker: NSObject {
     private var sourceType: UIImagePickerController.SourceType = .camera
     
     public struct Info {
-        let original: [UIImagePickerController.InfoKey : Any]
-        let mediaType: String
-        let originalImage: UIImage
-        let editedImage: UIImage?
-        let cropRect: CGRect
-        let mediaURL: URL?
-        let mediaMetadata: NSDictionary
+        public let original: [UIImagePickerController.InfoKey : Any]
+		public let mediaType: String
+		public let originalImage: UIImage
+		public let editedImage: UIImage?
+		public let cropRect: CGRect
+		public let mediaURL: URL?
+		public let mediaMetadata: NSDictionary
         
         init? (_ info: [UIImagePickerController.InfoKey : Any]) {
             original = info

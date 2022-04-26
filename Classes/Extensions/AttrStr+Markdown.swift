@@ -226,8 +226,8 @@ private extension AttributedString {
 		repeat {
 			let match = matches.removeFirst()
 
-			let titleString = result.string.substring(with: match.range(at: 1).lowerBound ..< match.range(at: 1).upperBound)
-			let urlString = result.string.substring(with: match.range(at: 2).lowerBound ..< match.range(at: 2).upperBound)
+			let titleString = result.string.substring(with: match.range(at: 1))
+			let urlString = result.string.substring(with: match.range(at: 2))
 			let range = NSRange(location: match.range.location, length: titleString.count)
 
 			result.replaceCharacters(in: match.range, with: titleString)
@@ -384,14 +384,8 @@ private extension NSAttributedString {
 }
 
 private extension String {
-	func index(from: Int) -> Index {
-		return self.index(startIndex, offsetBy: from)
-	}
-
-	func substring(with r: Range<Int>) -> String {
-		let startIndex = index(from: r.lowerBound)
-		let endIndex = index(from: r.upperBound)
-		return String(self[startIndex..<endIndex])
+	func substring(with r: NSRange) -> String {
+		NSString(string: self).substring(with: r)
 	}
 }
 

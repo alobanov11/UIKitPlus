@@ -27,7 +27,7 @@ final public class TapGestureRecognizer: UITapGestureRecognizer, _GestureTrackab
     }
     
     @discardableResult
-    public func numberOfTapsRequired(_ state: UIKitPlus.State<Int>) -> Self {
+    public func numberOfTapsRequired(_ state: UISwift.State<Int>) -> Self {
         state.listen { [weak self] in self?.numberOfTapsRequired = $0 }
         return self
     }
@@ -40,7 +40,7 @@ final public class TapGestureRecognizer: UITapGestureRecognizer, _GestureTrackab
     }
     
     @discardableResult
-    public func numberOfTouchesRequired(_ state: UIKitPlus.State<Int>) -> Self {
+    public func numberOfTouchesRequired(_ state: UISwift.State<Int>) -> Self {
         state.listen { [weak self] in self?.numberOfTouchesRequired = $0 }
         return self
     }

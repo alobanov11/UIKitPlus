@@ -6,7 +6,7 @@ import UIKit
 
 public protocol TextBindable {
     @discardableResult
-    func bind<A: AnyString>(_ to: UIKitPlus.State<A>) -> Self
+    func bind<A: AnyString>(_ to: UISwift.State<A>) -> Self
 }
 
 protocol _TextBindable: TextBindable {

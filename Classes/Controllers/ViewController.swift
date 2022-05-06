@@ -24,7 +24,7 @@ open class ViewController: BaseViewController {
     #if !os(tvOS)
     open override var preferredStatusBarStyle: UIStatusBarStyle { statusBarStyle.rawValue }
     #endif
-    /// UIKitPlus reimplementation of `preferredStatusBarStyle`
+    /// UISwift reimplementation of `preferredStatusBarStyle`
     open var statusBarStyle: StatusBarStyle { _statusBarStyle ?? .default }
     #endif
     

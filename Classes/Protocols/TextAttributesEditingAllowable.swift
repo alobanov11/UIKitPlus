@@ -12,7 +12,7 @@ public protocol TextAttributesEditingAllowable: AnyObject {
     func allowEditingTextAttributes(_ value: Bool) -> Self
     
     @discardableResult
-    func allowEditingTextAttributes(_ binding: UIKitPlus.State<Bool>) -> Self
+    func allowEditingTextAttributes(_ binding: UISwift.State<Bool>) -> Self
 }
 
 protocol _TextAttributesEditingAllowable: TextAttributesEditingAllowable {
@@ -26,7 +26,7 @@ extension TextAttributesEditingAllowable {
     }
     
     @discardableResult
-    public func allowEditingTextAttributes(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func allowEditingTextAttributes(_ binding: UISwift.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.allowEditingTextAttributes($0) }
         return allowEditingTextAttributes(binding.wrappedValue)
     }

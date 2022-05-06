@@ -1,3 +1,5 @@
+# Fork UIKitPlus
+
 <p align="center">
     <a href="LICENSE">
         <img src="https://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT License">
@@ -23,7 +25,7 @@
 <br/>
 <p align="center">With. Live. Preview. iOS9+.</p>
 <br/>
-<p align="center"><a href="https://github.com/MihaelIsaev/UIKitPlusExample" style="color:green;">A LOT OF EXAMPLES</a></p>
+<p align="center"><a href="https://github.com/MihaelIsaev/UISwiftExample" style="color:green;">A LOT OF EXAMPLES</a></p>
 <p align="center"><a href="https://discord.gg/q5wCPYv">SWIFT.STREAM COMMUNITY IN DISCORD</a></p>
 
 ## Requirements
@@ -47,7 +49,7 @@ pod 'UIKit-Plus', '~> 1.28.0'
 
 In Xcode 11.4+ go to `File -> Swift Packages -> Add Package Dependency` and enter there URL of this repo
 ```
-https://github.com/MihaelIsaev/UIKitPlus
+https://github.com/MihaelIsaev/UISwift
 ```
 
 #### IMPORTANT!
@@ -60,21 +62,21 @@ Without that your app gonna crash on iOS lower than 13 because it will try to lo
 
 ## Project Template! 🍾
 
-To simplify life with UIKitPlus you can download our template!
+To simplify life with UISwift you can download our template!
 
 For that run the following commands in console
 
 ```bash
-git clone https://github.com/MihaelIsaev/UIKitPlus.git
-cp -R UIKitPlus/Templates ~/Library/Developer/Xcode/
-rm -rf UIKitPlus
+git clone https://github.com/MihaelIsaev/UISwift.git
+cp -R UISwift/Templates ~/Library/Developer/Xcode/
+rm -rf UISwift
 ```
 
-After that you will be able to go to `File -> New -> Project` and choose `UIKitPlus` app! 🚀
+After that you will be able to go to `File -> New -> Project` and choose `UISwift` app! 🚀
 
-![UIKitPlus App Template Screenshot](https://user-images.githubusercontent.com/1272610/78511655-87d3ac80-77af-11ea-96f7-dc0b75287207.jpg)
+![UISwift App Template Screenshot](https://user-images.githubusercontent.com/1272610/78511655-87d3ac80-77af-11ea-96f7-dc0b75287207.jpg)
 
-> 💡After project creation you have to install UIKitPlus manually either with Swift Package Manager or with CocoaPods
+> 💡After project creation you have to install UISwift manually either with Swift Package Manager or with CocoaPods
 
 ### File Template
 
@@ -165,7 +167,7 @@ Custom trait collections.
 
 Live preview provided by SwiftUI (available only since macOS Catalina).
 
-> The only problem we have is that since names of views are the same in `UIKitPlus` and `SwiftUI` we should use aliases like `UButton` for `Button` or `UView` for `View`, so everything with `U` prefix. It is only necessary if you want to use live previews, otherwise there is no need to import `SwiftUI`, so no name conflicts.
+> The only problem we have is that since names of views are the same in `UISwift` and `SwiftUI` we should use aliases like `UButton` for `Button` or `UView` for `View`, so everything with `U` prefix. It is only necessary if you want to use live previews, otherwise there is no need to import `SwiftUI`, so no name conflicts.
 
 #### Preview single item
 
@@ -265,7 +267,7 @@ struct MyPreviewGroup_Preview: PreviewProvider, DeclarativePreviewGroup {
 ## Usage
 
 ```swift
-import UIKitPlus
+import UISwift
 ```
 
 Even no need to import `UIKit` at all!
@@ -787,7 +789,7 @@ View().body {
 
 `// implemented. to be described more`
 
-This is really bonus view! :D Almost every app now uses verification codes for login and now you can easily implement that code view with UIKitPlus! :)
+This is really bonus view! :D Almost every app now uses verification codes for login and now you can easily implement that code view with UISwift! :)
 ```swift
 VerificationCodeField().digitWidth(64)
                        .digitsMargin(25)
@@ -1052,7 +1054,7 @@ UIColor.white.alpha(0.5)
 Declare custom colors like this
 ```swift
 import UIKit
-import UIKitPlus
+import UISwift
 
 extension UIColor {
     static var mainBlack: UIColor { return .black  }
@@ -1077,7 +1079,7 @@ UIFont.printAll()
 
 Add your custom fonts to the project and then declare them like this
 ```swift
-import UIKitPlus
+import UISwift
 
 extension FontIdentifier {
     public static var sfProBold = FontIdentifier("SFProDisplay-Bold")
@@ -1219,7 +1221,7 @@ Button("Tap me").onTapGesture(tapped)
 
 Declare custom buttons like this
 ```swift
-import UIKitPlus
+import UISwift
 
 extension Button {
     static var bigBottomWhite: Button {
@@ -1386,7 +1388,7 @@ View()
 
 Declare asset images like this
 ```swift
-import UIKitPlus
+import UISwift
 
 extension Image {
     static var welcomeBackground: Image { return Image("WelcomeBackground") }
@@ -1592,7 +1594,7 @@ Label("hello\nworld").multiline()
 
 Declare custom attributed labels like this
 ```swift
-import UIKitPlus
+import UISwift
 
 extension Label {
     static var welcomeLogo: Label {
@@ -1817,7 +1819,7 @@ View().shake(-20, 20, -20, 20, -10, 10, -5, 5, 0,
 ```
 or even create an extension
 ```swift
-import UIKitPlus
+import UISwift
 
 extension DeclarativeProtocol {
   func myShake() {
@@ -1859,11 +1861,11 @@ View().tint($boolState.map { $0 ? .red : .green })
 
 # Examples
 
-[Example app is here](https://github.com/MihaelIsaev/UIKitPlusExample)
+[Example app is here](https://github.com/MihaelIsaev/UISwiftExample)
 
 ## Example 1
 ```swift
-import UIKitPlus
+import UISwift
 
 class MyViewController: ViewController {
     lazy var view1 = View()
@@ -1879,7 +1881,7 @@ class MyViewController: ViewController {
 ```
 ## Example 2
 ```swift
-import UIKitPlus
+import UISwift
 
 // Just feel how easy you could build & declare your views
 // with all needed constraints, properties and actions

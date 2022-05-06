@@ -48,7 +48,7 @@ extension GestureRecognizerable {
     }
     
     @discardableResult
-    public func enabled(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func enabled(_ binding: UISwift.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.enabled($0) }
         return enabled(binding.wrappedValue)
     }
@@ -69,7 +69,7 @@ extension GestureRecognizerable {
     }
     
     @discardableResult
-    public func cancelsTouchesInView(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func cancelsTouchesInView(_ binding: UISwift.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.cancelsTouchesInView($0) }
         return cancelsTouchesInView(binding.wrappedValue)
     }
@@ -89,7 +89,7 @@ extension GestureRecognizerable {
     }
     
     @discardableResult
-    public func delaysTouchesBegan(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func delaysTouchesBegan(_ binding: UISwift.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.delaysTouchesBegan($0) }
         return delaysTouchesBegan(binding.wrappedValue)
     }
@@ -109,7 +109,7 @@ extension GestureRecognizerable {
     }
     
     @discardableResult
-    public func delaysTouchesEnded(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func delaysTouchesEnded(_ binding: UISwift.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.delaysTouchesEnded($0) }
         return delaysTouchesEnded(binding.wrappedValue)
     }
@@ -129,7 +129,7 @@ extension GestureRecognizerable {
     }
     
     @discardableResult
-    public func requiresExclusiveTouchType(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func requiresExclusiveTouchType(_ binding: UISwift.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.requiresExclusiveTouchType($0) }
         return requiresExclusiveTouchType(binding.wrappedValue)
     }
@@ -204,7 +204,7 @@ extension _GestureRecognizerable {
     }
     
     @discardableResult
-    public func enabled(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func enabled(_ binding: UISwift.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.enabled($0) }
         return enabled(binding.wrappedValue)
     }
@@ -224,7 +224,7 @@ extension _GestureRecognizerable {
     }
     
     @discardableResult
-    public func cancelsTouchesInView(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func cancelsTouchesInView(_ binding: UISwift.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.cancelsTouchesInView($0) }
         return cancelsTouchesInView(binding.wrappedValue)
     }
@@ -243,7 +243,7 @@ extension _GestureRecognizerable {
     }
     
     @discardableResult
-    public func delaysTouchesBegan(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func delaysTouchesBegan(_ binding: UISwift.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.delaysTouchesBegan($0) }
         return delaysTouchesBegan(binding.wrappedValue)
     }
@@ -262,7 +262,7 @@ extension _GestureRecognizerable {
     }
     
     @discardableResult
-    public func delaysTouchesEnded(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func delaysTouchesEnded(_ binding: UISwift.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.delaysTouchesEnded($0) }
         return delaysTouchesEnded(binding.wrappedValue)
     }
@@ -281,7 +281,7 @@ extension _GestureRecognizerable {
     }
     
     @discardableResult
-    public func requiresExclusiveTouchType(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func requiresExclusiveTouchType(_ binding: UISwift.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.requiresExclusiveTouchType($0) }
         return requiresExclusiveTouchType(binding.wrappedValue)
     }

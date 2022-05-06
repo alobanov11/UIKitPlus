@@ -4,17 +4,15 @@
 import PackageDescription
 
 let package = Package(
-    name: "UIKitPlus",
-    platforms: [
-        .macOS(.v10_14), .iOS(.v11), .tvOS(.v13),
-    ],
+    name: "UISwift",
+	platforms: [
+		.iOS("11.0"),
+	],
     products: [
-        // 🏰 Declarative UIKit wrapper inspired by SwiftUI
-        .library(name: "UIKitPlus", targets: ["UIKitPlus"]),
-        ],
+        .library(name: "UISwift", targets: ["UISwift"]),
+	],
     dependencies: [],
     targets: [
-        .target(name: "UIKitPlus", dependencies: [], path: "Classes"),
-//        .testTarget(name: "UIKitPlusTests", dependencies: ["UIKitPlus"]),
-        ]
+		.target(name: "UISwift", dependencies: [], path: "Classes"),
+	]
 )

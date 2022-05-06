@@ -6,7 +6,7 @@ public protocol BezelStyleable: class {
     func style(_ value: NSButton.BezelStyle) -> Self
     
     @discardableResult
-    func style(_ binding: UIKitPlus.State<NSButton.BezelStyle>) -> Self
+    func style(_ binding: UISwift.State<NSButton.BezelStyle>) -> Self
 }
 
 protocol _BezelStyleable: BezelStyleable {
@@ -18,7 +18,7 @@ protocol _BezelStyleable: BezelStyleable {
 @available(iOS 13.0, *)
 extension BezelStyleable {
     @discardableResult
-    public func style(_ binding: UIKitPlus.State<NSButton.BezelStyle>) -> Self {
+    public func style(_ binding: UISwift.State<NSButton.BezelStyle>) -> Self {
         guard var s = self as? _BezelStyleable else { return self }
         s._bezelStyleState = binding
         s._setBezelStyle(binding.wrappedValue)
@@ -38,7 +38,7 @@ extension BezelStyleable {
 // for iOS lower than 13
 extension _BezelStyleable {
     @discardableResult
-    public func style(_ binding: UIKitPlus.State<NSButton.BezelStyle>) -> Self {
+    public func style(_ binding: UISwift.State<NSButton.BezelStyle>) -> Self {
         _bezelStyleState = binding
         _setBezelStyle(binding.wrappedValue)
         binding.listen { [weak self] in self?._setBezelStyle($0) }

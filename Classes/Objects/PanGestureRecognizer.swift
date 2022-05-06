@@ -27,7 +27,7 @@ final public class PanGestureRecognizer: NSPanGestureRecognizer, _GestureTrackab
     }
     
     @discardableResult
-    public func numberOfTouches(_ state: UIKitPlus.State<Int>) -> Self {
+    public func numberOfTouches(_ state: UISwift.State<Int>) -> Self {
         state.listen { [weak self] in self?.numberOfTouchesRequired = $0 }
         return self
     }
@@ -39,7 +39,7 @@ final public class PanGestureRecognizer: NSPanGestureRecognizer, _GestureTrackab
     }
     
     @discardableResult
-    public func buttonMask(_ state: UIKitPlus.State<Int>) -> Self {
+    public func buttonMask(_ state: UISwift.State<Int>) -> Self {
         state.listen { [weak self] in self?.buttonMask = $0 }
         return self
     }
@@ -78,7 +78,7 @@ final public class PanGestureRecognizer: UIPanGestureRecognizer, _GestureTrackab
     }
     
     @discardableResult
-    public func minimumNumberOfTouches(_ state: UIKitPlus.State<Int>) -> Self {
+    public func minimumNumberOfTouches(_ state: UISwift.State<Int>) -> Self {
         state.listen { [weak self] in self?.minimumNumberOfTouches = $0 }
         return self
     }
@@ -90,7 +90,7 @@ final public class PanGestureRecognizer: UIPanGestureRecognizer, _GestureTrackab
     }
     
     @discardableResult
-    public func maximumNumberOfTouches(_ state: UIKitPlus.State<Int>) -> Self {
+    public func maximumNumberOfTouches(_ state: UISwift.State<Int>) -> Self {
         state.listen { [weak self] in self?.maximumNumberOfTouches = $0 }
         return self
     }

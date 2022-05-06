@@ -12,7 +12,7 @@ public protocol Continuousable: AnyObject {
     func continuous(_ value: Bool) -> Self
     
     @discardableResult
-    func continuous(_ binding: UIKitPlus.State<Bool>) -> Self
+    func continuous(_ binding: UISwift.State<Bool>) -> Self
 }
 
 protocol _Continuousable: Continuousable {
@@ -28,7 +28,7 @@ extension Continuousable {
     }
     
     @discardableResult
-    public func continuous(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func continuous(_ binding: UISwift.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.continuous($0) }
         return continuous(binding.wrappedValue)
     }

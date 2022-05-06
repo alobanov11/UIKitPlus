@@ -12,7 +12,7 @@ public protocol Hiddenable: AnyObject {
     func hidden(_ value: Bool) -> Self
     
     @discardableResult
-    func hidden(_ binding: UIKitPlus.State<Bool>) -> Self
+    func hidden(_ binding: UISwift.State<Bool>) -> Self
 }
 
 protocol _Hiddenable: Hiddenable {
@@ -28,7 +28,7 @@ extension Hiddenable {
     }
     
     @discardableResult
-    public func hidden(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func hidden(_ binding: UISwift.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.hidden($0) }
         return hidden(binding.wrappedValue)
     }

@@ -12,7 +12,7 @@ public protocol Alternateable: AnyObject {
     func alternate(_ value: Bool) -> Self
     
     @discardableResult
-    func alternate(_ binding: UIKitPlus.State<Bool>) -> Self
+    func alternate(_ binding: UISwift.State<Bool>) -> Self
 }
 
 protocol _Alternateable: Alternateable {
@@ -26,7 +26,7 @@ extension Alternateable {
     }
     
     @discardableResult
-    public func alternate(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func alternate(_ binding: UISwift.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.alternate($0) }
         return alternate(binding.wrappedValue)
     }

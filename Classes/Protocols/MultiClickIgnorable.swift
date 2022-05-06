@@ -12,7 +12,7 @@ public protocol MultiClickIgnorable: AnyObject {
     func ignoreMultiClick(_ value: Bool) -> Self
     
     @discardableResult
-    func ignoreMultiClick(_ binding: UIKitPlus.State<Bool>) -> Self
+    func ignoreMultiClick(_ binding: UISwift.State<Bool>) -> Self
 }
 
 protocol _MultiClickIgnorable: MultiClickIgnorable {
@@ -28,7 +28,7 @@ extension MultiClickIgnorable {
     }
     
     @discardableResult
-    public func ignoreMultiClick(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func ignoreMultiClick(_ binding: UISwift.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.ignoreMultiClick($0) }
         return ignoreMultiClick(binding.wrappedValue)
     }

@@ -12,7 +12,7 @@ public protocol FirstResponderRefusable: AnyObject {
     func refuseFirstResponder(_ value: Bool) -> Self
     
     @discardableResult
-    func refuseFirstResponder(_ binding: UIKitPlus.State<Bool>) -> Self
+    func refuseFirstResponder(_ binding: UISwift.State<Bool>) -> Self
 }
 
 protocol _FirstResponderRefusable: FirstResponderRefusable {
@@ -28,7 +28,7 @@ extension FirstResponderRefusable {
     }
     
     @discardableResult
-    public func refuseFirstResponder(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func refuseFirstResponder(_ binding: UISwift.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.refuseFirstResponder($0) }
         return refuseFirstResponder(binding.wrappedValue)
     }

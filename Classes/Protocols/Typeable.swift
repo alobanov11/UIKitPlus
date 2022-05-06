@@ -27,7 +27,7 @@ extension Typeable {
     }
     
     @discardableResult
-    public func typing(_ binding: UIKitPlus.State<Bool>, _ interval: TimeInterval) -> Self {
+    public func typing(_ binding: UISwift.State<Bool>, _ interval: TimeInterval) -> Self {
         guard let s = self as? _Typeable else { return self }
         s._setTypingInterval(interval)
         return typing(binding)
@@ -43,7 +43,7 @@ extension _Typeable {
     }
     
     @discardableResult
-    public func typing(_ binding: UIKitPlus.State<Bool>, _ interval: TimeInterval) -> Self {
+    public func typing(_ binding: UISwift.State<Bool>, _ interval: TimeInterval) -> Self {
         _setTypingInterval(interval)
         return typing(binding)
     }

@@ -6,7 +6,7 @@ public protocol ControlStateable: class {
     func state(_ value: NSControl.StateValue) -> Self
     
     @discardableResult
-    func state(_ binding: UIKitPlus.State<NSControl.StateValue>) -> Self
+    func state(_ binding: UISwift.State<NSControl.StateValue>) -> Self
 }
 
 protocol _ControlStateable: ControlStateable {
@@ -18,7 +18,7 @@ protocol _ControlStateable: ControlStateable {
 @available(iOS 13.0, *)
 extension ControlStateable {
     @discardableResult
-    public func state(_ binding: UIKitPlus.State<NSControl.StateValue>) -> Self {
+    public func state(_ binding: UISwift.State<NSControl.StateValue>) -> Self {
         guard var s = self as? _ControlStateable else { return self }
         s._stateState = binding
         s._setState(binding.wrappedValue)
@@ -38,7 +38,7 @@ extension ControlStateable {
 // for iOS lower than 13
 extension _ControlStateable {
     @discardableResult
-    public func state(_ binding: UIKitPlus.State<NSControl.StateValue>) -> Self {
+    public func state(_ binding: UISwift.State<NSControl.StateValue>) -> Self {
         _stateState = binding
         _setState(binding.wrappedValue)
         binding.listen { [weak self] in self?._setState($0) }

@@ -15,7 +15,7 @@ open class NavigationController<T: UIViewController>: UINavigationController, UI
     }
     #endif
     
-    /// UIKitPlus reimplementation of `preferredStatusBarStyle`
+    /// UISwift reimplementation of `preferredStatusBarStyle`
     open var statusBarStyle: StatusBarStyle { _statusBarStyle ?? .default }
     private var _statusBarStyle: StatusBarStyle?
     

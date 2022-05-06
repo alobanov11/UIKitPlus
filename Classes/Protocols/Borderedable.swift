@@ -12,7 +12,7 @@ public protocol Borderedable: AnyObject {
     func bordered(_ value: Bool) -> Self
     
     @discardableResult
-    func bordered(_ binding: UIKitPlus.State<Bool>) -> Self
+    func bordered(_ binding: UISwift.State<Bool>) -> Self
 }
 
 protocol _Borderedable: Borderedable {
@@ -28,7 +28,7 @@ extension Borderedable {
     }
     
     @discardableResult
-    public func bordered(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func bordered(_ binding: UISwift.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.bordered($0) }
         return bordered(binding.wrappedValue)
     }

@@ -12,7 +12,7 @@ public protocol BulletsEchoable: AnyObject {
     func echosBullets(_ value: Bool) -> Self
     
     @discardableResult
-    func echosBullets(_ binding: UIKitPlus.State<Bool>) -> Self
+    func echosBullets(_ binding: UISwift.State<Bool>) -> Self
 }
 
 protocol _BulletsEchoable: BulletsEchoable {
@@ -26,7 +26,7 @@ extension BulletsEchoable {
     }
     
     @discardableResult
-    public func echosBullets(_ binding: UIKitPlus.State<Bool>) -> Self {
+    public func echosBullets(_ binding: UISwift.State<Bool>) -> Self {
         binding.listen { [weak self] in self?.echosBullets($0) }
         return echosBullets(binding.wrappedValue)
     }

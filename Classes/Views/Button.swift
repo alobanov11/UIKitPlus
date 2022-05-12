@@ -103,6 +103,16 @@ open class UButton: UIButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
         _setup()
         title(stateString: stateString)
     }
+
+	public convenience init(_ view: () -> UIView) {
+		self.init(type: .custom)
+		_setup()
+		body {
+			UWrapperView(view())
+				.userInteraction(false)
+				.edgesToSuperview()
+		}
+	}
     
     public override init(frame: CGRect) {
         super.init(frame: frame)

@@ -298,6 +298,13 @@ open class UCollection: UView {
 		return self
 	}
 
+	var _onCompleteBatchUpdates: (() -> Void)?
+
+	public func onCompleteBatchUpdates(_ handler: @escaping () -> Void) -> Self {
+		self._onCompleteBatchUpdates = handler
+		return self
+	}
+
 	// MARK: - Layout
 
 	var _sectionInset: ((USection.Identifier) -> UIEdgeInsets?)?
@@ -481,6 +488,9 @@ extension UCollection {
 			if self.changesPool > 0 {
 				self.changesPool -= 1
 				self.reloadData()
+			}
+			else {
+				self._onCompleteBatchUpdates?()
 			}
 		})
 	}

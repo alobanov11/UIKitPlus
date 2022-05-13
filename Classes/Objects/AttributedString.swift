@@ -138,6 +138,22 @@ open class AttributedString: AnyString, BodyBuilderItemable {
         _updateHandler(_attributedString)
         return self
     }
+
+	@discardableResult
+	public func enumerateAttributes(
+		at range: Range<String.Index>? = nil,
+		completion: ([NSAttributedString.Key: Any], NSRange) -> Void
+	) -> AttributedString {
+		// TODO: check range
+		let range = range ?? _attributedString.string.range(of: attributedString.string)
+		range.map {
+			_attributedString.enumerateAttributes(in: NSRange($0, in: _attributedString.string), options: []) { attrs, range, _ in
+				completion(attrs, range)
+			}
+		}
+		_updateHandler(_attributedString)
+		return self
+	}
     
     /// UColor, default nil: no background
     @discardableResult

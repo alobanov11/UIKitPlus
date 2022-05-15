@@ -101,8 +101,6 @@ open class UCollection: UView {
         case items(Changeset, Int)
     }
 
-	public var animations = true
-    
     lazy var collectionView: UICollectionView = {
         let collectionView = self.configuration.collectionView
         collectionView.register(UCollectionDynamicCell.self)
@@ -381,12 +379,6 @@ open class UCollection: UView {
 	}
 
 	@discardableResult
-	public func animations(_ enabled: Bool) -> Self {
-		self.animations = enabled
-		return self
-	}
-
-	@discardableResult
 	public func includeSafeArea(_ value: Bool) -> Self {
 		self.isSafeAreaIncluded = value
 		return self
@@ -453,13 +445,8 @@ extension UCollection {
             changesets.append(.items(itemsChangeset, section))
         }
 
-		if self.animations {
+		UIView.performWithoutAnimation {
 			self.performUpdates(newSections: newSections, changesets: changesets)
-		}
-		else {
-			UIView.performWithoutAnimation {
-				self.performUpdates(newSections: newSections, changesets: changesets)
-			}
 		}
     }
 

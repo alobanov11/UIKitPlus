@@ -40,7 +40,7 @@ open class ImageCache {
 }
 
 public final class ImagePreloader {
-	public static let shared = ImageLoader()
+	public static let shared = ImagePreloader()
 
 	private var workItem = DispatchWorkItem {}
 

@@ -76,12 +76,12 @@ public final class ImagePreloader {
 	}
 }
 
-extension ImagePreloader {
-	public func preload(_ urls: [String?]) {
+public extension ImagePreloader {
+	func preload(_ urls: [String?]) {
 		self.preload(urls.compactMap { $0 })
 	}
 
-	public func preload(_ urls: [String]) {
+	func preload(_ urls: [String]) {
 		self.preload(urls.compactMap { URL(string: $0) })
 	}
 }

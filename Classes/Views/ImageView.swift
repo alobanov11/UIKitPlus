@@ -28,7 +28,7 @@ open class UImage: UIImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
     var __centerX: State<CGFloat> { _centerX }
     var __centerY: State<CGFloat> { _centerY }
     
-    var _imageLoader: ImageLoader = .defaultRelease
+    var _imageLoader: ImageLoader = .default
     var _onDidSetImage: ((UImage) -> Void)?
 
     open override var image: UIImage? {
@@ -69,11 +69,11 @@ open class UImage: UIImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
         }
     }
     
-    public convenience init (url: State<URL?>, defaultImage: UIImage? = nil, loader: ImageLoader = .defaultRelease) {
+    public convenience init (url: State<URL?>, defaultImage: UIImage? = nil, loader: ImageLoader = .default) {
         self.init(url: url.map { $0?.absoluteString }, defaultImage: defaultImage, loader: loader)
     }
     
-    public init (url: State<String?>, defaultImage: UIImage? = nil, loader: ImageLoader = .defaultRelease) {
+    public init (url: State<String?>, defaultImage: UIImage? = nil, loader: ImageLoader = .default) {
         super.init(frame: .zero)
         _setup()
         self.image = defaultImage
@@ -85,7 +85,7 @@ open class UImage: UIImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
         }
     }
     
-    public init (url: URL?, defaultImage: UIImage? = nil, loader: ImageLoader = .defaultRelease) {
+    public init (url: URL?, defaultImage: UIImage? = nil, loader: ImageLoader = .default) {
         super.init(frame: .zero)
         _setup()
         self.image = defaultImage
@@ -93,7 +93,7 @@ open class UImage: UIImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
         self._imageLoader.load(url, imageView: self, defaultImage: defaultImage)
     }
     
-    public init (url: String?, defaultImage: UIImage? = nil, loader: ImageLoader = .defaultRelease) {
+    public init (url: String?, defaultImage: UIImage? = nil, loader: ImageLoader = .default) {
         super.init(frame: .zero)
         _setup()
         self.image = defaultImage
@@ -145,17 +145,15 @@ open class UImage: UIImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
     }
     
     @discardableResult
-    public func load(url: URL, defaultImage: UIImage? = nil, loader: ImageLoader = .defaultRelease) -> Self {
+    public func load(url: URL, defaultImage: UIImage? = nil) -> Self {
         image = defaultImage
-        _imageLoader = loader
         _imageLoader.load(url, imageView: self, defaultImage: defaultImage)
         return self
     }
     
     @discardableResult
-    public func load(url: String, defaultImage: UIImage? = nil, loader: ImageLoader = .defaultRelease) -> Self {
+    public func load(url: String, defaultImage: UIImage? = nil) -> Self {
         image = defaultImage
-        _imageLoader = loader
         _imageLoader.load(url, imageView: self, defaultImage: defaultImage)
         return self
     }

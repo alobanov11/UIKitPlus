@@ -5,8 +5,14 @@ import AppKit
 import UIKit
 #endif
 
-let cache = NSCache<NSString, NSData>()
-let queue = DispatchQueue(label: "com.uiswift.imageloader")
+fileprivate let cache: NSCache<NSString, NSData> = {
+	let cache = NSCache<NSString, NSData>()
+	cache.countLimit = 100
+	cache.totalCostLimit = 1024 * 1024 * 100
+	return cache
+}()
+
+fileprivate let queue = DispatchQueue(label: "com.uiswift.imageloader")
 
 open class ImageCache {
 	private let fileManager = FileManager()

@@ -133,21 +133,25 @@ open class ImageLoader {
 			return
 		}
 
-		let completion: (_UImage?) -> Void = { [weak self, weak imageView] image in
-			DispatchQueue.main.async {
-				if self?.taskId == taskId {
-					imageView?.image = image
-				}
-			}
-		}
-
-		self.download(url) { [weak self] data in
+		self.download(url) { [weak self, weak imageView] data in
 			guard let data = data, let image = _UImage(data: data)?.forceLoad() else {
-				completion(defaultImage)
+				DispatchQueue.main.async {
+					if self?.taskId == taskId {
+						imageView?.image = defaultImage
+					}
+				}
 				return
 			}
+
 			self?.cache.save(url, data)
-			completion(image)
+
+			DispatchQueue.main.async {
+				if self?.taskId == taskId, let imageView = imageView {
+					UIView.transition(with: imageView, duration: 0.3, options: .transitionCrossDissolve, animations: {
+						imageView.image = image
+					}, completion: nil)
+				}
+			}
 		}
 	}
 

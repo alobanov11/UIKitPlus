@@ -68,11 +68,11 @@ open class UCollection: UView {
         }
     }
 
-    struct Section: Hashable {
-		let identifier: USection.Identifier
-        let header: USupplementable?
-        let items: [UItemable]
-        let footer: USupplementable?
+    public struct Section: Hashable {
+		public let identifier: USection.Identifier
+		public let header: USupplementable?
+		public let items: [UItemable]
+		public let footer: USupplementable?
         
         init(_ section: USection) {
             self.identifier = section.identifier
@@ -127,7 +127,7 @@ open class UCollection: UView {
 		(self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout)?.scrollDirection ?? .vertical
 	}
     
-    var sections: [Section] = [] {
+    public private(set) var sections: [Section] = [] {
         didSet { self.updateRegistration() }
     }
     
@@ -260,6 +260,13 @@ open class UCollection: UView {
         self._shouldHighlightItemAt = handler
         return self
     }
+
+	var _scrollViewDidScroll: ((UICollectionView) -> Void)?
+
+	public func onScrollViewDidScroll(_ handler: @escaping (UICollectionView) -> Void) -> Self {
+		self._scrollViewDidScroll = handler
+		return self
+	}
 
 	var _scrollViewDidEndDecelerating: ((UICollectionView) -> Void)?
 
@@ -654,6 +661,7 @@ extension UCollection: UIScrollViewDelegate {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         self.scrollPosition?.wrappedValue = scrollView.contentOffset
+		self._scrollViewDidScroll?(self.collectionView)
     }
 
 	public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {

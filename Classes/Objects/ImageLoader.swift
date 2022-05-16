@@ -12,14 +12,20 @@ fileprivate let cache: NSCache<NSString, NSData> = {
 	return cache
 }()
 
+fileprivate let lock = NSLock()
+
 fileprivate let queue = DispatchQueue(label: "com.uiswift.imageloader")
 
 open class ImageCache {
+	private let lock = NSLock()
 	private let fileManager = FileManager()
 
 	public init() {}
 
 	open func get(_ url: URL) -> _UImage? {
+		defer { lock.unlock() }
+		lock.lock()
+
 		let cacheData = cache.object(forKey: NSString(string: url.absoluteString)) as Data?
 		let localData = self.fileManager.contents(atPath: self.localURL(for: url).path)
 
@@ -35,6 +41,8 @@ open class ImageCache {
 	}
 
 	open func save(_ url: URL, _ data: Data) {
+		defer { lock.unlock() }
+		lock.lock()
 		cache.setObject(NSData(data: data), forKey: NSString(string: url.absoluteString))
 		self.fileManager.createFile(atPath: self.localURL(for: url).path, contents: data, attributes: nil)
 	}

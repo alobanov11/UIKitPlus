@@ -41,7 +41,7 @@ public protocol USectionBodyItemable {
     var sectionBodyItem: USectionBodyItem { get }
 }
 
-public struct MultipleSectionBodyItem: USectionBodyItemable {
+public struct MultipleSectionBodyItem: USectionBodyItemable, Hashable {
     public var identifier: AnyHashable { self.items.map { $0.identifier } }
     public var sectionBodyItem: USectionBodyItem { .multiple(self.items) }
     public let items: [USectionBodyItemable]
@@ -49,6 +49,14 @@ public struct MultipleSectionBodyItem: USectionBodyItemable {
     public init(_ items: [USectionBodyItemable]) {
         self.items = items
     }
+
+	public static func == (lhs: MultipleSectionBodyItem, rhs: MultipleSectionBodyItem) -> Bool {
+		lhs.identifier == rhs.identifier
+	}
+
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(self.identifier)
+	}
 }
 
 // MARK: - USupplementable

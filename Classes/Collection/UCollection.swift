@@ -445,8 +445,27 @@ extension UCollection {
             changesets.append(.items(itemsChangeset, section))
         }
 
-		UIView.performWithoutAnimation {
+		let canPerformWithAnimation: Bool = {
+			for changes in changesets {
+				switch changes {
+				case .section:
+					return false
+				case let .items(changeset, _):
+					if changeset.inserts.isEmpty == false || changeset.removals.isEmpty == false {
+						return false
+					}
+				}
+			}
+			return true
+		}()
+
+		if canPerformWithAnimation {
 			self.performUpdates(newSections: newSections, changesets: changesets)
+		}
+		else {
+			UIView.performWithoutAnimation {
+				self.performUpdates(newSections: newSections, changesets: changesets)
+			}
 		}
     }
 

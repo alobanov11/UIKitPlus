@@ -176,9 +176,9 @@ open class ImageLoader {
 
 	open func apply(_ image: _UImage, in imageView: _UImageView?) {
 		guard let imageView = imageView else { return }
-//		UIView.transition(with: imageView, duration: 0.3, options: .transitionCrossDissolve, animations: {
+		UIView.transition(with: imageView, duration: 0.3, options: .transitionCrossDissolve, animations: {
 			imageView.image = image
-//		}, completion: nil)
+		}, completion: nil)
 	}
 }
 

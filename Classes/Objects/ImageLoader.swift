@@ -17,34 +17,32 @@ fileprivate let lock = NSLock()
 fileprivate let queue = DispatchQueue(label: "com.uiswift.imageloader")
 
 open class ImageCache {
-	private let lock = NSLock()
 	private let fileManager = FileManager()
 
 	public init() {}
 
 	open func get(_ url: URL) -> _UImage? {
-		defer { lock.unlock() }
-		lock.lock()
+		queue.sync {
+			let cacheData = cache.object(forKey: NSString(string: url.absoluteString)) as Data?
+			let localData = self.fileManager.contents(atPath: self.localURL(for: url).path)
 
-		let cacheData = cache.object(forKey: NSString(string: url.absoluteString)) as Data?
-		let localData = self.fileManager.contents(atPath: self.localURL(for: url).path)
+			if let data = cacheData, let image = _UImage(data: data) {
+				return image
+			}
+			else if let data = localData, let image = _UImage(data: data) {
+				cache.setObject(NSData(data: data), forKey: NSString(string: url.absoluteString))
+				return image
+			}
 
-		if let data = cacheData, let image = _UImage(data: data) {
-			return image
+			return nil
 		}
-		else if let data = localData, let image = _UImage(data: data) {
-			cache.setObject(NSData(data: data), forKey: NSString(string: url.absoluteString))
-			return image
-		}
-
-		return nil
 	}
 
 	open func save(_ url: URL, _ data: Data) {
-		defer { lock.unlock() }
-		lock.lock()
-		cache.setObject(NSData(data: data), forKey: NSString(string: url.absoluteString))
-		self.fileManager.createFile(atPath: self.localURL(for: url).path, contents: data, attributes: nil)
+		queue.async(flags: .barrier) {
+			cache.setObject(NSData(data: data), forKey: NSString(string: url.absoluteString))
+			self.fileManager.createFile(atPath: self.localURL(for: url).path, contents: data, attributes: nil)
+		}
 	}
 
 	open func localURL(for url: URL) -> URL {
@@ -104,8 +102,8 @@ open class ImageLoader {
 	open var headers: [String: String] = [:]
 	open var session: URLSession = .shared
 
+	private var taskId = UUID()
 	private var task: URLSessionDataTask?
-	private var workItem = DispatchWorkItem {}
 
 	fileprivate let cache = ImageCache()
 
@@ -113,7 +111,6 @@ open class ImageLoader {
 
 	open func cancel() {
 		self.task?.cancel()
-		self.workItem.cancel()
 	}
 
 	open func load(_ url: String?, imageView: _UImageView, defaultImage: _UImage? = nil) {
@@ -121,28 +118,37 @@ open class ImageLoader {
 	}
 
 	open func load(_ url: URL?, imageView: _UImageView, defaultImage: _UImage? = nil) {
+		let taskId = UUID()
+		self.taskId = taskId
+
 		self.cancel()
-		self.workItem = DispatchWorkItem { [weak self, weak imageView] in
-			guard let url = url, url.absoluteString.count > 0 else {
-				DispatchQueue.main.async { imageView?.image = defaultImage }
-				return
-			}
-			if let image = self?.cache.get(url)?.forceLoad()  {
-				DispatchQueue.main.async { self?.apply(image, in: imageView) }
-			}
-			else {
-				self?.download(url) { data in
-					if let data = data, let image = _UImage(data: data)?.forceLoad() {
-						self?.cache.save(url, data)
-						DispatchQueue.main.async { self?.apply(image, in: imageView) }
-					}
-					else {
-						DispatchQueue.main.async { imageView?.image = defaultImage }
-					}
+
+		guard let url = url, url.absoluteString.count > 0 else {
+			imageView.image = defaultImage
+			return
+		}
+
+		if let image = self.cache.get(url)  {
+			imageView.image = image
+			return
+		}
+
+		let completion: (_UImage?) -> Void = { [weak self, weak imageView] image in
+			DispatchQueue.main.async {
+				if self?.taskId == taskId {
+					imageView?.image = image
 				}
 			}
 		}
-		queue.async(execute: self.workItem)
+
+		self.download(url) { [weak self] data in
+			guard let data = data, let image = _UImage(data: data)?.forceLoad() else {
+				completion(defaultImage)
+				return
+			}
+			self?.cache.save(url, data)
+			completion(image)
+		}
 	}
 
 	open func download(_ url: URL, completion: @escaping (Data?) -> Void) {
@@ -172,13 +178,6 @@ open class ImageLoader {
 			}()
 			self.task?.resume()
 		}
-	}
-
-	open func apply(_ image: _UImage, in imageView: _UImageView?) {
-		guard let imageView = imageView else { return }
-		UIView.transition(with: imageView, duration: 0.3, options: .transitionCrossDissolve, animations: {
-			imageView.image = image
-		}, completion: nil)
 	}
 }
 

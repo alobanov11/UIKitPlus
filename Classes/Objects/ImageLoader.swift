@@ -128,13 +128,13 @@ open class ImageLoader {
 				return
 			}
 			if let image = self?.cache.get(url)?.forceLoad()  {
-				DispatchQueue.main.async { imageView?.image = image }
+				DispatchQueue.main.async { self?.apply(image, in: imageView) }
 			}
 			else {
 				self?.download(url) { data in
 					if let data = data, let image = _UImage(data: data)?.forceLoad() {
 						self?.cache.save(url, data)
-						DispatchQueue.main.async { imageView?.image = image }
+						DispatchQueue.main.async { self?.apply(image, in: imageView) }
 					}
 					else {
 						DispatchQueue.main.async { imageView?.image = defaultImage }
@@ -172,6 +172,13 @@ open class ImageLoader {
 			}()
 			self.task?.resume()
 		}
+	}
+
+	open func apply(_ image: _UImage, in imageView: _UImageView?) {
+		guard let imageView = imageView else { return }
+		UIView.transition(with: imageView, duration: 0.3, options: .transitionCrossDissolve, animations: {
+			imageView.image = image
+		}, completion: nil)
 	}
 }
 

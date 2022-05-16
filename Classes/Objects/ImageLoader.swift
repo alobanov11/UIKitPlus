@@ -121,7 +121,6 @@ open class ImageLoader {
 	}
 
 	open func load(_ url: URL?, imageView: _UImageView, defaultImage: _UImage? = nil) {
-		imageView.image = defaultImage
 		self.cancel()
 		self.workItem = DispatchWorkItem { [weak self, weak imageView] in
 			guard let url = url, url.absoluteString.count > 0 else {

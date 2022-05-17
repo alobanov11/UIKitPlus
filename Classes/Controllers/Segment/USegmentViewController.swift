@@ -157,7 +157,8 @@ extension USegmentViewController: USegmentPageCollectionAdapter
     }
 
     func segmentPageCollection(didScroll point: CGPoint) {
-        self.navigationBarView.segment(didScroll: (point.x / self.view.frame.width) - 1)
+		let percentage = (point.x / self.view.frame.width) - 1
+		if percentage >= 0 { self.navigationBarView.segment(didScroll: percentage) }
 		self.segmentDidScroll()
     }
 }

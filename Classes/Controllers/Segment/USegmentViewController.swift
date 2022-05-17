@@ -28,6 +28,7 @@ open class USegmentViewController: ViewController {
     }
 
     private var lastCollaborativeScrollView: UIScrollView?
+	private var backGesture: UIPanGestureRecognizer?
 
     // MARK: - UIKit
 
@@ -78,6 +79,21 @@ open class USegmentViewController: ViewController {
 			UIView.setAnimationsEnabled(true)
 		}
     }
+
+	open override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		guard self.backGesture == nil else { return }
+		self.pageCollectionView.pageViewController.scrollView.map { scrollView in
+			self.navigationController?.interactivePopGestureRecognizer.map {
+				let targets = $0.value(forKey: "targets") as? NSMutableArray
+				let panGesture = UIPanGestureRecognizer()
+				panGesture.setValue(targets, forKey: "targets")
+				panGesture.delegate = self
+				scrollView.addGestureRecognizer(panGesture)
+				self.backGesture = panGesture
+			}
+		}
+	}
 
 	open func segmentDidScroll() {}
 }
@@ -152,6 +168,42 @@ extension USegmentViewController: USegmentContentDelegate
         self.syncVerticalScrollIfNeeded()
 		self.segmentDidScroll()
     }
+}
+
+extension USegmentViewController: UIGestureRecognizerDelegate
+{
+	public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+		guard let panRecognizer = gestureRecognizer as? UIPanGestureRecognizer,
+			  panRecognizer == self.backGesture
+		else {
+			return true
+		}
+
+		guard let gestureView = panRecognizer.view else { return true }
+
+		let velocity = panRecognizer.velocity(in: gestureView).x
+
+		guard velocity > 0 else { return false }
+
+		guard let currentViewController = self.pageCollectionView.pageViewController.viewControllers?.first,
+			  self.pageCollectionView.pageViewController.dataSource?.pageViewController(
+				self.pageCollectionView.pageViewController,
+				viewControllerBefore: currentViewController
+			  ) == nil
+		else {
+			return false
+		}
+
+		return true
+	}
+
+	public func gestureRecognizer(
+		_ gestureRecognizer: UIGestureRecognizer,
+		shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer
+	) -> Bool {
+		gestureRecognizer == self.backGesture &&
+		otherGestureRecognizer == self.pageCollectionView.pageViewController.scrollView?.panGestureRecognizer
+	}
 }
 
 // MARK: - Private

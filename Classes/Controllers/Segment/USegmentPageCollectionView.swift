@@ -25,7 +25,7 @@ final class USegmentPageCollectionView: UIView {
         return index
     }
 
-    private lazy var pageViewController: UIPageViewController = {
+    private(set) lazy var pageViewController: UIPageViewController = {
         let controller = UIPageViewController(
             transitionStyle: .scroll,
             navigationOrientation: .horizontal,
@@ -34,12 +34,10 @@ final class USegmentPageCollectionView: UIView {
         controller.delegate = self
         controller.dataSource = self
         controller.view.translatesAutoresizingMaskIntoConstraints = false
-        if let scrollView = controller.view.subviews.first(where: { $0 is UIScrollView }) as? UIScrollView {
-            scrollView.delegate = self
-            if #available(iOS 11.0, *) {
-                scrollView.contentInsetAdjustmentBehavior = .never
-            }
-        }
+		controller.scrollView?.delegate = self
+		if #available(iOS 11.0, *) {
+			controller.scrollView?.contentInsetAdjustmentBehavior = .never
+		}
         return controller
     }()
 

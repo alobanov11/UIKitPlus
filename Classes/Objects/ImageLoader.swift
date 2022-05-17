@@ -51,54 +51,10 @@ open class ImageCache {
 	}
 }
 
-public final class ImagePreloader {
-	public static let shared = ImagePreloader()
-
-	private var workItem = DispatchWorkItem {}
-
-	private let imageLoader = ImageLoader()
-	private let queue = DispatchQueue(label: "com.uiswift.imagepreloader", qos: .userInitiated)
-
-	public init() {}
-
-	public func preload(_ urls: [URL]) {
-		self.imageLoader.cancel()
-		self.workItem.cancel()
-		self.workItem = DispatchWorkItem { self.start(urls) }
-		self.queue.async(execute: self.workItem)
-	}
-
-	private func start(_ urls: [URL]) {
-		var urls = urls
-		guard urls.isEmpty == false else { return }
-
-		let url = urls.removeFirst()
-
-		if self.imageLoader.cache.get(url) == nil {
-			self.imageLoader.download(url) { [weak self] in
-				if let data = $0 {
-					self?.imageLoader.cache.save(url, data)
-				}
-				self?.start(urls)
-			}
-		}
-		else {
-			self.start(urls)
-		}
-	}
-}
-
-public extension ImagePreloader {
-	func preload(_ urls: [String?]) {
-		self.preload(urls.compactMap { $0 })
-	}
-
-	func preload(_ urls: [String]) {
-		self.preload(urls.compactMap { URL(string: $0) })
-	}
-}
-
 open class ImageLoader {
+	public static var `default`: ImageLoader { .init() }
+	public static var _default: () -> ImageLoader = { .default }
+
 	open var headers: [String: String] = [:]
 	open var session: URLSession = .shared
 
@@ -183,10 +139,6 @@ open class ImageLoader {
 			self.task?.resume()
 		}
 	}
-}
-
-extension ImageLoader {
-    public static var `default`: ImageLoader { .init() }
 }
 
 extension _UImage {

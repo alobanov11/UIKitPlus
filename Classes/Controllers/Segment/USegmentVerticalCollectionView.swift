@@ -12,7 +12,7 @@ protocol USegmentVerticalCollectionAdapter: AnyObject {
 }
 
 final class USegmentVerticalCollectionView: UIView {
-    private final class ControlContainableCollectionView: UICollectionView
+    private final class ControlContainableCollectionView: UCollaborativeCollectionView
     {
         override func touchesShouldCancel(in view: UIView) -> Bool {
             return view.isKind(of: UIControl.self) ? true : super.touchesShouldCancel(in: view)

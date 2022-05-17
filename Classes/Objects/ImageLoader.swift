@@ -26,10 +26,10 @@ open class ImageCache {
 			let cacheData = cache.object(forKey: NSString(string: url.absoluteString)) as Data?
 			let localData = self.fileManager.contents(atPath: self.localURL(for: url).path)
 
-			if let data = cacheData, let image = _UImage(data: data) {
+			if let data = cacheData, let image = _UImage(data: data)?.forceLoad() {
 				return image
 			}
-			else if let data = localData, let image = _UImage(data: data) {
+			else if let data = localData, let image = _UImage(data: data)?.forceLoad() {
 				cache.setObject(NSData(data: data), forKey: NSString(string: url.absoluteString))
 				return image
 			}

@@ -6,11 +6,6 @@ import UIKit
 
 public extension UIPageViewController {
 	var scrollView: UIScrollView? {
-		for subview in self.view.subviews {
-			if let scrollView = subview as? UIScrollView {
-				return scrollView
-			}
-		}
-		return nil
+		self.view.subviews.first(where: { $0 is UIScrollView }) as? UIScrollView
 	}
 }

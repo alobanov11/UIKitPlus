@@ -12,7 +12,7 @@ open class UCollaborativeScrollView: UScrollView, UIGestureRecognizerDelegate, U
         _ gestureRecognizer: UIGestureRecognizer,
         shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
     ) -> Bool {
-        otherGestureRecognizer.view is UIScrollView
+        otherGestureRecognizer.view is UCollaborativeScroll
     }
 }
 
@@ -22,7 +22,7 @@ open class UCollaborativeCollectionView: UCollectionView, UIGestureRecognizerDel
         _ gestureRecognizer: UIGestureRecognizer,
         shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
     ) -> Bool {
-        otherGestureRecognizer.view is UIScrollView
+        otherGestureRecognizer.view is UCollaborativeScroll
     }
 }
 
@@ -32,6 +32,6 @@ open class UCollaborativeTableView: UTableView, UIGestureRecognizerDelegate, UCo
         _ gestureRecognizer: UIGestureRecognizer,
         shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
     ) -> Bool {
-        otherGestureRecognizer.view is UIScrollView
+        otherGestureRecognizer.view is UCollaborativeScroll
     }
 }

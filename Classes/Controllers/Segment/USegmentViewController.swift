@@ -54,20 +54,40 @@ open class USegmentViewController: ViewController {
 
     open override func viewDidLoad() {
         super.viewDidLoad()
-        self.viewControllers.forEach {
+
+		self.viewControllers.forEach {
 			$0.delegate = self
-			$0.segmentScrollView().bounces = false
+			if self.headerView != nil {
+				$0.segmentScrollView().bounces = false
+			}
 		}
 
-        self.view.addSubview(self.verticalCollectionView)
-        NSLayoutConstraint.activate([
-            self.verticalCollectionView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
-            self.verticalCollectionView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
-            self.verticalCollectionView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
-            self.verticalCollectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-        ])
+		if self.headerView == nil {
+			self.view.addSubview(self.verticalCollectionView)
+			NSLayoutConstraint.activate([
+				self.verticalCollectionView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+				self.verticalCollectionView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
+				self.verticalCollectionView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
+				self.verticalCollectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+			])
+		}
+		else {
+			self.view.addSubview(self.navigationBarView)
+			self.view.addSubview(self.pageCollectionView)
+			NSLayoutConstraint.activate([
+				self.navigationBarView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+				self.navigationBarView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
+				self.navigationBarView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
+				self.navigationBarView.heightAnchor.constraint(equalToConstant: self.navigationBarView.segmentHeight()),
+				self.pageCollectionView.topAnchor.constraint(equalTo: self.navigationBarView.bottomAnchor),
+				self.pageCollectionView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
+				self.pageCollectionView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
+				self.pageCollectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+			])
+		}
 
 		self.pageCollectionView.scrollToItem(at: 0, animated: false)
+
 		DispatchQueue.main.async {
 			UIView.setAnimationsEnabled(false)
 			self.navigationBarView.segment(didScroll: CGFloat(0))

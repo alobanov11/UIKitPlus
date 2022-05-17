@@ -62,7 +62,7 @@ open class USegmentViewController: ViewController {
 			}
 		}
 
-		if self.headerView == nil {
+		if self.headerView != nil {
 			self.view.addSubview(self.verticalCollectionView)
 			NSLayoutConstraint.activate([
 				self.verticalCollectionView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
@@ -157,8 +157,7 @@ extension USegmentViewController: USegmentPageCollectionAdapter
     }
 
     func segmentPageCollection(didScroll point: CGPoint) {
-		let percentage = (point.x / self.view.frame.width) - 1
-		if percentage >= 0 { self.navigationBarView.segment(didScroll: percentage) }
+		self.navigationBarView.segment(didScroll: (point.x / self.view.frame.width) - 1)
 		self.segmentDidScroll()
     }
 }

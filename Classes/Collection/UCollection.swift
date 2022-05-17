@@ -212,9 +212,9 @@ open class UCollection: UView {
     
     // MARK: - Handlers
     
-    var _willDisplay: ((UICollectionView, IndexPath) -> Void)?
+    var _willDisplay: ((UICollectionView, UICollectionViewCell, IndexPath) -> Void)?
     
-    public func onWillDisplay(_ handler: @escaping (UICollectionView, IndexPath) -> Void) -> Self {
+    public func onWillDisplay(_ handler: @escaping (UICollectionView, UICollectionViewCell, IndexPath) -> Void) -> Self {
         self._willDisplay = handler
         return self
     }
@@ -611,7 +611,7 @@ extension UCollection: UICollectionViewDelegateFlowLayout {
 
 extension UCollection: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        self._willDisplay?(collectionView, indexPath)
+        self._willDisplay?(collectionView, cell, indexPath)
         (self.item(for: indexPath) as? UItemableDelegate)?.willDisplay()
     }
 

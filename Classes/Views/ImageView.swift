@@ -28,7 +28,7 @@ open class UImage: UIImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
     var __centerX: State<CGFloat> { _centerX }
     var __centerY: State<CGFloat> { _centerY }
     
-    var _imageLoader: ImageLoader = .default
+    var _imageLoader: ImageLoader = ._default()
     var _onDidSetImage: ((UImage) -> Void)?
 
     open override var image: UIImage? {

@@ -44,12 +44,14 @@ extension DeclarativeProtocol {
         return self
     }
     
-//    @discardableResult
-//    public func border(_ width: CGFloat, _ state: State<UColor>) -> Self {
-//        // TODO: implement
-//        return self
-//    }
-//
+    @discardableResult
+    public func border(_ width: CGFloat, _ state: State<UColor>) -> Self {
+		state.listen { [weak self] in
+			self?.border(width, $0)
+		}
+        return self.border(width, state.wrappedValue)
+    }
+
     
     @discardableResult
     public func border(_ side: Borders.Side, _ width: CGFloat, _ color: UColor) -> Self {

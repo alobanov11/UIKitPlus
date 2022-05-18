@@ -7,7 +7,7 @@ import UIKit
 extension UIBarButtonItem {
 	public static func spacer(_ width: CGFloat = 20) -> UIBarButtonItem {
 		let spacer = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-		spacer.width = 20
+		spacer.width = width
 		return spacer
 	}
 }

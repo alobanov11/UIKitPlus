@@ -13,5 +13,5 @@ public extension USegmentHeader where Self: UIView {
 }
 
 public extension USegmentHeader where Self: UIViewController {
-	var UIView: UIView { self.view }
+	var headerView: UIView { self.view }
 }

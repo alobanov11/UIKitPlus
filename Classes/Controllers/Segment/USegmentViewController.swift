@@ -5,8 +5,8 @@
 import UIKit
 
 open class USegmentViewController: ViewController {
-    public private(set) var headerView: USegmentHeaderView?
-	public private(set) var navigationBarView: USegmentNavigationBarView
+    public private(set) var header: USegmentHeader?
+	public private(set) var navigationBar: USegmentNavigationBarView
     public private(set) var refreshControl: UIRefreshControl?
     public private(set) var viewControllers: [USegmentContentViewController] = []
 
@@ -33,20 +33,19 @@ open class USegmentViewController: ViewController {
     // MARK: - UIKit
 
     public init(
-        headerView: USegmentHeaderView? = nil,
-		navigationBarView: USegmentNavigationBarView,
+		header: USegmentHeader? = nil,
+		navigationBar: USegmentNavigationBarView,
         viewControllers: [USegmentContentViewController],
         refreshControl: UIRefreshControl? = nil
     ) {
-		self.headerView = headerView
+		self.header = header
 		self.viewControllers = viewControllers
 		self.refreshControl = refreshControl
-		self.navigationBarView = navigationBarView
+		self.navigationBar = navigationBar
 
 		super.init(nibName: nil, bundle: nil)
 
-		self.headerView?.delegate = self
-		self.navigationBarView.delegate = self
+		self.navigationBar.delegate = self
     }
 
     public required init?(coder: NSCoder) {
@@ -58,7 +57,7 @@ open class USegmentViewController: ViewController {
 
 		self.viewControllers.forEach {
 			$0.delegate = self
-			if self.headerView != nil {
+			if self.header != nil {
 				$0.segmentScrollView().bounces = false
 			}
 		}
@@ -75,7 +74,7 @@ open class USegmentViewController: ViewController {
 
 		DispatchQueue.main.async {
 			UIView.setAnimationsEnabled(false)
-			self.navigationBarView.segment(didScroll: CGFloat(0))
+			self.navigationBar.segment(didScroll: CGFloat(0))
 			UIView.setAnimationsEnabled(true)
 		}
     }
@@ -96,10 +95,8 @@ open class USegmentViewController: ViewController {
 	}
 
 	open func segmentDidScroll() {}
-}
 
-extension USegmentViewController: USegmentHeaderDelegate {
-	func segmentHeaderReload() {
+	public func updateHeaderLayout() {
 		self.verticalCollectionView.reloadItem(at: IndexPath(item: 0, section: 0))
 	}
 }
@@ -115,12 +112,12 @@ extension USegmentViewController: USegmentNavigationBarDelegate
 extension USegmentViewController: USegmentVerticalCollectionAdapter
 {
     func segmentVerticalCollection(headerView collectionView: UICollectionView) -> UIView? {
-        self.headerView
+		self.header?.headerView
     }
 
     func segmentVerticalCollection(navigationBarView collectionView: UICollectionView) -> UIView? {
         guard self.viewControllers.count > 1 else { return nil }
-        return self.navigationBarView
+        return self.navigationBar
     }
 
     func segmentVerticalCollection(pageCollectionView collectionView: UICollectionView) -> UIView {
@@ -157,7 +154,7 @@ extension USegmentViewController: USegmentPageCollectionAdapter
     }
 
     func segmentPageCollection(didScroll point: CGPoint) {
-		self.navigationBarView.segment(didScroll: (point.x / self.view.frame.width) - 1)
+		self.navigationBar.segment(didScroll: (point.x / self.view.frame.width) - 1)
 		self.segmentDidScroll()
     }
 }
@@ -211,7 +208,7 @@ extension USegmentViewController: UIGestureRecognizerDelegate
 private extension USegmentViewController
 {
     func syncVerticalScrollIfNeeded() {
-        guard self.headerView != nil else {
+        guard self.header != nil else {
             self.verticalCollectionView.contentOffsetY = 0
             return
         }
@@ -244,14 +241,14 @@ private extension USegmentViewController
 
     func syncCollaborativeScrollIfNeeded() {
         guard let collaborativeScrollView = self.lastCollaborativeScrollView,
-              self.headerView != nil
+              self.header != nil
         else {
             return
         }
 
         let ctx = (
             collaborativeY: collaborativeScrollView.contentOffset.y,
-			navBarHeight: self.navigationBarView.segmentHeight()
+			navBarHeight: self.navigationBar.segmentHeight()
         )
 
         self.viewControllers

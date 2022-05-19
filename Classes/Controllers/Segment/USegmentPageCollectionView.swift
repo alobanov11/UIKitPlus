@@ -136,12 +136,6 @@ extension USegmentPageCollectionView: UIPageViewControllerDelegate, UIPageViewCo
         previousViewControllers: [UIViewController],
         transitionCompleted completed: Bool
     ) {
-		defer {
-			if finished && completed {
-				self.pageViewController.dataSource = nil
-				self.pageViewController.dataSource = self
-			}
-		}
         let viewControllers = self.adapter.segmentPageCollectionViewControllers()
         guard let viewController = pageViewController.viewControllers?.first,
               let index = viewControllers.firstIndex(of: viewController)

@@ -4,8 +4,7 @@
 
 import UIKit
 
-public protocol USegmentContentDelegate: AnyObject
-{
+protocol USegmentContentDelegate: AnyObject {
     func segmentContent(didScroll scrollView: UIScrollView)
 }
 
@@ -18,5 +17,9 @@ open class USegmentContentViewController: ViewController {
 
 	open func segmentScrollView() -> UCollaborativeScroll {
 		fatalError("Must be overriden")
+	}
+
+	public func segmentDidScroll() {
+		self.delegate?.segmentContent(didScroll: self.segmentScrollView())
 	}
 }

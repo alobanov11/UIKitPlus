@@ -58,8 +58,8 @@ final class USegmentVerticalCollectionView: UIView {
         )
 
 		if let refreshControl = self.refreshControl {
-            if #available(iOS 10.0, *) {
-                collectionView.refreshControl = refreshControl
+            if let control = refreshControl as? UIRefreshControl {
+                collectionView.refreshControl = control
             }
             else {
                 collectionView.addSubview(refreshControl)
@@ -70,11 +70,11 @@ final class USegmentVerticalCollectionView: UIView {
     }()
 
     private weak var adapter: USegmentVerticalCollectionAdapter!
-    private let refreshControl: UIRefreshControl?
+    private let refreshControl: UIView?
 
     init(
         adapter: USegmentVerticalCollectionAdapter,
-        refreshControl: UIRefreshControl?
+        refreshControl: UIView?
     ) {
         self.adapter = adapter
         self.refreshControl = refreshControl

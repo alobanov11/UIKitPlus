@@ -7,7 +7,7 @@ import UIKit
 open class USegmentViewController: ViewController {
     public private(set) var headerView: USegmentHeaderView?
 	public private(set) var navigationBar: USegmentNavigationBarView
-    public private(set) var refreshControl: UIRefreshControl?
+    public private(set) var refreshControl: UIView?
     public private(set) var viewControllers: [USegmentContentViewController] = []
 
     // MARK: - UI
@@ -36,7 +36,7 @@ open class USegmentViewController: ViewController {
 		headerView: USegmentHeaderView? = nil,
 		navigationBar: USegmentNavigationBarView,
         viewControllers: [USegmentContentViewController],
-        refreshControl: UIRefreshControl? = nil
+        refreshControl: UIView? = nil
     ) {
 		self.headerView = headerView
 		self.viewControllers = viewControllers

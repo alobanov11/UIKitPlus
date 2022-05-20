@@ -7,19 +7,12 @@ import UIKit
 open class USegmentViewController: ViewController {
     public private(set) var headerView: USegmentHeaderView?
 	public private(set) var navigationBar: USegmentNavigationBarView
-    public private(set) var refreshControl: UIView?
     public private(set) var viewControllers: [USegmentContentViewController] = []
 
     // MARK: - UI
 
-    private lazy var verticalCollectionView = USegmentVerticalCollectionView(
-        adapter: self,
-        refreshControl: self.refreshControl
-    )
-
-    private lazy var pageCollectionView = USegmentPageCollectionView(
-        adapter: self
-    )
+    private lazy var verticalCollectionView = USegmentVerticalCollectionView(adapter: self)
+    private lazy var pageCollectionView = USegmentPageCollectionView(adapter: self)
 
     // MARK: - Variables
 
@@ -35,12 +28,10 @@ open class USegmentViewController: ViewController {
     public init(
 		headerView: USegmentHeaderView? = nil,
 		navigationBar: USegmentNavigationBarView,
-        viewControllers: [USegmentContentViewController],
-        refreshControl: UIView? = nil
+        viewControllers: [USegmentContentViewController]
     ) {
 		self.headerView = headerView
 		self.viewControllers = viewControllers
-		self.refreshControl = refreshControl
 		self.navigationBar = navigationBar
 
 		super.init(nibName: nil, bundle: nil)
@@ -96,6 +87,10 @@ open class USegmentViewController: ViewController {
 	}
 
 	open func segmentDidScroll() {}
+
+	public func addRefreshControl(_ completion: (UIScrollView) -> Void) {
+		self.verticalCollectionView.addRefreshControl(completion)
+	}
 }
 
 extension USegmentViewController: USegmentHeaderDelegate {

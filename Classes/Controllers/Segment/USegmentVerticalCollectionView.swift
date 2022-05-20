@@ -57,27 +57,13 @@ final class USegmentVerticalCollectionView: UIView {
             forCellWithReuseIdentifier: String(describing: UICollectionViewCell.self)
         )
 
-		if let refreshControl = self.refreshControl {
-            if let control = refreshControl as? UIRefreshControl {
-                collectionView.refreshControl = control
-            }
-            else {
-                collectionView.addSubview(refreshControl)
-            }
-        }
-
 		return collectionView
     }()
 
     private weak var adapter: USegmentVerticalCollectionAdapter!
-    private let refreshControl: UIView?
 
-    init(
-        adapter: USegmentVerticalCollectionAdapter,
-        refreshControl: UIView?
-    ) {
+    init(adapter: USegmentVerticalCollectionAdapter) {
         self.adapter = adapter
-        self.refreshControl = refreshControl
 
 		super.init(frame: .zero)
 
@@ -108,6 +94,10 @@ final class USegmentVerticalCollectionView: UIView {
             sizeForItemAt: IndexPath(item: 0, section: 0)
         )
     }
+
+	func addRefreshControl(_ completion: (UIScrollView) -> Void) {
+		completion(self.verticalCollectionView)
+	}
 }
 
 extension USegmentVerticalCollectionView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {

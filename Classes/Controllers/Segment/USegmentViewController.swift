@@ -5,7 +5,7 @@
 import UIKit
 
 open class USegmentViewController: ViewController {
-    public private(set) var header: USegmentHeader?
+    public private(set) var headerView: USegmentHeaderView?
 	public private(set) var navigationBar: USegmentNavigationBarView
     public private(set) var refreshControl: UIRefreshControl?
     public private(set) var viewControllers: [USegmentContentViewController] = []
@@ -33,18 +33,19 @@ open class USegmentViewController: ViewController {
     // MARK: - UIKit
 
     public init(
-		header: USegmentHeader? = nil,
+		headerView: USegmentHeaderView? = nil,
 		navigationBar: USegmentNavigationBarView,
         viewControllers: [USegmentContentViewController],
         refreshControl: UIRefreshControl? = nil
     ) {
-		self.header = header
+		self.headerView = headerView
 		self.viewControllers = viewControllers
 		self.refreshControl = refreshControl
 		self.navigationBar = navigationBar
 
 		super.init(nibName: nil, bundle: nil)
 
+		self.headerView?.delegate = self
 		self.navigationBar.delegate = self
     }
 
@@ -57,7 +58,7 @@ open class USegmentViewController: ViewController {
 
 		self.viewControllers.forEach {
 			$0.delegate = self
-			if self.header != nil {
+			if self.headerView != nil {
 				$0.segmentScrollView().bounces = false
 			}
 		}
@@ -95,8 +96,10 @@ open class USegmentViewController: ViewController {
 	}
 
 	open func segmentDidScroll() {}
+}
 
-	public func updateHeaderLayout() {
+extension USegmentViewController: USegmentHeaderDelegate {
+	public func segmentHeaderReload() {
 		self.verticalCollectionView.reloadItem(at: IndexPath(item: 0, section: 0))
 	}
 }
@@ -112,7 +115,7 @@ extension USegmentViewController: USegmentNavigationBarDelegate
 extension USegmentViewController: USegmentVerticalCollectionAdapter
 {
     func segmentVerticalCollection(headerView collectionView: UICollectionView) -> UIView? {
-		self.header?.headerView
+		self.headerView
     }
 
     func segmentVerticalCollection(navigationBarView collectionView: UICollectionView) -> UIView? {
@@ -208,40 +211,40 @@ extension USegmentViewController: UIGestureRecognizerDelegate
 private extension USegmentViewController
 {
     func syncVerticalScrollIfNeeded() {
-        guard self.header != nil else {
+        guard self.headerView != nil else {
             self.verticalCollectionView.contentOffsetY = 0
             return
         }
 
         let ctx = (
-            headerH: self.verticalCollectionView.sizeForHeader().height,
+            headerViewH: self.verticalCollectionView.sizeForHeader().height,
             verticalY: self.verticalCollectionView.contentOffsetY,
             lastVerticalY: self.verticalCollectionView.lastContentOffsetY,
             collaborativeY: self.visibleCollaborativeScrollView.contentOffset.y
         )
 
-        let collaborativeY = ctx.verticalY >= ctx.headerH
+        let collaborativeY = ctx.verticalY >= ctx.headerViewH
             ? ctx.collaborativeY
-            : ctx.collaborativeY > 0 && ctx.lastVerticalY >= ctx.headerH
+            : ctx.collaborativeY > 0 && ctx.lastVerticalY >= ctx.headerViewH
             ? ctx.collaborativeY
             : 0
 
         let verticalY = collaborativeY > 0
-            ? ctx.headerH
+            ? ctx.headerViewH
             : ctx.verticalY
 
 		let contentOffsetY = max(0, collaborativeY)
 
         self.visibleCollaborativeScrollView.contentOffset.y = contentOffsetY
 		self.visibleCollaborativeScrollView.bounces = contentOffsetY > 100
-        self.verticalCollectionView.contentOffsetY = min(ctx.headerH, verticalY)
-        self.verticalCollectionView.lastContentOffsetY = min(ctx.headerH, verticalY)
+        self.verticalCollectionView.contentOffsetY = min(ctx.headerViewH, verticalY)
+        self.verticalCollectionView.lastContentOffsetY = min(ctx.headerViewH, verticalY)
         self.lastCollaborativeScrollView = self.visibleCollaborativeScrollView
     }
 
     func syncCollaborativeScrollIfNeeded() {
         guard let collaborativeScrollView = self.lastCollaborativeScrollView,
-              self.header != nil
+              self.headerView != nil
         else {
             return
         }

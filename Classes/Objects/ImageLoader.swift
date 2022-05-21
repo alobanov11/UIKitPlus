@@ -52,8 +52,8 @@ open class ImageCache {
 }
 
 open class ImageLoader {
-	public static var `default`: ImageLoader { .init() }
-	public static var _default: () -> ImageLoader = { .default }
+	public static var `default`: ImageLoader { ._default() }
+	public static var _default: () -> ImageLoader = { .init() }
 
 	open var headers: [String: String] = [:]
 	open var session: URLSession = .shared

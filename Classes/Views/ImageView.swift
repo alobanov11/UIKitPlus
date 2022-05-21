@@ -69,11 +69,11 @@ open class UImage: UIImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
         }
     }
     
-    public convenience init (url: State<URL?>, defaultImage: UIImage? = nil, loader: ImageLoader = .default) {
+    public convenience init (url: State<URL?>, defaultImage: UIImage? = nil, loader: ImageLoader = ._default()) {
         self.init(url: url.map { $0?.absoluteString }, defaultImage: defaultImage, loader: loader)
     }
     
-    public init (url: State<String?>, defaultImage: UIImage? = nil, loader: ImageLoader = .default) {
+    public init (url: State<String?>, defaultImage: UIImage? = nil, loader: ImageLoader = ._default()) {
         super.init(frame: .zero)
         _setup()
         self.image = defaultImage
@@ -85,7 +85,7 @@ open class UImage: UIImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
         }
     }
     
-    public init (url: URL?, defaultImage: UIImage? = nil, loader: ImageLoader = .default) {
+    public init (url: URL?, defaultImage: UIImage? = nil, loader: ImageLoader = ._default()) {
         super.init(frame: .zero)
         _setup()
         self.image = defaultImage
@@ -93,7 +93,7 @@ open class UImage: UIImageView, AnyDeclarativeProtocol, DeclarativeProtocolInter
         self._imageLoader.load(url, imageView: self, defaultImage: defaultImage)
     }
     
-    public init (url: String?, defaultImage: UIImage? = nil, loader: ImageLoader = .default) {
+    public init (url: String?, defaultImage: UIImage? = nil, loader: ImageLoader = ._default()) {
         super.init(frame: .zero)
         _setup()
         self.image = defaultImage

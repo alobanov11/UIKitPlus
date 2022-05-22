@@ -87,17 +87,17 @@ open class USegmentViewController: ViewController {
 
 	open override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		guard self.backGesture == nil else { return }
-		self.pageCollectionView.pageViewController.scrollView.map { scrollView in
-			self.navigationController?.interactivePopGestureRecognizer.map {
-				let targets = $0.value(forKey: "targets") as? NSMutableArray
-				let panGesture = UIPanGestureRecognizer()
-				panGesture.setValue(targets, forKey: "targets")
-				panGesture.delegate = self
-				scrollView.addGestureRecognizer(panGesture)
-				self.backGesture = panGesture
-			}
-		}
+//		guard self.backGesture == nil else { return }
+//		self.pageCollectionView.pageViewController.scrollView.map { scrollView in
+//			self.navigationController?.interactivePopGestureRecognizer.map {
+//				let targets = $0.value(forKey: "targets") as? NSMutableArray
+//				let panGesture = UIPanGestureRecognizer()
+//				panGesture.setValue(targets, forKey: "targets")
+//				panGesture.delegate = self
+//				scrollView.addGestureRecognizer(panGesture)
+//				self.backGesture = panGesture
+//			}
+//		}
 	}
 
 	open func segmentDidScroll() {}

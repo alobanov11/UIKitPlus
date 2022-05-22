@@ -13,17 +13,17 @@ protocol USegmentPageCollectionAdapter: UIViewController {
 }
 
 final class USegmentPageCollectionView: UIView {
-    private(set) var selectedIndex = 0
+	var currentIndex: Int {
+		let viewControllers = self.adapter.segmentPageCollectionViewControllers()
+		guard let viewController = pageViewController.viewControllers?.first,
+			  let index = viewControllers.firstIndex(of: viewController)
+		else {
+			return 0
+		}
+		return index
+	}
 
-    private(set) var currentIndex: Int {
-        let viewControllers = self.adapter.segmentPageCollectionViewControllers()
-        guard let viewController = pageViewController.viewControllers?.first,
-              let index = viewControllers.firstIndex(of: viewController)
-        else {
-            return 0
-        }
-        return index
-    }
+    private(set) var selectedIndex = 0
 
     private(set) lazy var pageViewController: UIPageViewController = {
         let controller = UIPageViewController(

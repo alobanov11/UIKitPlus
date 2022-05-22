@@ -9,7 +9,7 @@ open class USegmentViewController: ViewController {
 		self.viewControllers[self.pageCollectionView.currentIndex]
 	}
 
-	@UState public var state: USegmentContentState = .normal
+	@UState public var contentState: USegmentContentState = .normal
 
     public private(set) var headerView: USegmentHeaderView?
 	public private(set) var navigationBar: USegmentNavigationBarView
@@ -53,12 +53,12 @@ open class USegmentViewController: ViewController {
     open override func viewDidLoad() {
         super.viewDidLoad()
 
-		$state.listen { [weak self] in
-			self?.segmentDidRefresh()
+		$contentState.listen { [weak self] in
+			self?.segmentDidRefreshFinished()
 		}
 
 		self.viewControllers.forEach {
-			$0.$segmentContentState.listen { [weak self] in self?.segmentDidRefresh() }
+			$0.$segmentContentState.listen { [weak self] in self?.segmentDidRefreshFinished() }
 
 			$0.delegate = self
 

@@ -19,7 +19,7 @@ open class USegmentContentViewController: ViewController {
 
 	@UState public var segmentContentState: USegmentContentState = .normal
 
-	open func segmentStartRefresh() {}
+	open func segmentDidRefresh() {}
 
 	open func segmentShouldBeShowed() -> Bool {
 		return true

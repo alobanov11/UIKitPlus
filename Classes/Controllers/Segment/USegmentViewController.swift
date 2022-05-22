@@ -107,6 +107,29 @@ open class USegmentViewController: ViewController {
 	public func addRefreshControl(_ completion: (UIScrollView) -> Void) {
 		self.verticalCollectionView.addRefreshControl(completion)
 	}
+
+	public func unwrapContentState() -> USegmentContentState {
+		switch (self.currentViewController.contentState, self.contentState) {
+		case let (.loading(controllerWithContent), .loading(headerWithContent)):
+			return .loading(withContent: (controllerWithContent && headerWithContent))
+
+		case let (.loading(controllerWithContent), .normal):
+			return .loading(withContent: controllerWithContent)
+
+		case let (.normal, .loading(headerWithContent)):
+			return .loading(withContent: headerWithContent)
+
+		case (.normal, .normal):
+			return .normal
+
+		case let (.error(error), .loading),
+			let (.error(error), .normal),
+			let (.loading, .error(error)),
+			let (.normal, .error(error)),
+			let (.error, .error(error)):
+			return .error(error)
+		}
+	}
 }
 
 extension USegmentViewController: USegmentHeaderDelegate {

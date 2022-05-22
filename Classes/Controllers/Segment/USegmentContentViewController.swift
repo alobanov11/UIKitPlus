@@ -8,8 +8,18 @@ protocol USegmentContentDelegate: AnyObject {
     func segmentContent(didScroll scrollView: UIScrollView)
 }
 
+public enum USegmentContentState {
+	case loading(withContent: Bool)
+	case normal
+	case error(Error)
+}
+
 open class USegmentContentViewController: ViewController {
 	weak var delegate: USegmentContentDelegate?
+
+	@UState public var segmentContentState: USegmentContentState = .normal
+
+	open func segmentStartRefresh() {}
 
 	open func segmentShouldBeShowed() -> Bool {
 		return true

@@ -15,7 +15,7 @@ protocol USegmentPageCollectionAdapter: UIViewController {
 final class USegmentPageCollectionView: UIView {
     private(set) var selectedIndex = 0
 
-    private var currentIndex: Int {
+    private(set) var currentIndex: Int {
         let viewControllers = self.adapter.segmentPageCollectionViewControllers()
         guard let viewController = pageViewController.viewControllers?.first,
               let index = viewControllers.firstIndex(of: viewController)

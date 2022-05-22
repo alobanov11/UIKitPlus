@@ -5,6 +5,10 @@
 import UIKit
 
 open class USegmentViewController: ViewController {
+	public var currentViewController: USegmentContentViewController {
+		self.viewControllers[self.pageCollectionView.currentIndex]
+	}
+
     public private(set) var headerView: USegmentHeaderView?
 	public private(set) var navigationBar: USegmentNavigationBarView
     public private(set) var viewControllers: [USegmentContentViewController] = []
@@ -48,13 +52,17 @@ open class USegmentViewController: ViewController {
         super.viewDidLoad()
 
 		self.viewControllers.forEach {
+			$0.$segmentContentState.listen { [weak self] in self?.segmentDidRefresh() }
+
 			$0.delegate = self
+
 			if self.headerView != nil {
 				$0.segmentScrollView().bounces = false
 			}
 		}
 
 		self.view.addSubview(self.verticalCollectionView)
+
 		NSLayoutConstraint.activate([
 			self.verticalCollectionView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
 			self.verticalCollectionView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
@@ -87,6 +95,8 @@ open class USegmentViewController: ViewController {
 	}
 
 	open func segmentDidScroll() {}
+
+	open func segmentDidRefresh() {}
 
 	public func addRefreshControl(_ completion: (UIScrollView) -> Void) {
 		self.verticalCollectionView.addRefreshControl(completion)

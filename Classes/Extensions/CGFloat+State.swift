@@ -11,4 +11,9 @@ public extension State where Value == CGFloat {
 	}
 }
 
+public extension CGFloat {
+	static let width = UIScreen.main.bounds.width
+	static let height = UIScreen.main.bounds.width
+}
+
 #endif

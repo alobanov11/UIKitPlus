@@ -109,12 +109,13 @@ open class USegmentViewController: ViewController {
 	}
 
 	public func unwrapContentState() -> USegmentContentState {
+		let isCurrentFirst = (self.viewControllers.firstIndex(of: self.currentViewController) ?? 0) == 0
 		switch (self.currentViewController.contentState, self.contentState) {
 		case let (.loading(controllerWithContent), .loading(headerWithContent)):
-			return .loading(withContent: (controllerWithContent && headerWithContent))
+			return .loading(withContent: ((isCurrentFirst ? controllerWithContent : true) && headerWithContent))
 
 		case let (.loading(controllerWithContent), .normal):
-			return .loading(withContent: controllerWithContent)
+			return .loading(withContent: (isCurrentFirst ? controllerWithContent : true))
 
 		case let (.normal, .loading(headerWithContent)):
 			return .loading(withContent: headerWithContent)

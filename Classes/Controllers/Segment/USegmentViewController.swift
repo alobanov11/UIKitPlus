@@ -53,6 +53,10 @@ open class USegmentViewController: ViewController {
     open override func viewDidLoad() {
         super.viewDidLoad()
 
+		$state.listen { [weak self] in
+			self?.segmentDidRefresh()
+		}
+
 		self.viewControllers.forEach {
 			$0.$segmentContentState.listen { [weak self] in self?.segmentDidRefresh() }
 

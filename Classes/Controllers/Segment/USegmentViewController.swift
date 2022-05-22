@@ -58,7 +58,7 @@ open class USegmentViewController: ViewController {
 		}
 
 		self.viewControllers.forEach {
-			$0.$segmentContentState.listen { [weak self] in self?.segmentDidRefreshFinished() }
+			$0.$contentState.listen { [weak self] in self?.segmentDidRefreshFinished() }
 
 			$0.delegate = self
 

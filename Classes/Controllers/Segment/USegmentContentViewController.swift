@@ -17,7 +17,7 @@ public enum USegmentContentState {
 open class USegmentContentViewController: ViewController {
 	weak var delegate: USegmentContentDelegate?
 
-	@UState public var segmentContentState: USegmentContentState = .normal
+	@UState public var contentState: USegmentContentState = .normal
 
 	open func segmentDidRefresh() {}
 

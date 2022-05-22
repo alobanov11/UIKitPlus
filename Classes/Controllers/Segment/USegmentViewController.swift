@@ -9,6 +9,8 @@ open class USegmentViewController: ViewController {
 		self.viewControllers[self.pageCollectionView.currentIndex]
 	}
 
+	@UState public var state: USegmentContentState = .normal
+
     public private(set) var headerView: USegmentHeaderView?
 	public private(set) var navigationBar: USegmentNavigationBarView
     public private(set) var viewControllers: [USegmentContentViewController] = []

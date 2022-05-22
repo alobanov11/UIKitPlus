@@ -102,7 +102,7 @@ open class USegmentViewController: ViewController {
 
 	open func segmentDidScroll() {}
 
-	open func segmentDidRefresh() {}
+	open func segmentDidRefreshFinished() {}
 
 	public func addRefreshControl(_ completion: (UIScrollView) -> Void) {
 		self.verticalCollectionView.addRefreshControl(completion)

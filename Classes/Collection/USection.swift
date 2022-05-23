@@ -310,6 +310,8 @@ public struct EmptyItem: USectionBodyItemable {
     public init() {}
 }
 
+public final class StubCollectionCell: UCollectionCell {}
+
 public struct StubItem: UItemable, UItemableBuilder {
 	public var identifier: AnyHashable {
 		self.id
@@ -317,7 +319,7 @@ public struct StubItem: UItemable, UItemableBuilder {
 
 	public let id: AnyHashable
 
-	public init(_ id: AnyHashable = UUID()) {
+	public init(_ id: AnyHashable) {
 		self.id = id
 	}
 
@@ -325,5 +327,5 @@ public struct StubItem: UItemable, UItemableBuilder {
 		.zero
 	}
 
-	public func build(_: UCollectionCell) {}
+	public func build(_: StubCollectionCell) {}
 }

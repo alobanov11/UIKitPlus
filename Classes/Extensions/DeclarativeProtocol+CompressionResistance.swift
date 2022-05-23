@@ -32,4 +32,11 @@ extension DeclarativeProtocol {
         declarativeView.setContentCompressionResistancePriority(.init(value), for: .vertical)
         return self
     }
+
+	@discardableResult
+	public func compressionResistance(x: Float, y: Float) -> Self {
+		self.compressionResistance(x: x)
+		self.compressionResistance(y: y)
+		return self
+	}
 }

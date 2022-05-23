@@ -25,5 +25,12 @@ extension DeclarativeProtocol {
         declarativeView.setContentHuggingPriority(.init(value), for: .vertical)
         return self
     }
+
+	@discardableResult
+	public func huggingPriority(x: Float, y: Float) -> Self {
+		self.huggingPriority(x: x)
+		self.huggingPriority(y: y)
+		return self
+	}
 }
 #endif

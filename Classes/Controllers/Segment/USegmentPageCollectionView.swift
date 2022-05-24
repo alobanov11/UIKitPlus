@@ -5,7 +5,7 @@
 import UIKit
 
 protocol USegmentPageCollectionAdapter: UIViewController {
-    func segmentPageCollection(shouldShow index: Int) -> Bool
+    func segmentPageCollection(isAvailable index: Int) -> Bool
     func segmentPageCollectionViewControllers() -> [UIViewController]
     func segmentPageCollectionWillBeginDragging()
     func segmentPageCollectionDidEndDragging()
@@ -106,7 +106,7 @@ extension USegmentPageCollectionView: UIPageViewControllerDelegate, UIPageViewCo
 
         guard let index = viewControllers.firstIndex(where: { $0 == viewController }),
               viewControllers.indices.contains(where: { $0 == index - 1 }),
-              self.adapter.segmentPageCollection(shouldShow: (index - 1))
+              self.adapter.segmentPageCollection(isAvailable: (index - 1))
         else {
             return nil
         }
@@ -122,7 +122,7 @@ extension USegmentPageCollectionView: UIPageViewControllerDelegate, UIPageViewCo
 
         guard let index = viewControllers.firstIndex(where: { $0 == viewController }),
               viewControllers.indices.contains(where: { $0 == index + 1 }),
-              self.adapter.segmentPageCollection(shouldShow: (index + 1))
+              self.adapter.segmentPageCollection(isAvailable: (index + 1))
         else {
             return nil
         }

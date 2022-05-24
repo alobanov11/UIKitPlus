@@ -17,13 +17,10 @@ public enum USegmentContentState {
 open class USegmentContentViewController: ViewController {
 	weak var delegate: USegmentContentDelegate?
 
+	@UState public var isAvailable = true
 	@UState public var contentState: USegmentContentState = .normal
 
 	open func segmentDidRefresh() {}
-
-	open func segmentShouldBeShowed() -> Bool {
-		return true
-	}
 
 	open func segmentScrollView() -> UCollaborativeScroll {
 		fatalError("Must be overriden")

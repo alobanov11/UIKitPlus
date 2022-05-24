@@ -29,17 +29,23 @@ open class USegmentViewController: ViewController {
     private var lastCollaborativeScrollView: UIScrollView?
 	private var backGesture: UIPanGestureRecognizer?
 
+	private let initialIndex: Int
+
     // MARK: - UIKit
 
     public init(
 		headerView: USegmentHeaderView? = nil,
 		navigationBar: USegmentNavigationBarView,
-        viewControllers: [USegmentContentViewController]
+        viewControllers: [USegmentContentViewController],
+		initialIndex: Int = 0
     ) {
 		self.headerView = headerView
 		self.viewControllers = viewControllers
 		self.navigationBar = navigationBar
+		self.initialIndex = initialIndex
 
+		assert(viewControllers.isEmpty, "ViewControlles mustn't be empty")
+		assert(initialIndex > viewControllers.count, "Initial index mustn't be more than controlles count")
 		super.init(nibName: nil, bundle: nil)
 
 		self.headerView?.delegate = self
@@ -59,6 +65,7 @@ open class USegmentViewController: ViewController {
 
 		self.viewControllers.forEach {
 			$0.$contentState.listen { [weak self] in self?.segmentDidRefreshFinished() }
+			$0.$isAvailable.listen { [weak self] in self?.pageCollectionView.invalidate() }
 
 			$0.delegate = self
 
@@ -76,7 +83,7 @@ open class USegmentViewController: ViewController {
 			self.verticalCollectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
 		])
 
-		self.pageCollectionView.scrollToItem(at: 0, animated: false)
+		self.pageCollectionView.scrollToItem(at: self.initialIndex, animated: false)
 
 		DispatchQueue.main.async {
 			UIView.setAnimationsEnabled(false)
@@ -172,8 +179,8 @@ extension USegmentViewController: USegmentVerticalCollectionAdapter
 
 extension USegmentViewController: USegmentPageCollectionAdapter
 {
-    func segmentPageCollection(shouldShow index: Int) -> Bool {
-        self.viewControllers[index].segmentShouldBeShowed()
+    func segmentPageCollection(isAvailable index: Int) -> Bool {
+        self.viewControllers[index].isAvailable
     }
 
     func segmentPageCollectionViewControllers() -> [UIViewController] {

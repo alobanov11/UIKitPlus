@@ -309,23 +309,3 @@ public struct EmptyItem: USectionBodyItemable {
 
     public init() {}
 }
-
-public final class StubCollectionCell: UCollectionCell {}
-
-public struct StubItem: UItemable, UItemableBuilder {
-	public var identifier: AnyHashable {
-		self.id
-	}
-
-	public let id: AnyHashable
-
-	public init(_ id: AnyHashable) {
-		self.id = id
-	}
-
-	public func size(by original: CGSize, direction: UICollectionView.ScrollDirection) -> CGSize {
-		.zero
-	}
-
-	public func build(_: StubCollectionCell) {}
-}

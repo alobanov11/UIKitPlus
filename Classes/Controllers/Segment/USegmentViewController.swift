@@ -107,9 +107,17 @@ open class USegmentViewController: ViewController {
 		}
 	}
 
-	open func segmentDidScroll() {}
-
 	open func segmentDidRefreshFinished() {}
+
+	// Handlers
+
+	var _onDidSelectIndexFallback: ((Int) -> Void)?
+
+	public func onDidSelectIndexFallback(_ handler: @escaping (Int) -> Void) {
+		self._onDidSelectIndexFallback = handler
+	}
+
+	// Helpers
 
 	public func addRefreshControl(_ completion: (UIScrollView) -> Void) {
 		self.verticalCollectionView.addRefreshControl(completion)
@@ -151,6 +159,10 @@ extension USegmentViewController: USegmentHeaderDelegate {
 extension USegmentViewController: USegmentNavigationBarDelegate
 {
     func segmentNavigationBar(didSelect item: Int) {
+		guard self.viewControllers[item].isAvailable else {
+			self._onDidSelectIndexFallback?(item)
+			return
+		}
         self.pageCollectionView.scrollToItem(at: item, animated: true)
         self.syncCollaborativeScrollIfNeeded()
     }
@@ -173,7 +185,6 @@ extension USegmentViewController: USegmentVerticalCollectionAdapter
 
     func segmentVerticalCollection(didScroll collectionView: UICollectionView) {
         self.syncVerticalScrollIfNeeded()
-		self.segmentDidScroll()
     }
 }
 
@@ -202,7 +213,6 @@ extension USegmentViewController: USegmentPageCollectionAdapter
 
     func segmentPageCollection(didScroll point: CGPoint) {
 		self.navigationBar.segment(didScroll: (point.x / self.view.frame.width) - 1)
-		self.segmentDidScroll()
     }
 }
 
@@ -210,7 +220,6 @@ extension USegmentViewController: USegmentContentDelegate
 {
     public func segmentContent(didScroll scrollView: UIScrollView) {
         self.syncVerticalScrollIfNeeded()
-		self.segmentDidScroll()
     }
 }
 

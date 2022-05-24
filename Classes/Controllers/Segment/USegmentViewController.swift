@@ -44,8 +44,8 @@ open class USegmentViewController: ViewController {
 		self.navigationBar = navigationBar
 		self.initialIndex = initialIndex
 
-		assert(viewControllers.isEmpty, "ViewControlles mustn't be empty")
-		assert(initialIndex > viewControllers.count, "Initial index mustn't be more than controlles count")
+		assert(viewControllers.isEmpty == false, "ViewControlles mustn't be empty")
+		assert((initialIndex > viewControllers.count) == false, "Initial index mustn't be more than controlles count")
 		super.init(nibName: nil, bundle: nil)
 
 		self.headerView?.delegate = self

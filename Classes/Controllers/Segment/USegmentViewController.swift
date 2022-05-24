@@ -84,7 +84,12 @@ open class USegmentViewController: ViewController {
 		])
 
 		self.pageCollectionView.scrollToItem(at: self.initialIndex, animated: false)
-		self.navigationBar.segment(didScroll: CGFloat(self.initialIndex))
+
+		DispatchQueue.main.async {
+			UIView.setAnimationsEnabled(false)
+			self.navigationBar.segment(didScroll: CGFloat(self.initialIndex))
+			UIView.setAnimationsEnabled(true)
+		}
     }
 
 	open override func viewWillAppear(_ animated: Bool) {

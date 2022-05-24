@@ -84,6 +84,7 @@ open class USegmentViewController: ViewController {
 		])
 
 		self.pageCollectionView.scrollToItem(at: self.initialIndex, animated: false)
+		self.navigationBar.segment(didSelect: self.initialIndex)
 
 		DispatchQueue.main.async {
 			UIView.setAnimationsEnabled(false)
@@ -158,14 +159,16 @@ extension USegmentViewController: USegmentHeaderDelegate {
 
 extension USegmentViewController: USegmentNavigationBarDelegate
 {
-    func segmentNavigationBar(didSelect item: Int) {
-		guard self.viewControllers[item].isAvailable else {
-			self._onDidSelectIndexFallback?(item)
-			return
-		}
+	public func segmentNavigationBar(didSelect item: Int) {
         self.pageCollectionView.scrollToItem(at: item, animated: true)
         self.syncCollaborativeScrollIfNeeded()
     }
+
+	public func segmentNavigationBar(shouldSelect item: Int) -> Bool {
+		let isAvailable = self.viewControllers[item].isAvailable
+		if isAvailable == false { self._onDidSelectIndexFallback?(item) }
+		return isAvailable
+	}
 }
 
 extension USegmentViewController: USegmentVerticalCollectionAdapter

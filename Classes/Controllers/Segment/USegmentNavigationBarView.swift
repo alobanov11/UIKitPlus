@@ -4,12 +4,13 @@
 
 import UIKit
 
-protocol USegmentNavigationBarDelegate: AnyObject {
+public protocol USegmentNavigationBarDelegate: AnyObject {
     func segmentNavigationBar(didSelect item: Int)
+	func segmentNavigationBar(shouldSelect item: Int) -> Bool
 }
 
 open class USegmentNavigationBarView: UView {
-	weak var delegate: USegmentNavigationBarDelegate?
+	public internal(set) weak var delegate: USegmentNavigationBarDelegate?
 
 	open func segmentHeight() -> CGFloat {
 		return 0
@@ -17,7 +18,5 @@ open class USegmentNavigationBarView: UView {
 
 	open func segment(didScroll percentage: CGFloat) {}
 
-	public func segment(didSelect index: Int) {
-		self.delegate?.segmentNavigationBar(didSelect: index)
-	}
+	open func segment(didSelect index: Int) {}
 }

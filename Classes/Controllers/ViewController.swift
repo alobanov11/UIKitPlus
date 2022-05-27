@@ -333,6 +333,36 @@ open class ViewController: BaseViewController {
         closure(self, navigationItem)
         return self
     }
+
+	@discardableResult
+	public func leftBarButton(_ closure: @autoclosure () -> UIBarButtonItem) -> Self {
+		self.navigationItem.leftBarButtonItem = closure()
+		return self
+	}
+
+	@discardableResult
+	public func leftBarButtons(_ closure: @autoclosure () -> [UIBarButtonItem]) -> Self {
+		self.navigationItem.leftBarButtonItems = closure()
+		return self
+	}
+
+	@discardableResult
+	public func rightBarButton(_ closure: (Self, UINavigationItem) -> Void) -> Self {
+		closure(self, navigationItem)
+		return self
+	}
+
+	@discardableResult
+	public func rightBarButton(_ closure: @autoclosure () -> UIBarButtonItem) -> Self {
+		self.navigationItem.rightBarButtonItem = closure()
+		return self
+	}
+
+	@discardableResult
+	public func rightBarButtons(_ closure: @autoclosure () -> [UIBarButtonItem]) -> Self {
+		self.navigationItem.rightBarButtonItems = closure()
+		return self
+	}
     
     @discardableResult
     public func navigationController(_ closure: (Self, UINavigationController?) -> Void) -> Self {

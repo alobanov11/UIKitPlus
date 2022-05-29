@@ -4,21 +4,21 @@
 
 import UIKit
 
-protocol USegmentContentDelegate: AnyObject {
+protocol SegmentContentDelegate: AnyObject {
     func segmentContent(didScroll scrollView: UIScrollView)
 }
 
-public enum USegmentContentState {
+public enum SegmentContentState {
 	case loading(withContent: Bool)
 	case normal
 	case error(Error)
 }
 
-open class USegmentContentViewController: ViewController {
-	weak var delegate: USegmentContentDelegate?
+open class SegmentContentViewController: ViewController {
+	weak var delegate: SegmentContentDelegate?
 
 	@UState public var isAvailable = true
-	@UState public var contentState: USegmentContentState = .normal
+	@UState public var contentState: SegmentContentState = .normal
 
 	open func segmentDidRefresh() {}
 

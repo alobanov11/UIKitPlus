@@ -4,21 +4,21 @@
 
 import UIKit
 
-open class USegmentViewController: ViewController {
-	public var currentViewController: USegmentContentViewController {
+open class SegmentContainerViewController: ViewController {
+	public var currentViewController: SegmentContentViewController {
 		self.viewControllers[self.pageCollectionView.currentIndex]
 	}
 
-	@UState public var contentState: USegmentContentState = .normal
+	@UState public var contentState: SegmentContentState = .normal
 
-    public private(set) var headerView: USegmentHeaderView?
-	public private(set) var navigationBar: USegmentNavigationBarView
-    public private(set) var viewControllers: [USegmentContentViewController] = []
+    public private(set) var headerView: SegmentHeaderView?
+	public private(set) var navigationBar: SegmentNavigationBarView
+    public private(set) var viewControllers: [SegmentContentViewController] = []
 
     // MARK: - UI
 
-    private lazy var verticalCollectionView = USegmentVerticalCollectionView(adapter: self)
-    private lazy var pageCollectionView = USegmentPageCollectionView(adapter: self)
+    private lazy var verticalCollectionView = SegmentVerticalCollectionView(adapter: self)
+    private lazy var pageCollectionView = SegmentPageCollectionView(adapter: self)
 
     // MARK: - Variables
 
@@ -34,9 +34,9 @@ open class USegmentViewController: ViewController {
     // MARK: - UIKit
 
     public init(
-		headerView: USegmentHeaderView? = nil,
-		navigationBar: USegmentNavigationBarView,
-        viewControllers: [USegmentContentViewController],
+		headerView: SegmentHeaderView? = nil,
+		navigationBar: SegmentNavigationBarView,
+        viewControllers: [SegmentContentViewController],
 		initialIndex: Int = 0
     ) {
 		self.headerView = headerView
@@ -95,7 +95,7 @@ open class USegmentViewController: ViewController {
 	open override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		guard self.backGesture == nil else { return }
-		self.pageCollectionView.pageViewController.scrollView.map { scrollView in
+		self.pageCollectionView.horziontalScrollView.map { scrollView in
 			self.navigationController?.interactivePopGestureRecognizer.map {
 				let targets = $0.value(forKey: "targets") as? NSMutableArray
 				let panGesture = UIPanGestureRecognizer()
@@ -123,7 +123,7 @@ open class USegmentViewController: ViewController {
 		self.verticalCollectionView.addRefreshControl(completion)
 	}
 
-	public func unwrapContentState() -> USegmentContentState {
+	public func unwrapContentState() -> SegmentContentState {
 		let isCurrentFirst = (self.viewControllers.firstIndex(of: self.currentViewController) ?? 0) == 0
 		switch (self.currentViewController.contentState, self.contentState) {
 		case let (.loading(controllerWithContent), .loading(headerWithContent)):
@@ -146,9 +146,13 @@ open class USegmentViewController: ViewController {
 			return .error(error)
 		}
 	}
+
+	public func horizontalScroll(_ enabled: Bool) {
+		self.pageCollectionView.horizontalScroll(enabled)
+	}
 }
 
-extension USegmentViewController: USegmentHeaderDelegate {
+extension SegmentContainerViewController: SegmentHeaderDelegate {
 	public func segmentHeaderReload() {
 		UIView.performWithoutAnimation {
 			self.verticalCollectionView.reloadItem(at: IndexPath(item: 0, section: 0))
@@ -156,7 +160,7 @@ extension USegmentViewController: USegmentHeaderDelegate {
 	}
 }
 
-extension USegmentViewController: USegmentNavigationBarDelegate
+extension SegmentContainerViewController: SegmentNavigationBarDelegate
 {
     func segmentNavigationBar(didSelect item: Int) {
         self.pageCollectionView.scrollToItem(at: item, animated: true)
@@ -170,7 +174,7 @@ extension USegmentViewController: USegmentNavigationBarDelegate
 	}
 }
 
-extension USegmentViewController: USegmentVerticalCollectionAdapter
+extension SegmentContainerViewController: SegmentVerticalCollectionAdapter
 {
     func segmentVerticalCollection(headerView collectionView: UICollectionView) -> UIView? {
 		self.headerView
@@ -190,7 +194,7 @@ extension USegmentViewController: USegmentVerticalCollectionAdapter
     }
 }
 
-extension USegmentViewController: USegmentPageCollectionAdapter
+extension SegmentContainerViewController: SegmentPageCollectionAdapter
 {
     func segmentPageCollection(isAvailable index: Int) -> Bool {
         self.viewControllers[index].isAvailable
@@ -218,14 +222,14 @@ extension USegmentViewController: USegmentPageCollectionAdapter
     }
 }
 
-extension USegmentViewController: USegmentContentDelegate
+extension SegmentContainerViewController: SegmentContentDelegate
 {
     public func segmentContent(didScroll scrollView: UIScrollView) {
         self.syncVerticalScrollIfNeeded()
     }
 }
 
-extension USegmentViewController: UIGestureRecognizerDelegate
+extension SegmentContainerViewController: UIGestureRecognizerDelegate
 {
 	public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
 		guard let panRecognizer = gestureRecognizer as? UIPanGestureRecognizer,
@@ -240,14 +244,7 @@ extension USegmentViewController: UIGestureRecognizerDelegate
 
 		guard velocity > 0 else { return false }
 
-		guard let currentViewController = self.pageCollectionView.pageViewController.viewControllers?.first,
-			  self.pageCollectionView.pageViewController.dataSource?.pageViewController(
-				self.pageCollectionView.pageViewController,
-				viewControllerBefore: currentViewController
-			  ) == nil
-		else {
-			return false
-		}
+		guard self.pageCollectionView.hasViewControllerBefore() else { return false }
 
 		return true
 	}
@@ -257,13 +254,13 @@ extension USegmentViewController: UIGestureRecognizerDelegate
 		shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer
 	) -> Bool {
 		gestureRecognizer == self.backGesture &&
-		otherGestureRecognizer == self.pageCollectionView.pageViewController.scrollView?.panGestureRecognizer
+		otherGestureRecognizer == self.pageCollectionView.horziontalScrollView?.panGestureRecognizer
 	}
 }
 
 // MARK: - Private
 
-private extension USegmentViewController
+private extension SegmentContainerViewController
 {
     func syncVerticalScrollIfNeeded() {
         guard self.headerView != nil else {

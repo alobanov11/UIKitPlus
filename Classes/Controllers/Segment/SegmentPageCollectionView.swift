@@ -4,7 +4,7 @@
 
 import UIKit
 
-protocol USegmentPageCollectionAdapter: UIViewController {
+protocol SegmentPageCollectionAdapter: UIViewController {
     func segmentPageCollection(isAvailable index: Int) -> Bool
     func segmentPageCollectionViewControllers() -> [UIViewController]
     func segmentPageCollectionWillBeginDragging()
@@ -12,7 +12,7 @@ protocol USegmentPageCollectionAdapter: UIViewController {
     func segmentPageCollection(didScroll point: CGPoint)
 }
 
-final class USegmentPageCollectionView: UIView {
+final class SegmentPageCollectionView: UIView {
 	var currentIndex: Int {
 		let viewControllers = self.adapter.segmentPageCollectionViewControllers()
 		guard let viewController = pageViewController.viewControllers?.first,
@@ -23,9 +23,13 @@ final class USegmentPageCollectionView: UIView {
 		return index
 	}
 
+	var horziontalScrollView: UIScrollView? {
+		self.pageViewController.scrollView
+	}
+
     private(set) var selectedIndex = 0
 
-    private(set) lazy var pageViewController: UIPageViewController = {
+    private lazy var pageViewController: UIPageViewController = {
         let controller = UIPageViewController(
             transitionStyle: .scroll,
             navigationOrientation: .horizontal,
@@ -41,11 +45,11 @@ final class USegmentPageCollectionView: UIView {
         return controller
     }()
 
-    private weak var adapter: USegmentPageCollectionAdapter!
+    private weak var adapter: SegmentPageCollectionAdapter!
 
     private var shouldListenScroll = true
 
-    init(adapter: USegmentPageCollectionAdapter) {
+    init(adapter: SegmentPageCollectionAdapter) {
         self.adapter = adapter
 
         super.init(frame: .zero)
@@ -94,9 +98,22 @@ final class USegmentPageCollectionView: UIView {
         self.pageViewController.dataSource = nil
         self.pageViewController.dataSource = self
     }
+
+	func horizontalScroll(_ enabled: Bool) {
+		self.pageViewController.dataSource = enabled ? self : nil
+	}
+
+	func hasViewControllerBefore() -> Bool {
+		guard let currentViewController = self.pageViewController.viewControllers?.first,
+			  self.pageViewController(self.pageViewController, viewControllerBefore: currentViewController) == nil
+		else {
+			return true
+		}
+		return false
+	}
 }
 
-extension USegmentPageCollectionView: UIPageViewControllerDelegate, UIPageViewControllerDataSource
+extension SegmentPageCollectionView: UIPageViewControllerDelegate, UIPageViewControllerDataSource
 {
     func pageViewController(
         _ pageViewController: UIPageViewController,
@@ -147,7 +164,7 @@ extension USegmentPageCollectionView: UIPageViewControllerDelegate, UIPageViewCo
     }
 }
 
-extension USegmentPageCollectionView: UIScrollViewDelegate
+extension SegmentPageCollectionView: UIScrollViewDelegate
 {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let width = self.frame.width

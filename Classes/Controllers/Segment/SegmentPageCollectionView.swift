@@ -36,7 +36,6 @@ final class SegmentPageCollectionView: UIView {
             options: nil
         )
         controller.delegate = self
-        controller.dataSource = self
         controller.view.translatesAutoresizingMaskIntoConstraints = false
 		controller.scrollView?.delegate = self
 		if #available(iOS 11.0, *) {
@@ -48,6 +47,7 @@ final class SegmentPageCollectionView: UIView {
     private weak var adapter: SegmentPageCollectionAdapter!
 
     private var shouldListenScroll = true
+	private var isHorizontallScrollEnabled = false
 
     init(adapter: SegmentPageCollectionAdapter) {
         self.adapter = adapter
@@ -95,12 +95,13 @@ final class SegmentPageCollectionView: UIView {
     }
 
     func invalidate() {
+		guard self.isHorizontallScrollEnabled else { return }
         self.pageViewController.dataSource = nil
         self.pageViewController.dataSource = self
     }
 
-	func horizontalScroll(_ enabled: Bool) {
-		self.pageViewController.dataSource = enabled ? self : nil
+	func enableHorizontalScroll() {
+		self.pageViewController.dataSource = self
 	}
 
 	func hasViewControllerBefore() -> Bool {

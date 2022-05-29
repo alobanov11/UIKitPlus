@@ -147,8 +147,8 @@ open class SegmentContainerViewController: ViewController {
 		}
 	}
 
-	public func horizontalScroll(_ enabled: Bool) {
-		self.pageCollectionView.horizontalScroll(enabled)
+	public func enableHorizontalScroll(_ value: Bool) {
+		self.pageCollectionView.enableHorizontalScroll()
 	}
 }
 

@@ -157,7 +157,7 @@ open class SegmentContainerViewController: ViewController {
 
 	public func scrollToTop(animated: Bool) {
 		self.verticalCollectionView.scrollToTop(animated: animated)
-		self.currentViewController.segmentScrollView().setContentOffset(.zero, animated: false)
+		self.currentViewController.segmentScrollView().setContentOffset(.zero, animated: self.headerView == nil)
 	}
 }
 

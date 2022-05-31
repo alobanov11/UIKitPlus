@@ -150,6 +150,10 @@ open class SegmentContainerViewController: ViewController {
 	public func enableHorizontalScroll(_ value: Bool) {
 		self.pageCollectionView.enableHorizontalScroll()
 	}
+
+	public func selectSegment(at index: Int) {
+		self.navigationBar.selectSegment(at: index)
+	}
 }
 
 extension SegmentContainerViewController: SegmentHeaderDelegate {

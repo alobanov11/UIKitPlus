@@ -25,4 +25,10 @@ open class SegmentNavigationBarView: UView {
 	public func segment(shouldSelect index: Int) -> Bool {
 		self.delegate?.segmentNavigationBar(shouldSelect: index) ?? true
 	}
+
+	public func selectSegment(at index: Int) {
+		guard self.segment(shouldSelect: index) else { return }
+		self.segment(didScroll: CGFloat(index))
+		self.segment(didSelect: index)
+	}
 }

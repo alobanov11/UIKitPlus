@@ -154,6 +154,10 @@ open class SegmentContainerViewController: ViewController {
 	public func selectSegment(at index: Int) {
 		self.navigationBar.selectSegment(at: index)
 	}
+
+	public func scrollToTop(animated: Bool) {
+		self.verticalCollectionView.scrollToTop(animated: animated)
+	}
 }
 
 extension SegmentContainerViewController: SegmentHeaderDelegate {

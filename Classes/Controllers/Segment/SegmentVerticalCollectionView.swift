@@ -98,6 +98,10 @@ final class SegmentVerticalCollectionView: UIView {
 	func addRefreshControl(_ completion: (UIScrollView) -> Void) {
 		completion(self.verticalCollectionView)
 	}
+
+	func scrollToTop(animated: Bool) {
+		self.verticalCollectionView.setContentOffset(.zero, animated: animated)
+	}
 }
 
 extension SegmentVerticalCollectionView: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {

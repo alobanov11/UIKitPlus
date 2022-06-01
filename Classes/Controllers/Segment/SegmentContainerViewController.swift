@@ -113,7 +113,7 @@ open class SegmentContainerViewController: ViewController {
 					.edgesToSuperview(leading: 0, trailing: 0, bottom: 0)
 			}
 			else {
-				UWrapperView(verticalCollectionView)
+				verticalCollectionView
 					.topToSuperview(safeArea: true)
 					.edgesToSuperview(leading: 0, trailing: 0, bottom: 0)
 			}

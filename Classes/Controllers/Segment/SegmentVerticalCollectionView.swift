@@ -187,10 +187,10 @@ extension SegmentVerticalCollectionView: UICollectionViewDelegateFlowLayout, UIC
                 layout: collectionViewLayout,
                 sizeForItemAt: IndexPath(item: 1, section: 0)
             ).height
-            return .init(
+            return collectionView.frame.size.height > 0 .init(
                 width: collectionView.frame.width,
                 height: collectionView.frame.size.height - navigationBarHeight
-            )
+			) ?? .zero
         default:
             return .zero
         }

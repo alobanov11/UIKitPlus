@@ -242,7 +242,7 @@ extension SegmentContainerViewController: SegmentPageCollectionAdapter
     }
 
     func segmentPageCollection(didScroll point: CGPoint) {
-		self.navigationBar.segment(didScroll: (point.x / self.view.frame.width) - 1)
+		self.navigationBar.segment(didScroll: point == .zero ? 0 : (point.x / self.view.frame.width) - 1)
     }
 }
 

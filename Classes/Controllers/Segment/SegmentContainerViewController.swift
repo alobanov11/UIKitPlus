@@ -76,9 +76,8 @@ open class SegmentContainerViewController: ViewController {
 			self.pageCollectionView.enableHorizontalScroll()
 		}
 
-		self.pageCollectionView.scrollToItem(at: self.initialIndex, animated: false)
-
 		DispatchQueue.main.async {
+			self.pageCollectionView.scrollToItem(at: self.initialIndex, animated: false)
 			UIView.setAnimationsEnabled(false)
 			self.navigationBar.segment(didScroll: CGFloat(self.initialIndex))
 			UIView.setAnimationsEnabled(true)

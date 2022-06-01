@@ -101,6 +101,7 @@ final class SegmentPageCollectionView: UView {
     }
 
 	func enableHorizontalScroll() {
+		self.isHorizontallScrollEnabled = true
 		self.pageViewController.dataSource = self
 	}
 

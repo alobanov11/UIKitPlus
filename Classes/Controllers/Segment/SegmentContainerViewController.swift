@@ -267,7 +267,7 @@ extension SegmentContainerViewController: UIGestureRecognizerDelegate
 
 		guard velocity > 0 else { return false }
 
-		guard self.pageCollectionView.hasViewControllerBefore() else { return false }
+		guard self.pageCollectionView.hasViewControllerBefore() == false else { return false }
 
 		return true
 	}

@@ -112,17 +112,11 @@ open class SegmentContainerViewController: ViewController {
 					.top(to: 1)
 					.edgesToSuperview(leading: 0, trailing: 0, bottom: 0)
 			}
-		}
-
-		if self.headerView != nil {
-			self.view.addSubview(self.verticalCollectionView)
-
-			NSLayoutConstraint.activate([
-				self.verticalCollectionView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
-				self.verticalCollectionView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
-				self.verticalCollectionView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
-				self.verticalCollectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-			])
+			else {
+				UWrapperView(verticalCollectionView)
+					.topToSuperview(safeArea: true)
+					.edgesToSuperview(leading: 0, trailing: 0, bottom: 0)
+			}
 		}
 	}
 

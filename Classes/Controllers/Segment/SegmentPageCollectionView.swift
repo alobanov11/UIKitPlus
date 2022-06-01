@@ -12,7 +12,7 @@ protocol SegmentPageCollectionAdapter: UIViewController {
     func segmentPageCollection(didScroll point: CGPoint)
 }
 
-final class SegmentPageCollectionView: UIView {
+final class SegmentPageCollectionView: UView {
 	var currentIndex: Int {
 		let viewControllers = self.adapter.segmentPageCollectionViewControllers()
 		guard let viewController = pageViewController.viewControllers?.first,

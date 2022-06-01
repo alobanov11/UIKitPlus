@@ -11,7 +11,7 @@ protocol SegmentVerticalCollectionAdapter: AnyObject {
     func segmentVerticalCollection(didScroll collectionView: UICollectionView)
 }
 
-final class SegmentVerticalCollectionView: UIView {
+final class SegmentVerticalCollectionView: UView {
     private final class ControlContainableCollectionView: UCollaborativeCollectionView
     {
         override func touchesShouldCancel(in view: UIView) -> Bool {

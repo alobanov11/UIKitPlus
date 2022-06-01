@@ -64,24 +64,17 @@ open class SegmentContainerViewController: ViewController {
 		}
 
 		self.viewControllers.forEach {
-			$0.$contentState.listen { [weak self] in self?.segmentDidRefreshFinished() }
-			$0.$isAvailable.listen { [weak self] in self?.pageCollectionView.invalidate() }
-
 			$0.delegate = self
-
 			if self.headerView != nil {
 				$0.segmentScrollView().bounces = false
 			}
+			$0.$contentState.listen { [weak self] in self?.segmentDidRefreshFinished() }
+			$0.$isAvailable.listen { [weak self] in self?.pageCollectionView.invalidate() }
 		}
 
-		self.view.addSubview(self.verticalCollectionView)
-
-		NSLayoutConstraint.activate([
-			self.verticalCollectionView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
-			self.verticalCollectionView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
-			self.verticalCollectionView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
-			self.verticalCollectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-		])
+		if self.headerView == nil {
+			self.pageCollectionView.enableHorizontalScroll()
+		}
 
 		self.pageCollectionView.scrollToItem(at: self.initialIndex, animated: false)
 
@@ -103,6 +96,27 @@ open class SegmentContainerViewController: ViewController {
 				panGesture.delegate = self
 				scrollView.addGestureRecognizer(panGesture)
 				self.backGesture = panGesture
+			}
+		}
+	}
+
+	open override func buildUI() {
+		super.buildUI()
+		body {
+			if headerView == nil {
+				navigationBar
+					.topToSuperview(safeArea: true)
+					.height(navigationBar.segmentHeight())
+					.edgesToSuperview(h: 0)
+					.tag(1)
+				pageCollectionView
+					.top(to: 1)
+					.edgesToSuperview(leading: 0, trailing: 0, bottom: 0)
+			}
+			else {
+				verticalCollectionView
+					.topToSuperview(safeArea: true)
+					.edgesToSuperview(leading: 0, trailing: 0, bottom: 0)
 			}
 		}
 	}
@@ -147,17 +161,18 @@ open class SegmentContainerViewController: ViewController {
 		}
 	}
 
-	public func enableHorizontalScroll(_ value: Bool) {
-		self.pageCollectionView.enableHorizontalScroll()
-	}
-
 	public func selectSegment(at index: Int) {
 		self.navigationBar.selectSegment(at: index)
 	}
 
 	public func scrollToTop(animated: Bool) {
-		self.verticalCollectionView.scrollToTop(animated: animated)
-		self.currentViewController.segmentScrollView().setContentOffset(.zero, animated: self.headerView == nil)
+		if self.headerView == nil {
+			self.currentViewController.segmentScrollView().setContentOffset(.zero, animated: animated)
+		}
+		else {
+			self.verticalCollectionView.scrollToTop(animated: animated)
+			self.currentViewController.segmentScrollView().setContentOffset(.zero, animated: false)
+		}
 	}
 }
 

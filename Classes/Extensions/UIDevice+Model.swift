@@ -83,6 +83,10 @@ extension UIDevice {
     public class var isPhoneIdiom: Bool {
         UIDevice.current.userInterfaceIdiom == .phone
     }
+
+	public class var isPhoneXIdiom: Bool {
+		self.isPhoneIdiom && maxHeight >= ScreenNativeHeight.iPhoneXr.rawValue
+	}
     
     public class var isPadIdiom: Bool {
         UIDevice.current.userInterfaceIdiom == .pad

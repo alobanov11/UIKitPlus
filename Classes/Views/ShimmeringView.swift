@@ -8,12 +8,12 @@ public final class ShimmeringView<T: UIView>: UWrapperView<T> {
 	@UState private var isShimerring = false
 
 	private var colors: [UIColor] = [
-		.clear,
-		.gray.withAlphaComponent(0.7),
-		.clear,
+		UIColor(white: 0.85, alpha: 1.0),
+		UIColor(white: 0.95, alpha: 1.0),
+		UIColor(white: 0.85, alpha: 1.0),
 	]
 
-	private var duration: TimeInterval = 1.5
+	private var duration: TimeInterval = 0.9
 
 	public override func buildView() {
 		super.buildView()
@@ -53,23 +53,26 @@ public final class ShimmeringView<T: UIView>: UWrapperView<T> {
 
 	func startShimmering() {
 		let gradientLayer = CAGradientLayer()
-		gradientLayer.colors = self.colors.map { $0.cgColor }
+		gradientLayer.name = "shimmeringLayer"
+		gradientLayer.frame = self.bounds
 		gradientLayer.startPoint = CGPoint(x: 0.0, y: 1.0)
 		gradientLayer.endPoint = CGPoint(x: 1.0, y: 1.0)
-		gradientLayer.frame = self.bounds
-		self.layer.mask = gradientLayer
+		gradientLayer.colors = self.colors.map { $0.cgColor }
+		gradientLayer.locations = [0.0, 0.5, 1.0]
+		self.layer.addSublayer(gradientLayer)
 
-		let animation = CABasicAnimation(keyPath: "transform.translation.x")
-		animation.duration = self.duration
-		animation.fromValue = -self.frame.size.width
-		animation.toValue = self.frame.size.width
+		let animation = CABasicAnimation(keyPath: "locations")
+		animation.fromValue = [-1.0, -0.5, 0.0]
+		animation.toValue = [1.0, 1.5, 2.0]
 		animation.repeatCount = .infinity
+		animation.duration = self.duration
 
-		gradientLayer.add(animation, forKey: "shimmeringAnimation")
+		gradientLayer.add(animation, forKey: animation.keyPath)
 	}
 
 	func stopShimmering() {
-		self.layer.removeAllAnimations()
-		self.layer.mask = nil
+		let gradientLayer = self.layer.sublayers?.first { $0.name == "shimmeringLayer" }
+		gradientLayer?.removeAllAnimations()
+		gradientLayer?.removeFromSuperlayer()
 	}
 }

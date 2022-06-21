@@ -103,7 +103,16 @@ open class UView: BaseView, UIViewable, AnyDeclarativeProtocol, DeclarativeProto
     }
     #endif
     
-    open func buildView() {}
+    open func buildView() {
+		$isShimmering.listen { [weak self] in
+			if $0 {
+				self?.startShimmering()
+			}
+			else {
+				self?.stopShimmering()
+			}
+		}
+	}
     
     // MARK: Touches
     #if os(macOS)

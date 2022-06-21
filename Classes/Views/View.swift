@@ -296,10 +296,12 @@ extension UView {
 
 	func stopShimmering() {
 		let gradientLayer = self.layer.sublayers?.first { $0.name == "shimmeringLayer" }
-		UIView.animate(withDuration: 0.3) {
+		UIView.animate(withDuration: 0.3, delay: 0, options: [], animations: {
+			gradientLayer?.opacity = 0
+		}, completion: { _ in
 			gradientLayer?.removeAllAnimations()
 			gradientLayer?.removeFromSuperlayer()
-		}
+		})
 	}
 }
 

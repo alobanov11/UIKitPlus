@@ -15,6 +15,14 @@ public final class ShimmeringView<T: UIView>: UWrapperView<T> {
 
 	private var duration: TimeInterval = 0.9
 
+	public override func layoutSubviews() {
+		super.layoutSubviews()
+		if self.isShimerring {
+			self.stopShimmering()
+			self.startShimmering()
+		}
+	}
+
 	public override func buildView() {
 		super.buildView()
 		$isShimerring.listen { [weak self] in

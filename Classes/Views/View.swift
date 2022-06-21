@@ -19,6 +19,7 @@ open class UView: BaseView, UIViewable, AnyDeclarativeProtocol, DeclarativeProto
     @State public var bottom: CGFloat = 0
     @State public var centerX: CGFloat = 0
     @State public var centerY: CGFloat = 0
+	@State public var isShimmering = false
     
     var __height: State<CGFloat> { _height }
     var __width: State<CGFloat> { _width }
@@ -30,6 +31,8 @@ open class UView: BaseView, UIViewable, AnyDeclarativeProtocol, DeclarativeProto
     var __bottom: State<CGFloat> { _bottom }
     var __centerX: State<CGFloat> { _centerX }
     var __centerY: State<CGFloat> { _centerY }
+
+	var shimmeringConfig = UShimmeringConfig.default
     
     open override var tag: Int {
         get { properties.tag }
@@ -88,6 +91,10 @@ open class UView: BaseView, UIViewable, AnyDeclarativeProtocol, DeclarativeProto
     open override func layoutSubviews() {
         super.layoutSubviews()
         onLayoutSubviews()
+		if self.isShimmering {
+			self.stopShimmering()
+			self.startShimmering()
+		}
     }
     
     open override func didMoveToSuperview() {
@@ -241,6 +248,48 @@ open class UView: BaseView, UIViewable, AnyDeclarativeProtocol, DeclarativeProto
         _touchesCancelled?(touches, event)
     }
     #endif
+}
+
+// MARK: - Shimmering
+
+extension UView {
+	@discardableResult
+	public func shimmering(_ value: State<Bool>, _ config: UShimmeringConfig = .default) -> Self {
+		value.listen { [weak self] in self?.shimmering($0, config) }
+		return self.shimmering(value.wrappedValue, config)
+	}
+
+	@discardableResult
+	public func shimmering(_ value: Bool, _ config: UShimmeringConfig = .default) -> Self {
+		self.shimmeringConfig = config
+		self.isShimmering = value
+		return self
+	}
+
+	func startShimmering() {
+		let gradientLayer = CAGradientLayer()
+		gradientLayer.name = "shimmeringLayer"
+		gradientLayer.frame = self.bounds
+		gradientLayer.startPoint = CGPoint(x: 0.0, y: 1.0)
+		gradientLayer.endPoint = CGPoint(x: 1.0, y: 1.0)
+		gradientLayer.colors = self.shimmeringConfig.colors.map { $0.cgColor }
+		gradientLayer.locations = [0.0, 0.5, 1.0]
+		self.layer.addSublayer(gradientLayer)
+
+		let animation = CABasicAnimation(keyPath: "locations")
+		animation.fromValue = [-1.0, -0.5, 0.0]
+		animation.toValue = [1.0, 1.5, 2.0]
+		animation.repeatCount = .infinity
+		animation.duration = self.shimmeringConfig.duration
+
+		gradientLayer.add(animation, forKey: animation.keyPath)
+	}
+
+	func stopShimmering() {
+		let gradientLayer = self.layer.sublayers?.first { $0.name == "shimmeringLayer" }
+		gradientLayer?.removeAllAnimations()
+		gradientLayer?.removeFromSuperlayer()
+	}
 }
 
 // MARK: Convenience Initializers

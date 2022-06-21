@@ -8,7 +8,7 @@ public struct UShimmeringConfig {
 	public let colors: [UIColor]
 	public let duration: TimeInterval
 
-	init(colors: [UIColor], duration: TimeInterval) {
+	public init(colors: [UIColor], duration: TimeInterval) {
 		self.colors = colors
 		self.duration = duration
 	}

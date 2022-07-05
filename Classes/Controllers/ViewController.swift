@@ -110,11 +110,7 @@ open class ViewController: BaseViewController {
     
     // MARK: Lifecycle
     
-    open func buildUI() {
-        #if !os(macOS)
-        view.backgroundColor = .white
-        #endif
-    }
+    open func buildUI() {}
     
     public var isWillAppearedOnce = false
     public var isDidAppearedOnce = false

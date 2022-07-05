@@ -22,7 +22,7 @@ extension AnyDeclarativeProtocol {
         }
 		else if let customCorners = _declarativeView._properties.customCorners {
             if _declarativeView._properties.customCorners?.backgroundColor == nil {
-                _declarativeView._properties.customCorners?.backgroundColor = declarativeView.backgroundColor == .clear ? .white : declarativeView.backgroundColor
+				_declarativeView._properties.customCorners?.backgroundColor = .clear
                 background(.clear)
             }
 			if customCorners.corners.contains(.allCorners) {
@@ -36,7 +36,7 @@ extension AnyDeclarativeProtocol {
 				let maskLayer = CAShapeLayer()
 				maskLayer.accessibilityLabel = "maskLayer.accessibilityLabel"
 				maskLayer.path = path.cgPath
-				maskLayer.fillColor = _declarativeView._properties.customCorners?.backgroundColor?.cgColor ?? UIColor.white.cgColor
+				maskLayer.fillColor = _declarativeView._properties.customCorners?.backgroundColor?.cgColor ?? UIColor.clear.cgColor
 				declarativeView.layer.mask = maskLayer
 			}
         }

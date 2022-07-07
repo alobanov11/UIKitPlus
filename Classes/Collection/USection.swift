@@ -161,13 +161,18 @@ public final class UItemSizeCache {
 
 public protocol UItemable: USectionBodyItemable {
     var cellClass: Cellable.Type { get }
-
+	
+	func isEqual(to item: UItemable) -> Bool
 	func generate(collectionView: UICollectionView, for indexPath: IndexPath) -> UICollectionViewCell
     func size(by original: CGSize, direction: UICollectionView.ScrollDirection) -> CGSize
 }
 
-extension UItemable {
-    public var sectionBodyItem: USectionBodyItem { .item(self) }
+public extension UItemable {
+	var sectionBodyItem: USectionBodyItem { .item(self) }
+
+	func isEqual(to item: UItemable) -> Bool {
+		self.identifier == item.identifier
+	}
 }
 
 public protocol UItemableBuilder {

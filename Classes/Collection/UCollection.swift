@@ -76,7 +76,7 @@ open class UCollection: UView {
     public struct Section: Hashable {
 		public let identifier: USection.Identifier
 		public let header: USupplementable?
-		public let items: [UItemable]
+		public var items: [UItemable]
 		public let footer: USupplementable?
         
         init(_ section: USection) {
@@ -99,11 +99,6 @@ open class UCollection: UView {
             self.items.map { $0.identifier }.hash(into: &hasher)
             self.footer?.identifier.hash(into: &hasher)
         }
-    }
-    
-    enum ChangesetData {
-        case section(Changeset)
-        case items(Changeset, Int)
     }
 
     lazy var collectionView: UICollectionView = {
@@ -444,61 +439,52 @@ extension UCollection {
             self.isChanging = false
             return
         }
-        
-        var changesets: [ChangesetData] = []
-        let sectionsChangeset = Changeset(previous: self.sections, current: newSections, identifier: { $0.identifier })
-        
-        changesets.append(.section(sectionsChangeset))
-        
-        sectionsChangeset.mutations.forEach { section in
-            let oldItems = self.sections[section].items.map { $0.identifier }
-            let newItems = newSections[section].items.map { $0.identifier }
-            let itemsChangeset = Changeset(previous: oldItems, current: newItems)
-            changesets.append(.items(itemsChangeset, section))
-        }
 
-		let canPerformWithAnimation: Bool = {
-			for changes in changesets {
-				switch changes {
-				case .section:
-					return false
-				case let .items(changeset, _):
-					if changeset.inserts.isEmpty == false || changeset.removals.isEmpty == false {
-						return false
-					}
-				}
-			}
-			return true
-		}()
+		let changeset = SectionedChangeset(
+			previous: self.sections,
+			current: newSections,
+			sectionIdentifier: { (section: Section) -> AnyHashable in section.identifier },
+			areMetadataEqual: { (first: Section, second: Section) -> Bool in
+				first.header?.identifier == second.header?.identifier &&
+				first.footer?.identifier == second.footer?.identifier
+			},
+			items: { (section: Section) -> [UItemable] in section.items },
+			itemIdentifier: { (item: UItemable) -> AnyHashable in item.identifier },
+			areItemsEqual: { (first: UItemable, second: UItemable) -> Bool in first.isEqual(to: second) }
+		)
 
-		if canPerformWithAnimation {
-			self.performUpdates(newSections: newSections, changesets: changesets)
-		}
-		else {
-			UIView.performWithoutAnimation {
-				self.performUpdates(newSections: newSections, changesets: changesets)
-			}
-		}
-    }
-
-	func performUpdates(newSections: [Section], changesets: [ChangesetData]) {
 		self.collectionView.performBatchUpdates({
 			self.sections = newSections
-			changesets.forEach {
-				switch $0 {
-				case let .section(changes):
-					self.collectionView.deleteSections(changes.removals)
-					self.collectionView.insertSections(changes.inserts)
-					changes.moves.forEach {
-						self.collectionView.moveSection($0.source, toSection: $0.destination)
-					}
-				case let .items(changes, section):
-					self.collectionView.deleteItems(at: changes.removals.map { IndexPath(item: $0, section: section) })
-					self.collectionView.insertItems(at: changes.inserts.map { IndexPath(item: $0, section: section) })
-					self.collectionView.reloadItems(at: changes.mutations.map { IndexPath(item: $0, section: section) })
-					changes.moves.forEach {
-						self.collectionView.moveItem(at: .init(item: $0.source, section: section), to: .init(item: $0.destination, section: section))
-					}
+
+			self.collectionView.deleteSections(changeset.sections.removals)
+			self.collectionView.insertSections(changeset.sections.inserts)
+			self.collectionView.reloadSections(changeset.sections.mutations)
+
+			for move in changeset.sections.moves {
+				self.collectionView.moveSection(move.source, toSection: move.destination)
+			}
+
+			for mutatedSection in changeset.mutatedSections {
+				var deleted = mutatedSection.changeset.removals.sorted(by: >).map { IndexPath(item: $0, section: mutatedSection.source) }
+				var inserted = mutatedSection.changeset.inserts.sorted(by: <).map { IndexPath(item: $0, section: mutatedSection.destination) }
+				var mutated = mutatedSection.changeset.mutations.map { IndexPath(item: $0, section: mutatedSection.destination) }
+
+				if mutatedSection.changeset.removals == mutatedSection.changeset.inserts {
+					mutated.append(contentsOf: inserted)
+					deleted = []
+					inserted = []
+				}
+
+				self.collectionView.deleteItems(at: deleted)
+				self.collectionView.insertItems(at: inserted)
+				DispatchQueue.main.async {
+					self.collectionView.reloadItems(at: mutated)
+				}
+
+				for move in mutatedSection.changeset.moves {
+					let from = IndexPath(item: move.source, section: mutatedSection.source)
+					let to = IndexPath(item: move.destination, section: mutatedSection.destination)
+					self.collectionView.moveItem(at: from, to: to)
 				}
 			}
 		}, completion: { _ in
@@ -511,7 +497,7 @@ extension UCollection {
 				self._onCompleteBatchUpdates?()
 			}
 		})
-	}
+    }
     
     func updateRegistration() {
         self.sections.forEach {

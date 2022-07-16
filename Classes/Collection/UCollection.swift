@@ -453,6 +453,17 @@ extension UCollection {
 			areItemsEqual: { (first: UItemable, second: UItemable) -> Bool in first.isEqual(to: second) }
 		)
 
+		if changeset.mutatedSections.isEmpty {
+			self.performUpdates(with: newSections, changeset: changeset)
+		}
+		else {
+			UIView.performWithoutAnimation {
+				self.performUpdates(with: newSections, changeset: changeset)
+			}
+		}
+    }
+
+	func performUpdates(with newSections: [Section], changeset: SectionedChangeset) {
 		self.collectionView.performBatchUpdates({
 			self.sections = newSections
 
@@ -497,7 +508,7 @@ extension UCollection {
 				self._onCompleteBatchUpdates?()
 			}
 		})
-    }
+	}
     
     func updateRegistration() {
         self.sections.forEach {

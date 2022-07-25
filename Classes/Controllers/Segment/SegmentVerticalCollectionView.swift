@@ -5,10 +5,10 @@
 import UIKit
 
 protocol SegmentVerticalCollectionAdapter: AnyObject {
-    func segmentVerticalCollection(headerView collectionView: UICollectionView) -> UIView?
-    func segmentVerticalCollection(navigationBarView collectionView: UICollectionView) -> UIView?
-    func segmentVerticalCollection(pageCollectionView collectionView: UICollectionView) -> UIView
-    func segmentVerticalCollection(didScroll collectionView: UICollectionView)
+    func segmentVerticalCollectionHeader() -> UIView?
+    func segmentVerticalCollectionNavigationBar() -> UIView?
+    func segmentVerticalCollectionPageCollection() -> UIView
+    func segmentVerticalCollectionDidScroll()
 }
 
 final class SegmentVerticalCollectionView: UView {
@@ -88,11 +88,7 @@ final class SegmentVerticalCollectionView: UView {
     }
 
     func sizeForHeader() -> CGSize {
-        self.collectionView(
-            self.verticalCollectionView,
-            layout: self.flowLayout,
-            sizeForItemAt: IndexPath(item: 0, section: 0)
-        )
+		self.sizeForItem(IndexPath(item: 0, section: 0))
     }
 
 	func addRefreshControl(_ completion: (UIScrollView) -> Void) {
@@ -125,13 +121,13 @@ extension SegmentVerticalCollectionView: UICollectionViewDelegateFlowLayout, UIC
 
         switch true {
         case indexPath.item == 0:
-            let headerView = self.adapter.segmentVerticalCollection(headerView: collectionView)
+            let headerView = self.adapter.segmentVerticalCollectionHeader()
             contentView = headerView ?? UIView()
         case indexPath.item == 1:
-            let navigationBarView = self.adapter.segmentVerticalCollection(navigationBarView: collectionView)
+            let navigationBarView = self.adapter.segmentVerticalCollectionNavigationBar()
             contentView = navigationBarView ?? UIView()
         case indexPath.item == 2:
-            let pageCollectionView = self.adapter.segmentVerticalCollection(pageCollectionView: collectionView)
+            let pageCollectionView = self.adapter.segmentVerticalCollectionPageCollection()
             contentView = pageCollectionView
         default:
             contentView = UIView()
@@ -166,38 +162,40 @@ extension SegmentVerticalCollectionView: UICollectionViewDelegateFlowLayout, UIC
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
-        switch true {
-        case indexPath.item == 0:
-            let headerView = self.adapter.segmentVerticalCollection(headerView: collectionView)
-            return headerView?.systemLayoutSizeFitting(
-                .init(width: self.frame.width, height: 0),
-                withHorizontalFittingPriority: .required,
-                verticalFittingPriority: .fittingSizeLevel
-            ) ?? .zero
-        case indexPath.item == 1:
-            let navigationBarView = self.adapter.segmentVerticalCollection(navigationBarView: collectionView)
-            return navigationBarView?.systemLayoutSizeFitting(
-                .init(width: self.frame.width, height: 0),
-                withHorizontalFittingPriority: .required,
-                verticalFittingPriority: .fittingSizeLevel
-            ) ?? .zero
-        case indexPath.item == 2:
-            let navigationBarHeight = self.collectionView(
-                collectionView,
-                layout: collectionViewLayout,
-                sizeForItemAt: IndexPath(item: 1, section: 0)
-            ).height
-            return collectionView.frame.size.height > 0 ? .init(
-                width: collectionView.frame.width,
-                height: collectionView.frame.size.height - navigationBarHeight
-			) : .zero
-        default:
-            return .zero
-        }
+		self.sizeForItem(indexPath)
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
 		guard scrollView.isDragging || scrollView.isTracking else { return }
-        self.adapter.segmentVerticalCollection(didScroll: self.verticalCollectionView)
+        self.adapter.segmentVerticalCollectionDidScroll()
     }
+}
+
+private extension SegmentVerticalCollectionView {
+	func sizeForItem(_ indexPath: IndexPath) -> CGSize {
+		switch true {
+		case indexPath.item == 0:
+			let headerView = self.adapter.segmentVerticalCollectionHeader()
+			return headerView?.systemLayoutSizeFitting(
+				.init(width: self.frame.width, height: 0),
+				withHorizontalFittingPriority: .required,
+				verticalFittingPriority: .fittingSizeLevel
+			) ?? .zero
+		case indexPath.item == 1:
+			let navigationBarView = self.adapter.segmentVerticalCollectionNavigationBar()
+			return navigationBarView?.systemLayoutSizeFitting(
+				.init(width: self.frame.width, height: 0),
+				withHorizontalFittingPriority: .required,
+				verticalFittingPriority: .fittingSizeLevel
+			) ?? .zero
+		case indexPath.item == 2:
+			let navigationBarHeight = self.sizeForItem(IndexPath(item: 1, section: 0)).height
+			return self.verticalCollectionView.frame.size.height > 0 ? .init(
+				width: self.verticalCollectionView.frame.width,
+				height: self.verticalCollectionView.frame.size.height - navigationBarHeight
+			) : .zero
+		default:
+			return .zero
+		}
+	}
 }

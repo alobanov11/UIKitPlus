@@ -199,22 +199,22 @@ extension SegmentContainerViewController: SegmentNavigationBarDelegate
 
 extension SegmentContainerViewController: SegmentVerticalCollectionAdapter
 {
-    func segmentVerticalCollection(headerView collectionView: UICollectionView) -> UIView? {
+	func segmentVerticalCollectionHeader() -> UIView? {
 		self.headerView
-    }
+	}
 
-    func segmentVerticalCollection(navigationBarView collectionView: UICollectionView) -> UIView? {
-        guard self.viewControllers.count > 1 else { return nil }
-        return self.navigationBar
-    }
+	func segmentVerticalCollectionNavigationBar() -> UIView? {
+		guard self.viewControllers.count > 1 else { return nil }
+		return self.navigationBar
+	}
 
-    func segmentVerticalCollection(pageCollectionView collectionView: UICollectionView) -> UIView {
-        self.pageCollectionView
-    }
+	func segmentVerticalCollectionPageCollection() -> UIView {
+		self.pageCollectionView
+	}
 
-    func segmentVerticalCollection(didScroll collectionView: UICollectionView) {
-        self.syncVerticalScrollIfNeeded()
-    }
+	func segmentVerticalCollectionDidScroll() {
+		self.syncVerticalScrollIfNeeded()
+	}
 }
 
 extension SegmentContainerViewController: SegmentPageCollectionAdapter

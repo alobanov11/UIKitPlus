@@ -13,7 +13,7 @@ open class UTextView: UITextView, AnyDeclarativeProtocol, DeclarativeProtocolInt
 	open override var text: String! {
 		get { super.text }
 		set {
-			if let placeholder = _properties.placeholderAttrText, newValue != nil && newValue.isEmpty {
+			if let placeholder = _properties.placeholderAttrText, newValue == nil || (newValue != nil && newValue.isEmpty) {
 				_setPlaceholder(placeholder)
 			}
 			else {

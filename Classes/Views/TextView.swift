@@ -11,6 +11,12 @@ open class UTextView: UITextView, AnyDeclarativeProtocol, DeclarativeProtocolInt
     lazy var _properties = PropertiesInternal()
 	lazy var placeholderLabel = UText()
 
+	open override var text: String! {
+		didSet {
+			placeholderLabel.isHidden = (text == nil || (text != nil && text.isEmpty)) == false
+		}
+	}
+
     @State public var height: CGFloat = 0
     @State public var width: CGFloat = 0
     @State public var top: CGFloat = 0

@@ -9,7 +9,8 @@ open class UTextView: UITextView, AnyDeclarativeProtocol, DeclarativeProtocolInt
     public var declarativeView: UTextView { self }
     public lazy var properties = Properties<UTextView>()
     lazy var _properties = PropertiesInternal()
-    
+	lazy var placeholderLabel = UText()
+
     @State public var height: CGFloat = 0
     @State public var width: CGFloat = 0
     @State public var top: CGFloat = 0
@@ -86,6 +87,15 @@ open class UTextView: UITextView, AnyDeclarativeProtocol, DeclarativeProtocolInt
     private lazy var _delegate = TextViewDelegate(self)
     
     private func _setup() {
+		body {
+			placeholderLabel
+				.edgesToSuperview(
+					top: textContainerInset.top,
+					leading: textContainerInset.left,
+					trailing: textContainerInset.right * -1,
+					bottom: textContainerInset.bottom * -1
+				)
+		}
         clipsToBounds = true
         textContainer.lineFragmentPadding = 0
         translatesAutoresizingMaskIntoConstraints = false
@@ -461,8 +471,7 @@ extension UTextView: _Placeholderable {
     }
     
     func _setPlaceholder(_ v: NSAttributedString?) {
-        attributedText = nil // hack to update attributed string with changed paragraph style
-        attributedText = v
+		placeholderLabel.attributedText = v
         _properties.placeholderAttrText = v
     }
 }

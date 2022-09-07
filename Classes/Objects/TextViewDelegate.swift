@@ -19,16 +19,14 @@ class TextViewDelegate: NSObject, UITextViewDelegate {
     }
     
     public func textViewDidBeginEditing(_ textView: UITextView) {
-        if self.textView.attributedText.string == self.textView._properties.placeholderAttrText?.string {
-            self.textView.text = ""
-        }
+		self.textView.placeholderLabel.isHidden = true
 		self.textView.didBeginEditingHandler.forEach { $0() }
 		self.textView.didBeginEditingHandlerText.forEach { $0(self.textView) }
     }
 
     public func textViewDidEndEditing(_ textView: UITextView) {
-        if self.textView.text.count == 0, let text = self.textView._properties.placeholderAttrText?.string, text.count > 0 {
-            self.textView.attributedText = self.textView._properties.placeholderAttrText
+        if self.textView.text.count == 0 {
+			self.textView.placeholderLabel.isHidden = false
         }
 		self.textView.didEndEditingHandler.forEach { $0() }
 		self.textView.didEndEditingHandlerText.forEach { $0(self.textView) }

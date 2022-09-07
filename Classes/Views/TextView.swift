@@ -93,7 +93,7 @@ open class UTextView: UITextView, AnyDeclarativeProtocol, DeclarativeProtocolInt
     private lazy var _delegate = TextViewDelegate(self)
     
     private func _setup() {
-		body { placeholderLabel.edgesToSuperview() }
+		body { placeholderLabel.multiline().edgesToSuperview() }
         clipsToBounds = true
         textContainer.lineFragmentPadding = 0
         translatesAutoresizingMaskIntoConstraints = false

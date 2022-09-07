@@ -9,6 +9,18 @@ open class UTextView: UITextView, AnyDeclarativeProtocol, DeclarativeProtocolInt
     public var declarativeView: UTextView { self }
     public lazy var properties = Properties<UTextView>()
     lazy var _properties = PropertiesInternal()
+
+	open override var text: String! {
+		get { super.text }
+		set {
+			if let placeholder = _properties.placeholderAttrText, newValue != nil && newValue.isEmpty {
+				_setPlaceholder(placeholder)
+			}
+			else {
+				super.text = newValue
+			}
+		}
+	}
     
     @State public var height: CGFloat = 0
     @State public var width: CGFloat = 0

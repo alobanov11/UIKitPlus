@@ -87,15 +87,7 @@ open class UTextView: UITextView, AnyDeclarativeProtocol, DeclarativeProtocolInt
     private lazy var _delegate = TextViewDelegate(self)
     
     private func _setup() {
-		body {
-			placeholderLabel
-				.edgesToSuperview(
-					top: textContainerInset.top,
-					leading: textContainerInset.left,
-					trailing: textContainerInset.right * -1,
-					bottom: textContainerInset.bottom * -1
-				)
-		}
+		body { placeholderLabel.edgesToSuperview() }
         clipsToBounds = true
         textContainer.lineFragmentPadding = 0
         translatesAutoresizingMaskIntoConstraints = false
@@ -131,6 +123,12 @@ open class UTextView: UITextView, AnyDeclarativeProtocol, DeclarativeProtocolInt
     @discardableResult
     public func textInsets(_ insets: UIEdgeInsets) -> Self {
         textContainerInset = insets
+		placeholderLabel.edgesToSuperview(
+			top: insets.top,
+			leading: insets.left,
+			trailing: insets.right * -1,
+			bottom: insets.bottom * -1
+		)
         return self
     }
     

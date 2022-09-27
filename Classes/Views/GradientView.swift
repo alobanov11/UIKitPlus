@@ -47,7 +47,7 @@ extension UGradientConfiguration: Hashable {
 	}
 }
 
-public final class UGradient<T: UIView>: UWrapperView<T> {
+public final class UGradientView<T: UIView>: UWrapperView<T> {
 	private var config = UGradientConfiguration(locations: [], colors: [])
 
 	public override func layoutSubviews() {

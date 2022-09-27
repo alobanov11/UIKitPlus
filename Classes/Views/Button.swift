@@ -59,6 +59,13 @@ open class UButton: UIButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
             super.setAttributedTitle(title, for: state)
         }, completion: nil)
     }
+
+	open override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+		if self.bounds.width > 44 {
+			return super.point(inside: point, with: event)
+		}
+		return self.bounds.insetBy(dx: -10, dy: -10).contains(point)
+	}
     
     @discardableResult
     public func titleChangeTransition(_ value: UIView.AnimationOptions) -> Self {

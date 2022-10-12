@@ -298,6 +298,12 @@ open class UButton: UIButton, AnyDeclarativeProtocol, DeclarativeProtocolInterna
         return image(binding.wrappedValue, state)
     }
 
+	@discardableResult
+	public func image(_ binding: UISwift.State<UIImage?>, _ state: UIControl.State = .normal) -> Self {
+		binding.listen { [weak self] in self?.image($0, state) }
+		return image(binding.wrappedValue, state)
+	}
+
 	// MARK: Background Image
     
     @discardableResult

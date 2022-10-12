@@ -311,7 +311,8 @@ private extension SegmentContainerViewController
 		let contentOffsetY = max(0, collaborativeY)
 
         self.visibleCollaborativeScrollView.contentOffset.y = contentOffsetY
-		self.visibleCollaborativeScrollView.bounces = contentOffsetY > 100
+		self.visibleCollaborativeScrollView.bounces = contentOffsetY > ctx.headerViewH
+		self.verticalCollectionView.isScrollEnabled = contentOffsetY <= ctx.headerViewH
         self.verticalCollectionView.contentOffsetY = min(ctx.headerViewH, verticalY)
         self.verticalCollectionView.lastContentOffsetY = min(ctx.headerViewH, verticalY)
         self.lastCollaborativeScrollView = self.visibleCollaborativeScrollView

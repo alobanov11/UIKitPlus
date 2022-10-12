@@ -26,6 +26,11 @@ final class SegmentVerticalCollectionView: UView {
         set { self.verticalCollectionView.contentOffset.y = newValue }
     }
 
+	var isScrollEnabled: Bool {
+		get { self.verticalCollectionView.isScrollEnabled }
+		set { self.verticalCollectionView.isScrollEnabled = newValue }
+	}
+
     private lazy var flowLayout: UICollectionViewFlowLayout = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical

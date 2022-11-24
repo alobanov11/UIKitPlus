@@ -58,8 +58,8 @@ final class SegmentVerticalCollectionView: UView {
         }
 
 		collectionView.register(
-            UICollectionViewCell.self,
-            forCellWithReuseIdentifier: String(describing: UICollectionViewCell.self)
+			UCollectionDynamicCell.self,
+            forCellWithReuseIdentifier: String(describing: UCollectionDynamicCell.self)
         )
 
 		return collectionView
@@ -118,46 +118,24 @@ extension SegmentVerticalCollectionView: UICollectionViewDelegateFlowLayout, UIC
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: String(describing: UICollectionViewCell.self),
+            withReuseIdentifier: String(describing: UCollectionDynamicCell.self),
             for: indexPath
-        )
+        ) as! UCollectionDynamicCell
 
-        let contentView: UIView
+        let rootView: UIView
 
         switch true {
         case indexPath.item == 0:
-            let headerView = self.adapter.segmentVerticalCollectionHeader()
-            contentView = headerView ?? UIView()
+			rootView = self.adapter.segmentVerticalCollectionHeader() ?? UIView()
         case indexPath.item == 1:
-            let navigationBarView = self.adapter.segmentVerticalCollectionNavigationBar()
-            contentView = navigationBarView ?? UIView()
+			rootView = self.adapter.segmentVerticalCollectionNavigationBar() ?? UIView()
         case indexPath.item == 2:
-            let pageCollectionView = self.adapter.segmentVerticalCollectionPageCollection()
-            contentView = pageCollectionView
+			rootView = self.adapter.segmentVerticalCollectionPageCollection()
         default:
-            contentView = UIView()
+			rootView = UIView()
         }
 
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        cell.contentView.subviews.forEach { $0.removeFromSuperview() }
-        cell.contentView.addSubview(contentView)
-        cell.contentView.clipsToBounds = true
-
-        let bottomConstraint = NSLayoutConstraint(item: contentView,
-                                                  attribute: .bottom,
-                                                  relatedBy: .equal,
-                                                  toItem: cell.contentView,
-                                                  attribute: .bottom,
-                                                  multiplier: 1,
-                                                  constant: 0)
-        bottomConstraint.priority = .init(999)
-
-        NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: cell.contentView.topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: cell.contentView.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: cell.contentView.trailingAnchor),
-            bottomConstraint,
-        ])
+		cell.setRootView(rootView)
 
         return cell
     }

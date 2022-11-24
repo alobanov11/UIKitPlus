@@ -32,7 +32,7 @@ public struct UShadowConfiguration {
 	}
 }
 
-public final class UShadow<T: UIView>: UWrapperView<T> {
+public final class UShadowView<T: UIView>: UWrapperView<T> {
 	public private(set) var config: UShadowConfiguration = .init()
 
 	public override func layoutSubviews() {
@@ -41,7 +41,7 @@ public final class UShadow<T: UIView>: UWrapperView<T> {
 	}
 
 	@discardableResult
-	public func configure(_ config: UShadowConfiguration) -> Self {
+	public func config(_ config: UShadowConfiguration) -> Self {
 		self.config = config
 		return self
 	}

@@ -330,6 +330,7 @@ private extension SegmentContainerViewController
 			navBarHeight: self.navigationBar.segmentHeight()
         )
 
+		self.verticalCollectionView.isScrollEnabled = true
         self.viewControllers
             .map { $0.segmentScrollView() }
             .filter { $0 != collaborativeScrollView }

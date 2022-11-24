@@ -30,7 +30,7 @@
 
 ## Requirements
 
-Xcode 11.4+
+Xcode 13.0+
 
 Swift 5.2+
 

@@ -30,6 +30,15 @@ open class UText: UILabel, AnyDeclarativeProtocol, DeclarativeProtocolInternal {
     var __bottom: State<CGFloat> { _bottom }
     var __centerX: State<CGFloat> { _centerX }
     var __centerY: State<CGFloat> { _centerY }
+
+	open override var intrinsicContentSize: CGSize {
+		var size = super.intrinsicContentSize
+		size.width += self.padding.x * 2
+		size.height += self.padding.y * 2
+		return size
+	}
+
+	private var padding: (x: CGFloat, y: CGFloat) = (0, 0)
     
     public init (_ string: AnyString...) {
         super.init(frame: .zero)
@@ -90,6 +99,12 @@ open class UText: UILabel, AnyDeclarativeProtocol, DeclarativeProtocolInternal {
         super.didMoveToSuperview()
         movedToSuperview()
     }
+
+	public func padding(x: CGFloat, y: CGFloat) -> Self {
+		self.padding = (x, y)
+		self.invalidateIntrinsicContentSize()
+		return self
+	}
 }
 
 extension UText: Refreshable {

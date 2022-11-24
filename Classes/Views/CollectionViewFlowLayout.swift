@@ -12,7 +12,7 @@ open class UCollectionViewFlowLayout: UICollectionViewFlowLayout {
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     @discardableResult
     public func itemSize(_ size: CGSize) -> Self {
         itemSize = size
@@ -83,5 +83,17 @@ open class UCollectionViewFlowLayout: UICollectionViewFlowLayout {
     public func sectionInset(_ value: CGFloat) -> Self {
         sectionInset(.init(top: value, left: value, bottom: value, right: value))
     }
+
+	@discardableResult
+	public func sectionHeadersPinToVisibleBounds(_ value: Bool = true) -> Self {
+		self.sectionHeadersPinToVisibleBounds = value
+		return self
+	}
+
+	@discardableResult
+	public func sectionFootersPinToVisibleBounds(_ value: Bool = true) -> Self {
+		self.sectionFootersPinToVisibleBounds = value
+		return self
+	}
 }
 #endif

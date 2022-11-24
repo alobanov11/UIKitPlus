@@ -151,6 +151,12 @@ open class _StackView: _STV, AnyDeclarativeProtocol, DeclarativeProtocolInternal
         return self
     }
     #else
+	@discardableResult
+	public func alignment(_ state: State<UIStackView.Alignment>) -> Self {
+		state.listen { [weak self] in self?.alignment($0) }
+		return self.alignment(state.wrappedValue)
+	}
+
     @discardableResult
     public func alignment(_ alignment: UIStackView.Alignment) -> Self {
         self.alignment = alignment

@@ -1,16 +1,33 @@
 #if !os(macOS)
 import UIKit
 
-class UCollectionDynamicCell: CollectionViewCell {
-    func setRootView(_ rootView: UStackView) {
-        contentView.subviews.forEach { $0.removeFromSuperview() }
+open class UCollectionDynamicCell: UCollectionCell {
+	open override func preferredLayoutAttributesFitting(
+		_ layoutAttributes: UICollectionViewLayoutAttributes
+	) -> UICollectionViewLayoutAttributes {
+		let size = self.contentView.systemLayoutSizeFitting(layoutAttributes.size)
+
+		var frame = layoutAttributes.frame
+		frame.size.height = ceil(size.height)
+		layoutAttributes.frame = frame
+
+		return layoutAttributes
+	}
+
+    public func setRootView(_ rootView: UIView) {
+		self.contentView.subviews.forEach { $0.removeFromSuperview() }
         rootView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.body { rootView }
+		self.contentView.addSubview(rootView)
+
+		let bottomConstraint = self.contentView.bottomAnchor.constraint(equalTo: rootView.bottomAnchor)
+
+		bottomConstraint.priority = .init(999)
+
         NSLayoutConstraint.activate([
-            contentView.leadingAnchor.constraint(equalTo: rootView.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: rootView.trailingAnchor),
-            contentView.topAnchor.constraint(equalTo: rootView.topAnchor),
-            contentView.bottomAnchor.constraint(equalTo: rootView.bottomAnchor)
+			self.contentView.leadingAnchor.constraint(equalTo: rootView.leadingAnchor),
+			self.contentView.trailingAnchor.constraint(equalTo: rootView.trailingAnchor),
+			self.contentView.topAnchor.constraint(equalTo: rootView.topAnchor),
+			bottomConstraint,
         ])
     }
 }

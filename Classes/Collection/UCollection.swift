@@ -103,7 +103,6 @@ open class UCollection: UView {
 
     lazy var collectionView: UICollectionView = {
         let collectionView = self.configuration.collectionView
-        collectionView.register(UCollectionDynamicCell.self)
         collectionView.dataSource = self
         collectionView.delegate = self
 		collectionView.dragDelegate = self
@@ -143,8 +142,8 @@ open class UCollection: UView {
 
     public init<T>(
         _ configuration: Configuration = .defaut,
-        _ state: State<UCollectionState<T>>,
-        @CollectionBuilder<USectionItemable> block: @escaping (UCollectionState<T>) -> [USectionItemable]
+        _ state: State<T>,
+        @CollectionBuilder<USectionItemable> block: @escaping (T) -> [USectionItemable]
     ) {
         self.configuration = configuration
         self.items = [USectionMap(state, block: block)]
@@ -154,8 +153,8 @@ open class UCollection: UView {
 
     public init<T>(
         _ configuration: Configuration = .defaut,
-        _ state: State<UCollectionState<T>>,
-        @CollectionBuilder<USectionBodyItemable> block: @escaping (UCollectionState<T>) -> [USectionBodyItemable]
+        _ state: State<T>,
+        @CollectionBuilder<USectionBodyItemable> block: @escaping (T) -> [USectionBodyItemable]
     ) {
         self.configuration = configuration
         self.items = [
@@ -211,6 +210,19 @@ open class UCollection: UView {
     }
     
     // MARK: - Handlers
+	var _willDisplayView: ((UICollectionView, UICollectionReusableView, String, IndexPath) -> Void)?
+
+	public func onWillDisplayView(_ handler: @escaping (UICollectionView, UICollectionReusableView, String, IndexPath) -> Void) -> Self {
+		self._willDisplayView = handler
+		return self
+	}
+
+	var _didEndDisplayView: ((UICollectionView, UICollectionReusableView, String, IndexPath) -> Void)?
+
+	public func onDidEndDisplayView(_ handler: @escaping (UICollectionView, UICollectionReusableView, String, IndexPath) -> Void) -> Self {
+		self._didEndDisplayView = handler
+		return self
+	}
     
     var _willDisplay: ((UICollectionView, UICollectionViewCell, IndexPath) -> Void)?
     
@@ -260,6 +272,13 @@ open class UCollection: UView {
         self._shouldHighlightItemAt = handler
         return self
     }
+
+	var _contextMenuConfigurationForItemsAt: ((UICollectionView, [IndexPath], CGPoint) -> UIContextMenuConfiguration?)?
+
+	public func onContextMenuConfigurationForItemsAt(_ handler: @escaping (UICollectionView, [IndexPath], CGPoint) -> UIContextMenuConfiguration?) -> Self {
+		self._contextMenuConfigurationForItemsAt = handler
+		return self
+	}
 
 	var _scrollViewDidScroll: ((UICollectionView) -> Void)?
 
@@ -437,6 +456,7 @@ extension UCollection {
             self.sections = newSections
             self.collectionView.reloadData()
             self.isChanging = false
+			self._onCompleteBatchUpdates?()
             return
         }
 
@@ -453,14 +473,7 @@ extension UCollection {
 			areItemsEqual: { (first: UItemable, second: UItemable) -> Bool in first.isEqual(to: second) }
 		)
 
-		if changeset.mutatedSections.isEmpty {
-			self.performUpdates(with: newSections, changeset: changeset)
-		}
-		else {
-			UIView.performWithoutAnimation {
-				self.performUpdates(with: newSections, changeset: changeset)
-			}
-		}
+		self.performUpdates(with: newSections, changeset: changeset)
     }
 
 	func performUpdates(with newSections: [Section], changeset: SectionedChangeset) {
@@ -541,7 +554,7 @@ extension UCollection: UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		guard let item = self.item(for: indexPath) else { return collectionView.dequeueReusableCell(with: UCollectionCell.self, for: indexPath) }
         let cell = item.generate(collectionView: collectionView, for: indexPath)
-		cell.transform = CGAffineTransform(rotationAngle: self.reversed ? CGFloat(Double.pi) : 0)
+		cell.contentView.transform = CGAffineTransform(rotationAngle: self.reversed ? CGFloat.pi : 0)
 		return cell
     }
     
@@ -556,7 +569,7 @@ extension UCollection: UICollectionViewDataSource {
 		default:
 			view = UICollectionReusableView()
 		}
-		view.transform = CGAffineTransform(rotationAngle: self.reversed ? CGFloat(Double.pi) : 0)
+		view.subviews.first?.transform = CGAffineTransform(rotationAngle: self.reversed ? CGFloat.pi : 0)
 		return view
     }
 }
@@ -612,6 +625,16 @@ extension UCollection: UICollectionViewDelegateFlowLayout {
 }
 
 extension UCollection: UICollectionViewDelegate {
+	public func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
+		self._willDisplayView?(collectionView, view, elementKind, indexPath)
+		(self.supplementary(for: indexPath, kind: elementKind) as? USupplementableDelegate)?.willDisplay()
+	}
+
+	public func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
+		self._didEndDisplayView?(collectionView, view, elementKind, indexPath)
+		(self.supplementary(for: indexPath, kind: elementKind) as? USupplementableDelegate)?.didEndDisplay()
+	}
+
     public func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         self._willDisplay?(collectionView, cell, indexPath)
         (self.item(for: indexPath) as? UItemableDelegate)?.willDisplay()
@@ -645,6 +668,20 @@ extension UCollection: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
         self._shouldHighlightItemAt?(collectionView, indexPath) ?? true
     }
+
+	public func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
+		self._contextMenuConfigurationForItemsAt?(collectionView, indexPaths, point) ?? nil
+	}
+
+	public func collectionView(_ collectionView: UICollectionView, contextMenuConfiguration configuration: UIContextMenuConfiguration, dismissalPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {
+		guard let cell = collectionView.cellForItem(at: indexPath) as? UCollectionCell else { return nil }
+		return cell.targetedView().map { UITargetedPreview(view: $0) }
+	}
+
+	public func collectionView(_ collectionView: UICollectionView, contextMenuConfiguration configuration: UIContextMenuConfiguration, highlightPreviewForItemAt indexPath: IndexPath) -> UITargetedPreview? {
+		guard let cell = collectionView.cellForItem(at: indexPath) as? UCollectionCell else { return nil }
+		return cell.targetedView().map { UITargetedPreview(view: $0) }
+	}
 }
 
 extension UCollection: UIScrollViewDelegate {
@@ -758,6 +795,12 @@ extension UCollection {
         self.collectionView.alwaysBounceHorizontal = value
         return self
     }
+
+	@discardableResult
+	public func isPrefetchingEnabled(_ value: Bool = true) -> Self {
+		self.collectionView.isPrefetchingEnabled = value
+		return self
+	}
     
     // MARK: Indicators
     
@@ -813,6 +856,20 @@ extension UCollection {
 		self.collectionView.transform = CGAffineTransform(rotationAngle: value ? -(CGFloat)(Double.pi) : 0)
 		self.collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: self.collectionView.bounds.size.width - 8)
 		return self
+	}
+
+	public func supplementary(for indexPath: IndexPath, kind: String) -> USupplementable? {
+		guard self.sections.indices.contains(indexPath.section) else {
+			return nil
+		}
+		switch kind {
+		case UICollectionView.elementKindSectionHeader:
+			return self.sections[indexPath.section].header
+		case UICollectionView.elementKindSectionFooter:
+			return self.sections[indexPath.section].footer
+		default:
+			return nil
+		}
 	}
 
 	public func item(for indexPath: IndexPath) -> UItemable? {

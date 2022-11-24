@@ -124,6 +124,11 @@ public extension USupplementable where Self: USupplementableBuilder {
 	}
 }
 
+protocol USupplementableDelegate {
+	func willDisplay()
+	func didEndDisplay()
+}
+
 // MARK: - UItemable
 
 public final class UItemSizeCache {

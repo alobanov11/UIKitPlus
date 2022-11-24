@@ -142,6 +142,14 @@ open class UTextView: UITextView, AnyDeclarativeProtocol, DeclarativeProtocolInt
     public func textInsets(top: CGFloat = 0, left: CGFloat = 0, right: CGFloat = 0, bottom: CGFloat = 0) -> Self {
         textInsets(.init(top: top, left: left, bottom: bottom, right: right))
     }
+
+	@discardableResult
+	public func lineSpacing(_ value: CGFloat) -> Self {
+		let paragraph = NSMutableParagraphStyle()
+		paragraph.lineSpacing = value
+		self.typingAttributes[.paragraphStyle] = paragraph
+		return self
+	}
     
     // MARK: - Delegate Replication
     
@@ -404,6 +412,7 @@ extension UTextView: Refreshable {
 extension UTextView: _Fontable {
     func _setFont(_ v: UIFont?) {
         font = v
+		typingAttributes[.font] = v
     }
 }
 
@@ -428,7 +437,9 @@ extension UTextView: _Textable {
     
     func _setText(_ v: NSAttributedString?) {
         attributedText = nil // hack to update attributed string with changed paragraph style
-        attributedText = v
+		attributedText = v?.attributes.isEmpty == true
+			? NSAttributedString(string: v?.string ?? "", attributes: self.typingAttributes)
+			: v
     }
 }
 
@@ -453,6 +464,7 @@ extension UTextView: _Colorable {
     
     func _setColor(_ v: UIColor?) {
         textColor = v
+		typingAttributes[.foregroundColor] = v
         properties.textColor = v ?? .clear
     }
 }
@@ -475,7 +487,8 @@ extension UTextView: _Placeholderable {
     }
     
     func _setPlaceholder(_ v: NSAttributedString?) {
-		placeholderLabel.attributedText = v
+        attributedText = nil // hack to update attributed string with changed paragraph style
+        attributedText = v
         _properties.placeholderAttrText = v
     }
 }

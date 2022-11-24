@@ -65,5 +65,9 @@ open class UCollectionCell: UICollectionViewCell, AnyDeclarativeProtocol, Declar
         super.didMoveToSuperview()
         movedToSuperview()
     }
+
+	open func targetedView() -> UIView? {
+		return nil
+	}
 }
 #endif

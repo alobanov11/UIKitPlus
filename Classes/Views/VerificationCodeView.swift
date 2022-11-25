@@ -73,8 +73,10 @@ open class UVerificationCodeView: UIView, AnyDeclarativeProtocol, DeclarativePro
 		.color(.clear)
 		.alpha(0.05)
 		.keyboard(.numberPad)
-		.editingChanged(edited)
-		.shouldChangeCharacters(shouldChangeCharacters)
+		.editingChanged { [weak self] in self?.edited($0) }
+		.shouldChangeCharacters { [weak self] in
+			self?.shouldChangeCharacters($0, range: $1, replacement: $2) ?? false
+		}
     
     var digitViews: [UText] = []
     

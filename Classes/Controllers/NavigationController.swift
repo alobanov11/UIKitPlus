@@ -58,13 +58,12 @@ open class NavigationController<T: UIViewController>: UINavigationController, UI
     private func setup() {
         #if !os(tvOS)
         interactivePopGestureRecognizer?.delegate = self
+		tabBarItem = viewController?.tabBarItem
         #endif
     }
     
     private func setupAppearance() {
         view.backgroundColor = .clear
-        //        automaticallyAdjustsScrollViewInsets = true // TODO: either delete or fix
-        //        extendedLayoutIncludesOpaqueBars = true
         navigationBar.titleTextAttributes = [.foregroundColor: tintColor, .font: font]
         navigationBar.tintColor = tintColor
         navigationBar.setBackgroundImage(UIImage(), for: .default)
@@ -72,7 +71,6 @@ open class NavigationController<T: UIViewController>: UINavigationController, UI
         navigationBar.shadowImage = UIImage()
         switch style {
         case .default:
-//            navigationBar.barTintColor = customTintColor
             navigationBar.isTranslucent = false
         case .transparent:
             navigationBar.backgroundColor = UIColor.clear
@@ -111,18 +109,9 @@ open class NavigationController<T: UIViewController>: UINavigationController, UI
     
     @discardableResult
     public func style(_ style: NavigationControllerStyle = .default) -> NavigationController {
-//        guard let vc = viewController as? NavControllerStyleable else {
             self.style = style
             setupAppearance()
             return self
-//        }
-//        self.style = vc.navStyle
-////        if let color = vc.navTintColor {
-////            tintColor = color
-////        }
-//        statusBarStyle = vc.navStatusBarStyle
-//        setupAppearance()
-//        return self
     }
     
     // MARK: Tint Color
@@ -167,11 +156,6 @@ open class NavigationController<T: UIViewController>: UINavigationController, UI
 		self.backTitle = value
 		return self
 	}
-    
-    //    public func setupModal() {
-    //        modalTransitionStyle = .coverVertical
-    //        modalPresentationStyle = .fullScreen
-    //    }
 
 	open override func pushViewController(_ viewController: UIViewController, animated: Bool) {
 		DispatchQueue.main.async {

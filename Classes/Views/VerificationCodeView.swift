@@ -263,6 +263,12 @@ open class UVerificationCodeView: UIView, AnyDeclarativeProtocol, DeclarativePro
     public func cleanup() {
         hiddenTextField.cleanup()
     }
+
+	@discardableResult
+	public func keyboard(_ keyboard: UIKeyboardType) -> Self {
+		hiddenTextField.keyboard(keyboard)
+		return self
+	}
 }
 
 extension VerificationCodeView: _Fontable {

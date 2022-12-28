@@ -47,13 +47,7 @@ extension _Titleable {
             _setTitle(newValue)
             return
         }
-        if let view = self as? _ViewTransitionable {
-            view._transition(0.25, transition) {
-                self._setTitle(newValue)
-            }
-        } else {
-            _setTitle(newValue)
-        }
+		_setTitle(newValue)
         #endif
     }
 }

@@ -11,14 +11,6 @@ public typealias BaseViewController = NSViewController
 public typealias BaseViewController = UIViewController
 #endif
 
-#if os(macOS)
-extension ViewController: _Menuable {
-    func _setMenu(_ v: Menu) {
-        view.menu = v.menu
-    }
-}
-#endif
-
 open class ViewController: BaseViewController {
     #if !os(macOS)
     #if !os(tvOS)

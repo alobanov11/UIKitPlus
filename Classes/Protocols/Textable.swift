@@ -47,13 +47,7 @@ extension _Textable {
             _setText(newValue)
             return
         }
-        if let view = self as? _ViewTransitionable {
-            view._transition(0.25, transition) {
-                self._setText(newValue)
-            }
-        } else {
-            _setText(newValue)
-        }
+		_setText(newValue)
         #endif
     }
 }

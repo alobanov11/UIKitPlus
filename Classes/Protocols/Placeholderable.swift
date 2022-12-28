@@ -47,13 +47,7 @@ extension _Placeholderable {
             _setPlaceholder(newValue)
             return
         }
-        if let view = self as? _ViewTransitionable {
-            view._transition(0.25, transition) {
-                self._setPlaceholder(newValue)
-            }
-        } else {
-            _setPlaceholder(newValue)
-        }
+		_setPlaceholder(newValue)
         #endif
     }
 }

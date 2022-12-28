@@ -139,10 +139,6 @@ extension UText: _Textable {
     }
 }
 
-extension UText: _ViewTransitionable {
-    var _transitionableView: UIView { self }
-}
-
 extension UText: _Colorable {
     var _colorState: State<UIColor> { properties.textColorState }
     

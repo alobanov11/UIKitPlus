@@ -1,23 +1,7 @@
 #if !os(macOS)
 import UIKit
 
-extension UIAlertController: _Messageable, _UIAlertViewControllerable {
-    /// See `_Messageable`
-    
-    var _statedMessage: AnyStringBuilder.Handler? {
-        get { nil }
-        set {}
-    }
-    
-    var _messageChangeTransition: UIView.AnimationOptions? {
-        get { nil }
-        set {}
-    }
-    
-    func _setMessage(_ v: NSAttributedString?) {
-        message = v?.string
-    }
-    
+extension UIAlertController: _UIAlertViewControllerable {
     func _present(in vc: UIViewController, animated: Bool, completion: (() -> Void)?) -> Self {
         vc.present(self, animated: true, completion: completion)
         return self

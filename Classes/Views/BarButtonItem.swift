@@ -30,14 +30,6 @@ open class UBarButtonItem: UIBarButtonItem {
         setup()
     }
     
-    // TODO: figure out how to implement `barButtonSystemItem`
-//    public init(_ barButtonSystemItem: UIBarButtonItem.SystemItem) {
-//        super.init()
-//        self.image
-//        setup()
-//    }
-    
-    
     public init(image: UIImage?) {
         super.init()
         self.image = image
@@ -102,30 +94,23 @@ open class UBarButtonItem: UIBarButtonItem {
         self.style = style
         return self
     }
-    
-    // MARK: tint
-    
-    @discardableResult
-    public func tint(_ color: UIColor) -> Self {
-        self.tintColor = color
-        return self
-    }
-    
-    @discardableResult
-    public func tint(_ color: Int) -> Self {
-        tint(color.color)
-    }
-    
-    @discardableResult
-    public func tint(_ binding: State<UIColor>) -> Self {
-        binding.listen { [weak self] in self?.tint($0) }
-        return tint(binding.wrappedValue)
-    }
-    
-    @discardableResult
-    public func tint(_ binding: State<Int>) -> Self {
-        binding.listen { [weak self] in self?.tint($0) }
-        return tint(binding.wrappedValue)
-    }
 }
+
+extension UBarButtonItem: _Tintable {
+	var _tintState: State<UColor> {
+		.init(wrappedValue: self.tintColor ?? .clear)
+	}
+
+	func _setTint(_ v: UColor?) {
+		self.tintColor = v
+	}
+}
+
+extension UBarButtonItem: _Enableable {
+	func _setEnabled(_ v: Bool) {
+		self.isEnabled = v
+	}
+}
+
+
 #endif

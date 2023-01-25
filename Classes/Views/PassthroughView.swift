@@ -4,14 +4,9 @@
 
 import UIKit
 
-open class PassthroughView: UView {
+open class PassthroughView<T: UIView>: UWrapperView<T> {
 	open override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-		self.hitTest(point, with: event) != nil
-	}
-
-	open override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-		let view = super.hitTest(point, with: event)
-		return hitTestHandler?(view) ?? view
+		hitTestHandler?(self.innerView.hitTest(convert(point, to: self.innerView), with: event)) != nil
 	}
 
 	private var hitTestHandler: ((UIView?) -> UIView?)?

@@ -7,6 +7,13 @@ import UIKit
 open class PassthroughView: UView {
 	open override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
 		let view = super.hitTest(point, with: event)
-		return view == self ? nil : view
+		return hitTestHandler?(view) ?? view
+	}
+
+	private var hitTestHandler: ((UIView?) -> UIView?)?
+
+	public func onHitTest(_ handler: @escaping (UIView?) -> UIView?) -> Self {
+		self.hitTestHandler = handler
+		return self
 	}
 }

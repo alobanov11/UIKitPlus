@@ -5,6 +5,10 @@
 import UIKit
 
 open class PassthroughView: UView {
+	open override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+		self.hitTest(point, with: event) != nil
+	}
+
 	open override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
 		let view = super.hitTest(point, with: event)
 		return hitTestHandler?(view) ?? view

@@ -36,13 +36,10 @@ open class UVerificationCodeView: UIView, AnyDeclarativeProtocol, DeclarativePro
     public typealias EnteredClosure = (String) -> Void
     private var enteredClosure: EnteredClosure  = { _ in }
     private var simpleEnteredClosure  = {}
-    
-    var bindCode: State<String>?
-    
-    public init (_ quantity: Int = 4, _ state: State<String>) {
+
+    public init (_ quantity: Int = 4) {
         self.quantity = quantity
         super.init(frame: .zero)
-        bindCode = state
         translatesAutoresizingMaskIntoConstraints = false
         setupView()
     }
@@ -95,7 +92,11 @@ open class UVerificationCodeView: UIView, AnyDeclarativeProtocol, DeclarativePro
     @State var spaceBetweenDigitViews: CGFloat = 10
     
     public var code: String {
-        return hiddenTextField.text ?? ""
+		get { hiddenTextField.text ?? "" }
+		set {
+			hiddenTextField.text = newValue
+			edited(hiddenTextField)
+		}
     }
     
     @discardableResult
@@ -220,7 +221,6 @@ open class UVerificationCodeView: UIView, AnyDeclarativeProtocol, DeclarativePro
                 label.text = ""
             }
         }
-        bindCode?.wrappedValue = hiddenTextField.text ?? ""
         if hiddenTextField.text?.count == digitViews.count {
             enteredClosure(hiddenTextField.text ?? "")
             simpleEnteredClosure()

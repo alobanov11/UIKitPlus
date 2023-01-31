@@ -40,7 +40,10 @@ public final class UCheckbox: UIControl, AnyDeclarativeProtocol, DeclarativeProt
 	}
 
 	public var isOn: Bool {
-		set { self.isOnBinding.wrappedValue = newValue }
+		set {
+			self.isOnBinding.wrappedValue = newValue
+			_changed(newValue)
+		}
 		get { self.isOnBinding.wrappedValue }
 	}
 
@@ -100,7 +103,6 @@ public final class UCheckbox: UIControl, AnyDeclarativeProtocol, DeclarativeProt
 	@objc
 	private func changed() {
 		isOn.toggle()
-		_changed(isOn)
 	}
 
 	@discardableResult

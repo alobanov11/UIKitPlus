@@ -33,29 +33,32 @@ public final class UCheckbox: UIControl, AnyDeclarativeProtocol, DeclarativeProt
 
 	public override var tintColor: UIColor! {
 		didSet {
-			if isOn.wrappedValue == false {
+			if isOn == false {
 				self.imageView?.tintColor = self.tintColor
 			}
 		}
 	}
 
-	private var isOn: UISwift.State<Bool>
-
-	private var imageView: UImage?
-
-	private var onTintColor: UIColor = .blue
+	public var isOn: Bool {
+		set { self.isOnBinding.wrappedValue = newValue }
+		get { self.isOnBinding.wrappedValue }
+	}
 
 	private lazy var onImage = UIImage(systemName: "checkmark.square")
 	private lazy var offImage = UIImage(systemName: "square")
 
+	private var isOnBinding: UISwift.State<Bool>
+	private var imageView: UImage?
+	private var onTintColor: UIColor = .blue
+
 	public override init(frame: CGRect) {
-		self.isOn = .init(wrappedValue: false)
+		self.isOnBinding = .init(wrappedValue: false)
 		super.init(frame: frame)
 		setup()
 	}
 
 	public init(_ state: UISwift.State<Bool>) {
-		isOn = state
+		isOnBinding = state
 		super.init(frame: .zero)
 		setup()
 	}
@@ -68,8 +71,8 @@ public final class UCheckbox: UIControl, AnyDeclarativeProtocol, DeclarativeProt
 		translatesAutoresizingMaskIntoConstraints = false
 
 		body {
-			UImage(isOn.map { [weak self] in $0 ? self?.onImage : self?.offImage })
-				.bind(isOn) { [weak self] in
+			UImage(isOnBinding.map { [weak self] in $0 ? self?.onImage : self?.offImage })
+				.bind(isOnBinding) { [weak self] in
 					$0.tintColor = $1 ? self?.onTintColor : self?.tintColor
 				}
 				.userInteraction(false)
@@ -96,8 +99,8 @@ public final class UCheckbox: UIControl, AnyDeclarativeProtocol, DeclarativeProt
 
 	@objc
 	private func changed() {
-		isOn.wrappedValue.toggle()
-		_changed(isOn.wrappedValue)
+		isOn.toggle()
+		_changed(isOn)
 	}
 
 	@discardableResult
@@ -109,7 +112,7 @@ public final class UCheckbox: UIControl, AnyDeclarativeProtocol, DeclarativeProt
 	@discardableResult
 	public func onImage(_ image: UIImage) -> Self {
 		self.onImage = image
-		if self.isOn.wrappedValue {
+		if self.isOn {
 			self.imageView?.image = image
 		}
 		return self
@@ -118,7 +121,7 @@ public final class UCheckbox: UIControl, AnyDeclarativeProtocol, DeclarativeProt
 	@discardableResult
 	public func offImage(_ image: UIImage) -> Self {
 		self.offImage = image
-		if self.isOn.wrappedValue == false {
+		if self.isOn == false {
 			self.imageView?.image = image
 		}
 		return self
@@ -132,7 +135,7 @@ public final class UCheckbox: UIControl, AnyDeclarativeProtocol, DeclarativeProt
 
 	@discardableResult
 	public func setOn(_ value: Bool = true) -> Self {
-		self.isOn.wrappedValue = value
+		self.isOn = value
 		return self
 	}
 }
